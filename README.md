@@ -1,0 +1,2 @@
+# hallxi-qr-hunt
+init
