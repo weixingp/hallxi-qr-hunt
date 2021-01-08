@@ -5,3 +5,10 @@
 # print(get_random_secret_key())
 
 django_secret_key = ""
+
+# MySQL settings
+MYSQL_host = ""
+MYSQL_port = ""
+MYSQL_dbname = ""
+MYSQL_username = ""
+MYSQL_password = ""

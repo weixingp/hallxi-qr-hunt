@@ -11,7 +11,14 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
-from hallxiqr import config
+
+# Import config
+try:
+    from hallxiqr import config
+except ImportError as err:
+    config = None
+    print("Please create config.py and place in the hallxiqr dir (Same as settings.py).")
+    exit()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!3cc6)np(^+w7*tua@)my*g4d#y9(3-75egatal-iw4r68%-fd'
+SECRET_KEY = config.django_secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -76,9 +83,20 @@ WSGI_APPLICATION = 'hallxiqr.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'NAME': config.MYSQL_dbname,
+    #     'HOST': config.MYSQL_host,
+    #     'PORT': config.MYSQL_port,
+    #     'ENGINE': 'mysql.connector.django',
+    #     'USER': config.MYSQL_username,
+    #     'PASSWORD': config.MYSQL_password,
+    #     'OPTIONS': {
+    #       # 'autocommit': True,
+    #     },
+    # },
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'db.sqlite3',
     }
 }
 
