@@ -3,24 +3,50 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
+
+from .forms import ProfileUpdateForm
 
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/account/login/')
 def check_registered(request):
     user = request.user
-    if not user.is_registered:
-        return redirect("/accounts/signup/details/")
+    if not hasattr(user, 'profile'):
+        return redirect("/account/profile/")
     else:
-        return redirect("/")
+        # return redirect("/")
+        return redirect("/account/profile/")
 
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/account/login/')
 def user_details(request):
     template = loader.get_template('account/details.html')
-    user = request.user
+    has_profile = hasattr(request.user, 'profile')
+    if request.method == 'POST':
+        if not has_profile:
+            p_form = ProfileUpdateForm(request.POST)
+        else:
+            p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
+
+        if p_form.is_valid():
+            profile = p_form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            if has_profile:
+                messages.add_message(request, messages.SUCCESS, 'Your profile has been updated.')
+            else:
+                messages.add_message(request, messages.SUCCESS, 'You have been registered for the game, than you!')
+            return redirect("/account/profile/")
+    else:
+        if not has_profile:
+            p_form = ProfileUpdateForm()
+        else:
+            p_form = ProfileUpdateForm(instance=request.user.profile)
+
     context = {
-        "email": user.email,
-        "hp": user.hp,
+        "p_form": p_form,
+        "profile": request.user.socialaccount_set.all()[0]
     }
+    print(p_form)
     response = HttpResponse(template.render(context, request))
     return response

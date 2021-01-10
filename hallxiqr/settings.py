@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'phonenumber_field',
+    'crispy_forms',
     'qrhunt',
 ]
 
@@ -138,12 +139,16 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_SIGNUP_REDIRECT = '/accounts/signup/details'
-LOGIN_REDIRECT_URL = "/accounts/check/"
-ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/account/check/"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/account/login/"
+ACCOUNT_LOGOUT_ON_GET = True  # Unsafe, but for this simple app, it's good enough.
 
 # Phone model field setting
 PHONENUMBER_DB_FORMAT = "E164"
 PHONENUMBER_DEFAULT_REGION = 'SG'
+
+# Crispy form settings
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

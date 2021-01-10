@@ -1,11 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{{ email }}
-<p>HP: {{ hp }}</p>
-</body>
-</html>
+{% extends "account/base.html" %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Profile" %}{% endblock %}
+
+{% block content %}
+    <div class="bg-default g-sidenav-show g-sidenav-pinned">
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header bg-gradient-primary section-shaped pb-7 pt-5 pb-lg-8 pt-lg-6">
+                <div class="container">
+                    <div class="header-body text-center mb-5">
+                        <div class="row justify-content-center">
+                            <div class="col-xl-5 col-lg-6 col-md-8 px-4">
+                                <h1 class="text-white">Battle of Birds</h1>
+                                <p class="text-lead text-white">Awesomeness beginning soon, stay tuned!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="separator separator-bottom separator-skew zindex-100">
+                    <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+                    </svg>
+                </div>
+            </div>
+            <!-- Page content -->
+            <div class="container mt--8 pb-7">
+                <div class="row justify-content-center">
+                    <div class="col-lg-5 col-md-7">
+                        <div class="card bg-secondary border-0 mb-0">
+                            <div class="card-header bg-transparent px-lg-5 pt-5 pb-4">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <img src="{{ profile.get_avatar_url }}" alt="avatar" class="avatar avatar-lg img-raised">
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="text">
+                                            <span class="name">{{ profile.extra_data.name }}</span>
+                                            <div class="meta">{{ profile.extra_data.email }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-muted mt-3"><small>Not {{ profile.extra_data.email }}? <a href="/account/logout">Click here to logout</a>. </small></div>
+                            </div>
+                            <div class="card-body px-lg-5 pt-lg-3 pb-lg-4">
+
+                                <div class="text-muted text-center mt-1 mb-3">Game Profile</div>
+                                <form role="form" method='POST' enctype="multipart/form-data">
+                                    {%csrf_token%}
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
+                                            </div>
+                                            <input class="form-control" name="fullname" placeholder="Full Name" type="text" value="{{ p_form.fullname.value }}">
+                                        </div>
+                                    </div>
+                                    <label class="text-muted">Where do you stay?</label>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <div class="input-group input-group-alternative">
+                                                    <select name="block" class="form-control">
+                                                        <option disabled="" selected="" value="{{ p_form.block.value }}">Block</option>
+                                                        <option value="53" {% if p_form.block.value == '53' %}selected{% endif %}>53</option>
+                                                        <option value="54" {% if p_form.block.value == '54' %}selected{% endif %}>54</option>
+                                                        <option value="55" {% if p_form.block.value == '55' %}selected{% endif %}>55</option>
+                                                        <option value="56" {% if p_form.block.value == '56' %}selected{% endif %}>56</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="input-group input-group-alternative">
+                                                    <select name="level" class="form-control">
+                                                        <option disabled="" selected="" value="">Level</option>
+                                                        <option value="01" {% if p_form.level.value == '01' %}selected{% endif %}>01</option>
+                                                        <option value="02" {% if p_form.level.value == '02' %}selected{% endif %}>02</option>
+                                                        <option value="03" {% if p_form.level.value == '03' %}selected{% endif %}>03</option>
+                                                        <option value="04" {% if p_form.level.value == '04' %}selected{% endif %}>04</option>
+                                                        <option value="05" {% if p_form.level.value == '05' %}selected{% endif %}>05</option>
+                                                        <option value="06" {% if p_form.level.value == '06' %}selected{% endif %}>06</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="input-group input-group-alternative">
+                                                    <input class="form-control" name="room_number"placeholder="Room" type="text" value="{{ p_form.room_number.value }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group input-group-alternative mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="ni ni-mobile-button"></i></span>
+                                            </div>
+                                            <input class="form-control" name="mobile" placeholder="HP number" type="text" value="{{ p_form.mobile.value }}">
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary mt-4">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

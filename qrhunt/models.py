@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
-from django.core.validators import MaxLengthValidator, MinLengthValidator
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -40,12 +41,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_registered = models.BooleanField(default=False)
     last_login = models.DateTimeField(null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
 
-    room_no = models.CharField(max_length=30, null=True)
-    hp = PhoneNumberField(null=True)
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -54,3 +52,40 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_absolute_url(self):
         return "/users/%i/" % self.pk
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    fullname = models.CharField(max_length=128)
+
+    BLK_CHOICES = (
+        ("53", "53"),
+        ("54", "54"),
+        ("55", "55"),
+        ("56", "56"),
+    )
+    block = models.CharField(
+        max_length=2,
+        choices=BLK_CHOICES,
+    )
+
+    LVL_CHOICES = (
+        ("01", "01"),
+        ("02", "02"),
+        ("03", "03"),
+        ("04", "04"),
+        ("05", "05"),
+        ("06", "06"),
+    )
+    level = models.CharField(
+        max_length=2,
+        choices=LVL_CHOICES,
+    )
+
+    room_number = models.CharField(max_length=10)
+    mobile = PhoneNumberField(null=True, blank=True, unique=True)
+
+    def __str__(self):
+        return self.user.email
+
+

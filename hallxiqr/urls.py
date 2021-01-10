@@ -19,8 +19,8 @@ from qrhunt import views as main_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
-    path('accounts/check/', main_view.check_registered),
-    path('accounts/signup/details/', main_view.user_details)
+    path('account/', include('allauth.urls')),
+    path('account/check/', main_view.check_registered),
+    path('account/profile/', main_view.user_details)
 ]
 

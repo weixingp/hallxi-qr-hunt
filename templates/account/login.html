@@ -8,52 +8,52 @@
 {% block content %}
     <div class="bg-default g-sidenav-show g-sidenav-pinned">
         <div class="main-content">
-        <!-- Header -->
-        <div class="header bg-gradient-primary section-shaped pb-7 pt-5 pb-lg-8 pt-lg-6">
-          <div class="container">
-            <div class="header-body text-center mb-5">
-              <div class="row justify-content-center">
-                <div class="col-xl-5 col-lg-6 col-md-8 px-4">
-                  <h1 class="text-white">Battle of Birds</h1>
-                  <p class="text-lead text-white">Awesomeness beginning soon, stay tuned!</p>
+            <!-- Header -->
+            <div class="header bg-gradient-primary section-shaped pb-7 pt-5 pb-lg-8 pt-lg-6">
+                <div class="container">
+                    <div class="header-body text-center mb-5">
+                        <div class="row justify-content-center">
+                            <div class="col-xl-5 col-lg-6 col-md-8 px-4">
+                                <h1 class="text-white">Battle of Birds</h1>
+                                <p class="text-lead text-white">Awesomeness beginning soon, stay tuned!</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+                <div class="separator separator-bottom separator-skew zindex-100">
+                    <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+                    </svg>
+                </div>
             </div>
-          </div>
-          <div class="separator separator-bottom separator-skew zindex-100">
-            <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
-              <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
-            </svg>
-          </div>
-        </div>
-        <!-- Page content -->
-        <div class="container mt--8 pb-7">
-          <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-7">
-              <div class="card bg-secondary border-0 mb-0">
-                <div class="card-header bg-transparent pb-5">
-                    <div class="text-muted text-center mt-2 mb-3"><small>Sign in / Sign up with</small></div>
-                  <div class="btn-wrapper text-center">
-                    <a href="/accounts/google/login/" class="btn btn-neutral btn-icon">
-                      <span class="btn-inner--icon"><img src="{% static '/assets/img/icons/common/google.svg' %}" alt="Google Sign-in"></span>
-                      <span class="btn-inner--text">Google</span>
-                    </a>
-                  </div>
+            <!-- Page content -->
+            <div class="container mt--8 pb-7">
+                <div class="row justify-content-center">
+                    <div class="col-lg-5 col-md-7">
+                        <div class="card bg-secondary border-0 mb-0">
+                            <div class="card-header bg-transparent pb-5">
+                                <div class="text-muted text-center mt-2 mb-3"><small>Sign in / Sign up with</small></div>
+                                <div class="btn-wrapper text-center">
+                                    <a href="/account/google/login/" class="btn btn-neutral btn-icon">
+                                        <span class="btn-inner--icon"><img src="{% static '/assets/img/icons/common/google.svg' %}" alt="Google Sign-in"></span>
+                                        <span class="btn-inner--text">Google</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body px-lg-5 py-lg-3">
+                                <div class="text-muted text-center mt-1 mb-3">Use of personal data</div>
+                                <ul class="text-muted">
+                                    <li><small>By signing up / logging in with Google, you allow us to use your <i>Email</i> and <i>Name</i> of your Google account for the game. </small></li>
+                                    <li><small>These personal data will be strictly used for the game (Hall XI February Inter-block Game: Battle of Birds) only. </small></li>
+                                    <li><small>Your data in the game will be deleted after the game ends.</small></li>
+                                    <li><small>Join the game telegram if you have any queries @febbob.</small></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body px-lg-5 py-lg-3">
-                <div class="text-muted text-center mt-1 mb-3">Use of personal data</div>
-                    <ul class="text-muted">
-                        <li><small>By signing up / logging in with Google, your Email and Name of your google account will be recorded for the game. </small></li>
-                        <li><small>These personal data will be strictly used for the game (Hall XI February Inter-block Game: Battle of Birds) only. </small></li>
-                        <li><small>Your data in the game will be deleted after the game ends.</small></li>
-                        <li><small>Join the game telegram if you have any queries @febbob.</small></li>
-                    </ul>
-                </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
 
 {% endblock %}
