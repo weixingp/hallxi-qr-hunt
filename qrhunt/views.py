@@ -43,10 +43,19 @@ def user_details(request):
         else:
             p_form = ProfileUpdateForm(instance=request.user.profile)
 
+    if len(request.user.socialaccount_set.all()) > 0:
+        profile = request.user.socialaccount_set.all()[0]
+    else:
+        profile = {
+            "extra_data": {
+                "name": "Invalid Account",
+                "email": "null"
+            }
+        }
+
     context = {
         "p_form": p_form,
-        "profile": request.user.socialaccount_set.all()[0]
+        "profile": profile
     }
-    print(p_form)
     response = HttpResponse(template.render(context, request))
     return response

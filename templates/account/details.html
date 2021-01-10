@@ -7,7 +7,7 @@
 {% block head_title %}{% trans "Profile" %}{% endblock %}
 
 {% block content %}
-    <div class="bg-default g-sidenav-show g-sidenav-pinned">
+    <div class="bg-default g-sidenav-show g-sidenav-pinned d-flex flex-column min-vh-100">
         <div class="main-content">
             <!-- Header -->
             <div class="header bg-gradient-primary section-shaped pb-7 pt-5 pb-lg-8 pt-lg-6">
@@ -28,7 +28,7 @@
                 </div>
             </div>
             <!-- Page content -->
-            <div class="container mt--8 pb-7">
+            <div class="container mt--8 pb-7 flex-grow-1">
                 <div class="row justify-content-center">
                     <div class="col-lg-5 col-md-7">
                         <div class="card bg-secondary border-0 mb-0">
@@ -56,7 +56,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
                                             </div>
-                                            <input class="form-control" name="fullname" placeholder="Full Name" type="text" value="{{ p_form.fullname.value }}">
+                                            <input class="form-control" name="fullname" placeholder="Full Name" type="text" value="{{ p_form.fullname.value | default_if_none:'' }}">
                                         </div>
                                     </div>
                                     <label class="text-muted">Where do you stay?</label>
@@ -65,7 +65,7 @@
                                             <div class="col-4">
                                                 <div class="input-group input-group-alternative">
                                                     <select name="block" class="form-control">
-                                                        <option disabled="" selected="" value="{{ p_form.block.value }}">Block</option>
+                                                        <option disabled="" selected="" value="">Blk</option>
                                                         <option value="53" {% if p_form.block.value == '53' %}selected{% endif %}>53</option>
                                                         <option value="54" {% if p_form.block.value == '54' %}selected{% endif %}>54</option>
                                                         <option value="55" {% if p_form.block.value == '55' %}selected{% endif %}>55</option>
@@ -76,7 +76,7 @@
                                             <div class="col-4">
                                                 <div class="input-group input-group-alternative">
                                                     <select name="level" class="form-control">
-                                                        <option disabled="" selected="" value="">Level</option>
+                                                        <option disabled="" selected="" value="">Lvl</option>
                                                         <option value="01" {% if p_form.level.value == '01' %}selected{% endif %}>01</option>
                                                         <option value="02" {% if p_form.level.value == '02' %}selected{% endif %}>02</option>
                                                         <option value="03" {% if p_form.level.value == '03' %}selected{% endif %}>03</option>
@@ -88,7 +88,7 @@
                                             </div>
                                             <div class="col-4">
                                                 <div class="input-group input-group-alternative">
-                                                    <input class="form-control" name="room_number"placeholder="Room" type="text" value="{{ p_form.room_number.value }}">
+                                                    <input class="form-control" name="room_number"placeholder="Room" type="text" value="{{ p_form.room_number.value | default_if_none:''}}">
                                                 </div>
                                             </div>
                                         </div>
@@ -98,7 +98,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="ni ni-mobile-button"></i></span>
                                             </div>
-                                            <input class="form-control" name="mobile" placeholder="HP number" type="text" value="{{ p_form.mobile.value }}">
+                                            <input class="form-control" name="mobile" placeholder="HP number" type="text" value="{{ p_form.mobile.value | default_if_none:''}}">
                                         </div>
                                     </div>
                                     <div class="text-center">
