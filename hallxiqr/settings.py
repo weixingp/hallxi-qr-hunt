@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'phonenumber_field',
-    'crispy_forms',
     'qrhunt',
 ]
 

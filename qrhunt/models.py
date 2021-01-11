@@ -1,9 +1,48 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django.template.defaultfilters import truncatechars
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from phonenumber_field.modelfields import PhoneNumberField
+
+
+class Question(models.Model):
+    question = models.TextField(max_length=1000)
+
+    DIFFICULTY_CHOICES = (
+        ("1", "Easy"),
+        ("2", "Normal"),
+        ("3", "Hard"),
+    )
+    difficulty = models.CharField(
+        max_length=1,
+        choices=DIFFICULTY_CHOICES,
+    )
+
+    TYPE_CHOICES = (
+        ("1", "Covid 19"),
+        ("2", "Hall XI")
+    )
+    type = models.CharField(
+        max_length=1,
+        choices=TYPE_CHOICES,
+    )
+
+    def __str__(self):
+        return self.question
+
+
+class Answer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="question_fk")
+    answer = models.CharField(max_length=256)
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.is_correct:
+            return "Correct"
+        else:
+            return "Incorrect"
 
 
 class UserManager(BaseUserManager):

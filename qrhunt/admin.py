@@ -1,7 +1,27 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User, Profile
+from .models import User, Profile, Question, Answer
+
+
+class AnswerInline(admin.StackedInline):
+    model = Answer
+    can_delete = True
+    verbose_name_plural = 'Answers'
+    fk_name = 'question'
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if not hasattr(obj, 'question_fk') or not obj.question_fk.exists():
+            return 4
+        else:
+            return 0
+
+
+class QuestionAdmin(admin.ModelAdmin):
+    inlines = (AnswerInline,)
+    list_display = ('question', 'difficulty', 'type',)
+    list_filter = ('difficulty', 'type',)
+    search_fields = ('question',)
 
 
 class ProfileInline(admin.StackedInline):
@@ -9,6 +29,12 @@ class ProfileInline(admin.StackedInline):
     can_delete = True
     verbose_name_plural = 'Profile'
     fk_name = 'user'
+
+
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'fullname', 'block', 'level', 'mobile')
+    list_filter = ('block', 'level',)
+    search_fields = ('user',)
 
 
 class UserAdmin(BaseUserAdmin):
@@ -26,8 +52,8 @@ class UserAdmin(BaseUserAdmin):
             'is_active',
             'is_staff',
             'is_superuser',
-            # 'groups',
-            # 'user_permissions',
+            'groups',
+            'user_permissions',
         )}),
     )
     add_fieldsets = (
@@ -43,12 +69,14 @@ class UserAdmin(BaseUserAdmin):
     # Reverse lookup full name from profile
     def get_fullname(self, obj):
         return obj.profile.fullname
+
     get_fullname.short_description = 'Full Name'
     get_fullname.admin_order_field = 'profile__fullname'
 
     # Reverse lookup block from profile
     def get_block(self, obj):
         return obj.profile.block
+
     get_block.short_description = 'Block'
     get_block.admin_order_field = 'profile__block'
 
@@ -62,3 +90,5 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserAdmin)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Profile, ProfileAdmin)
