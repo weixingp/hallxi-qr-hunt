@@ -37,6 +37,8 @@ def user_details(request):
             else:
                 messages.add_message(request, messages.SUCCESS, 'You have been registered for the game, than you!')
             return redirect("/account/profile/")
+        else:
+            messages.add_message(request, messages.ERROR, "You have errors in your form, please check.")
     else:
         if not has_profile:
             p_form = ProfileUpdateForm()
@@ -57,5 +59,6 @@ def user_details(request):
         "p_form": p_form,
         "profile": profile
     }
+
     response = HttpResponse(template.render(context, request))
     return response
