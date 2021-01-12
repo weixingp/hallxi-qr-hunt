@@ -7,6 +7,70 @@ from django.db.models.signals import post_save
 from phonenumber_field.modelfields import PhoneNumberField
 
 
+class Item(models.Model):
+    name = models.CharField(max_length=30)
+    RARITY_CHOICE = (
+        ("1", "Common"),
+        ("2", "Rare"),
+        ("3", "Super Rare"),
+        ("4", "Legendary")
+    )
+
+    rarity = models.CharField(
+        max_length=1,
+        choices=RARITY_CHOICE,
+    )
+
+    TYPE_CHOICE = (
+        ("1", "Attack"),
+        ("2", "Heal"),
+        ("3", "Hall XI Merchandise"),
+    )
+
+    type = models.CharField(
+        max_length=1,
+        choices=TYPE_CHOICE
+    )
+
+    value = models.IntegerField(blank=True, null=True)
+
+    description = models.TextField(blank=True)
+
+    def get_points(self):
+        if self.rarity == '1':
+            points = 10
+        elif self.rarity == '2':
+            points = 30
+        elif self.rarity == '3':
+            points = 50
+        elif self.rarity == '4':
+            points = 60
+        else:
+            points = 0
+
+        return points
+
+    def get_item_description(self):
+        if self.type == "1":
+            desc = "A " + self.get_rarity_display() + " attack item that does " + str(self.value) + " damage to the " \
+                                                        "selected block. Gain " + str(self.get_points()) + " points."
+        elif self.type == "2":
+            desc = "A " + self.get_rarity_display() + " healing item that heals " + str(self.value) + " HP for your " \
+                                                        "block. Gain " + str(self.get_points()) + " points."
+        elif self.type == "3":
+            desc = "A physical Hall XI merchandise. You can't use now, we will contact you for collection at a later " \
+                   "date. Gain " + str(self.get_points()) + " points."
+
+        else:
+            desc = "No description available."
+
+        return desc
+
+    # Object name for display in admin panel
+    def __str__(self):
+        return self.name
+
+
 class Question(models.Model):
     question = models.TextField(max_length=1000)
 
@@ -29,6 +93,7 @@ class Question(models.Model):
         choices=TYPE_CHOICES,
     )
 
+    # Object name for display in admin panel
     def __str__(self):
         return self.question
 
@@ -38,6 +103,7 @@ class Answer(models.Model):
     answer = models.CharField(max_length=256)
     is_correct = models.BooleanField(default=False)
 
+    # Object name for display in admin panel
     def __str__(self):
         if self.is_correct:
             return "Correct"

@@ -1,7 +1,22 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User, Profile, Question, Answer
+from .models import User, Profile, Question, Answer, Item
+
+
+class ItemAdmin(admin.ModelAdmin):
+    # inlines = (AnswerInline,)
+
+    # Reverse lookup full name from profile
+    def get_description(self, obj):
+        return obj.get_item_description()
+
+    get_description.short_description = 'Description'
+    # get_description.admin_order_field = 'profile__fullname'
+
+    list_display = ('name', 'type', 'rarity', 'get_description')
+    list_filter = ('type', 'rarity',)
+    search_fields = ('name',)
 
 
 class AnswerInline(admin.StackedInline):
@@ -92,3 +107,4 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(Item, ItemAdmin)

@@ -102,14 +102,6 @@
 {#<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>#}
 <script src="{% static '/assets/js/argon-design-system.min.js' %}?v=1.2.2" type="text/javascript"></script>
 <script>
-    function scrollToDownload() {
-
-        if ($('.section-download').length != 0) {
-            $("html, body").animate({
-                scrollTop: $('.section-download').offset().top
-            }, 1000);
-        }
-    }
 
     $(document).ready(function () {
         window.setTimeout(function() {
