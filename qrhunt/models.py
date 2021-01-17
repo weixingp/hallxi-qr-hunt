@@ -159,6 +159,7 @@ class Item(models.Model):
 
     description = models.TextField(blank=True)
 
+    # Hardcoded points gained for each of the rarity
     def get_points(self):
         if self.rarity == '1':
             points = 10
@@ -197,9 +198,21 @@ class Item(models.Model):
 
 
 class Inventory(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_user")
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="fk_item")
+    class Meta:
+        verbose_name_plural = "Inventories"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_inventory_user")
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="fk_inventory_item")
     has_used = models.BooleanField(default=False)
+    time = models.DateTimeField(auto_now=True, blank=True)
 
     def __str__(self):
         return self.user.email + "'s " + self.item.name
+
+
+class AssignedQuestion(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_assigned_question_user")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="fk_assigned_question_question")
+    time = models.DateTimeField(auto_now=True, blank=True)
+    has_answered = models.BooleanField(default=False)
+    answered_time = models.DateTimeField(blank=True, null=True)

@@ -1,9 +1,33 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.urls import reverse
+from django.utils.html import format_html
+from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion
 
-from .models import User, Profile, Question, Answer, Item
+
+def linkify(field_name):
+    """
+    Converts a foreign key value into clickable links.
+
+    If field_name is 'parent', link text will be str(obj.parent)
+    Link will be admin url for the admin url for obj.parent.id:change
+    """
+
+    def _linkify(obj):
+        linked_obj = getattr(obj, field_name)
+        if linked_obj is None:
+            return '-'
+        app_label = linked_obj._meta.app_label
+        model_name = linked_obj._meta.model_name
+        view_name = f'admin:{app_label}_{model_name}_change'
+        link_url = reverse(view_name, args=[linked_obj.pk])
+        return format_html('<a href="{}">{}</a>', link_url, linked_obj)
+
+    _linkify.short_description = field_name  # Sets column name
+    return _linkify
 
 
+@admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
     # inlines = (AnswerInline,)
 
@@ -19,6 +43,15 @@ class ItemAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 
+@admin.register(Inventory)
+class InventoryAdmin(admin.ModelAdmin):
+    # inlines = (AnswerInline,)
+
+    list_display = ('user', linkify(field_name="item"), 'has_used', 'time')
+    list_filter = ('item', 'has_used',)
+    search_fields = ('user', 'item')
+
+
 class AnswerInline(admin.StackedInline):
     model = Answer
     can_delete = True
@@ -32,11 +65,19 @@ class AnswerInline(admin.StackedInline):
             return 0
 
 
+@admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
     inlines = (AnswerInline,)
     list_display = ('question', 'difficulty', 'type',)
     list_filter = ('difficulty', 'type',)
     search_fields = ('question',)
+
+
+@admin.register(AssignedQuestion)
+class AssignedQuestionAdmin(admin.ModelAdmin):
+    list_display = ('user', linkify(field_name="question"), 'time', 'has_answered', 'answered_time')
+    list_filter = ('has_answered',)
+    search_fields = ('user', 'question')
 
 
 class ProfileInline(admin.StackedInline):
@@ -46,12 +87,14 @@ class ProfileInline(admin.StackedInline):
     fk_name = 'user'
 
 
+@admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'fullname', 'block', 'level', 'mobile')
     list_filter = ('block', 'level',)
     search_fields = ('user',)
 
 
+@admin.register(User)
 class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline,)
 
@@ -103,8 +146,3 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions',)
 
-
-admin.site.register(User, UserAdmin)
-admin.site.register(Question, QuestionAdmin)
-admin.site.register(Profile, ProfileAdmin)
-admin.site.register(Item, ItemAdmin)
