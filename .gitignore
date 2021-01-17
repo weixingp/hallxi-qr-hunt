@@ -216,6 +216,6 @@ hallxiqr/config.py
 # End of https://www.gitignore.io/api/macos,linux,django,python,pycharm
 
 #migration files
-**/migrations/**
-!**/migrations
-!**/migrations/__init__.py
+#**/migrations/**
+#!**/migrations
+#!**/migrations/__init__.py
