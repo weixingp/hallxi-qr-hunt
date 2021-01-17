@@ -48,8 +48,8 @@ class InventoryAdmin(admin.ModelAdmin):
     # inlines = (AnswerInline,)
 
     list_display = ('user', linkify(field_name="item"), 'has_used', 'time')
-    list_filter = ('item', 'has_used',)
-    search_fields = ('user', 'item')
+    list_filter = ('has_used',)
+    search_fields = ('user__email', 'item__name')
 
 
 class AnswerInline(admin.StackedInline):
@@ -77,7 +77,7 @@ class QuestionAdmin(admin.ModelAdmin):
 class AssignedQuestionAdmin(admin.ModelAdmin):
     list_display = ('user', linkify(field_name="question"), 'time', 'has_answered', 'answered_time')
     list_filter = ('has_answered',)
-    search_fields = ('user', 'question')
+    search_fields = ('user__email', 'question__question')
 
 
 class ProfileInline(admin.StackedInline):
