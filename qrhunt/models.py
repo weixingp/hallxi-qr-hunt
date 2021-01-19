@@ -130,6 +130,7 @@ class Profile(models.Model):
 
     room_number = models.CharField(max_length=10)
     mobile = PhoneNumberField(null=True, blank=True, unique=True)
+    has_checked = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.email
@@ -217,10 +218,21 @@ class Inventory(models.Model):
 
 class AssignedQuestion(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_assigned_question_user")
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="fk_assigned_question_question")
-    time = models.DateTimeField(auto_now=True, blank=True)
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name="fk_assigned_question_question",
+        null=True,
+    )
+    time = models.DateTimeField(null=True)
     has_answered = models.BooleanField(default=False)
     answered_time = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ('user', 'question',)
+
+    def __str__(self):
+        return self.user.email + "'s question"
 
 
 class Location(models.Model):
@@ -256,7 +268,7 @@ class Location(models.Model):
     def qr_code(self):
         q = {
             "cht": "qr",
-            "chl": SITE_URL + "qr/" + self.uuid.hex,
+            "chl": SITE_URL + "location/" + str(self.uuid),
             "chs": "500x500",
         }
         qr_link = "https://chart.googleapis.com/chart?" + urlencode(q)
@@ -280,5 +292,9 @@ class AssignedLocation(models.Model):
     has_visited = models.BooleanField(default=False)
     visit_time = models.DateTimeField(blank=True, null=True)
 
+    class Meta:
+        unique_together = ('user', 'location',)
+
     def __str__(self):
         return self.user.email + "'s " + self.location.name
+

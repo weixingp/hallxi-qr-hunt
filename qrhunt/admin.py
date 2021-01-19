@@ -104,9 +104,9 @@ class ProfileInline(admin.StackedInline):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'fullname', 'block', 'level', 'mobile')
-    list_filter = ('block', 'level',)
-    search_fields = ('user',)
+    list_display = ('user', 'fullname', 'block', 'level', 'mobile', 'has_checked')
+    list_filter = ('block', 'level', 'has_checked')
+    search_fields = ('user__email',)
 
 
 @admin.register(User)

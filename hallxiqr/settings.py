@@ -33,7 +33,7 @@ SECRET_KEY = config.django_secret_key
 DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.177", "0.0.0.0"]
-SITE_URL = "https://127.0.0.1/"
+SITE_URL = "https://127.0.0.1:8000/"
 # Application definition
 
 INSTALLED_APPS = [

@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from qrhunt import views as main_view
 
+# Account and admin module
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('allauth.urls')),
@@ -24,3 +25,10 @@ urlpatterns = [
     path('account/profile/', main_view.user_details)
 ]
 
+# Game Core URLs
+core = [
+    path('location/<str:uuid>/', main_view.location_main),
+    path('location/access-denied', main_view.location_denied)
+]
+
+urlpatterns += core
