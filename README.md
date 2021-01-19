@@ -1,2 +1,2 @@
 # hallxi-qr-hunt
-init
+A QR hunt game with questions
