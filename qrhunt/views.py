@@ -8,6 +8,7 @@ from django.contrib import messages
 from .forms import ProfileUpdateForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion
 from django.utils.timezone import localtime, now
+from .main import visit_location
 
 
 @login_required(login_url='/account/login/')
@@ -100,20 +101,13 @@ def location_main(request, uuid):
     if assigned_location.has_visited:
         return redirect("/location/visited")
 
-    # Mark the location as visited
-    assigned_location.has_visited = True
-    assigned_location.visit_time = localtime(now())
-    assigned_location.save()
-
-    # Assign a question slot to the user
-    new_question = AssignedQuestion.objects.create(
-        user=user,
-    )
+    # Visit the location
+    question_id = visit_location(user, assigned_location)
 
     context = {
         "uuid": uuid,
         "location": location.name,
-        "id": new_question.id
+        "id": question_id
     }
 
     response = HttpResponse(template.render(context, request))
