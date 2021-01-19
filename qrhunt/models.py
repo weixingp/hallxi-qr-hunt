@@ -1,10 +1,15 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django.contrib import admin
+from django.utils.html import format_html
 from django.template.defaultfilters import truncatechars
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from phonenumber_field.modelfields import PhoneNumberField
+import uuid
+from urllib.parse import urlencode
+from hallxiqr.settings import SITE_URL
 
 
 class Question(models.Model):
@@ -216,3 +221,64 @@ class AssignedQuestion(models.Model):
     time = models.DateTimeField(auto_now=True, blank=True)
     has_answered = models.BooleanField(default=False)
     answered_time = models.DateTimeField(blank=True, null=True)
+
+
+class Location(models.Model):
+    name = models.CharField(max_length=100)
+    AREA_CHOICES = (
+        ("53", "53"),
+        ("54", "54"),
+        ("55", "55"),
+        ("56", "56"),
+        ("00", "Common Area")
+    )
+    area = models.CharField(
+        max_length=2,
+        choices=AREA_CHOICES,
+    )
+
+    LVL_CHOICES = (
+        ("01", "01"),
+        ("02", "02"),
+        ("03", "03"),
+        ("04", "04"),
+        ("05", "05"),
+        ("06", "06"),
+        ("00", "Not applicable")
+    )
+    level = models.CharField(
+        max_length=2,
+        choices=LVL_CHOICES,
+    )
+
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
+
+    def qr_code(self):
+        q = {
+            "cht": "qr",
+            "chl": SITE_URL + "qr/" + self.uuid.hex,
+            "chs": "500x500",
+        }
+        qr_link = "https://chart.googleapis.com/chart?" + urlencode(q)
+        return format_html(
+            '<a href="{}" target="_blank">QR Code</a>',
+            # SITE_URL + "qr/" + self.uuid,
+            qr_link,
+        )
+
+    def uuid_str(self):
+        return self.uuid.hex
+
+    def __str__(self):
+        return self.name
+
+
+class AssignedLocation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_assigned_location_user")
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="fk_assigned_location_location")
+    time = models.DateTimeField(auto_now=True, blank=True)
+    has_visited = models.BooleanField(default=False)
+    visit_time = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.user.email + "'s " + self.location.name

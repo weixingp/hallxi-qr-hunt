@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion
+from .models import Location, AssignedLocation
 
 
 def linkify(field_name):
@@ -25,6 +26,20 @@ def linkify(field_name):
 
     _linkify.short_description = field_name  # Sets column name
     return _linkify
+
+
+@admin.register(AssignedLocation)
+class AssignedLocationAdmin(admin.ModelAdmin):
+    list_display = ('user', linkify(field_name="location"), 'time', 'has_visited', 'visit_time')
+    list_filter = ('has_visited',)
+    search_fields = ('user__email', 'location__name', 'location__uuid')
+
+
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'area', 'level', 'uuid_str', 'qr_code')
+    list_filter = ('area', 'level',)
+    search_fields = ('name', 'uuid')
 
 
 @admin.register(Item)
