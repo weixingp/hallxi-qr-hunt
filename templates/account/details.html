@@ -70,11 +70,11 @@
                                         <div class="row">
                                             <div class="col-4">
                                                 <div class="input-group input-group-alternative {% if p_form.block.errors %}has-danger{% endif %}">
-                                                    <select name="block" class="form-control {% if p_form.block.errors %}is-invalid{% endif %}">
+                                                    <select id="block-select" name="block" class="form-control {% if p_form.block.errors %}is-invalid{% endif %}">
                                                         <option disabled="" selected="" value="">Blk</option>
                                                         {% for val,name in p_form.block.field.choices %}
                                                             {% if name != "---------" %}
-                                                                <option value="{{ val }}" {% if p_form.block.value == val %}selected{% endif %}>{{ name }}</option>
+                                                                <option value="{{ val }}" >{{ name }}</option>
                                                             {% endif %}
                                                         {% endfor %}
                                                     </select>
@@ -126,5 +126,8 @@
             </div>
         </div>
     </div>
-
+<script>
+//Workaround for a django select render bug by selecting with js
+document.getElementById("block-select").value = "{{ p_form.block.value }}";
+</script>
 {% endblock %}
