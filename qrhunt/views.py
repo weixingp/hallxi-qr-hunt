@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from .forms import ProfileUpdateForm
-from .models import Location, AssignedLocation, Question, AssignedQuestion
+from .models import Location, AssignedLocation, Question, AssignedQuestion, Block
 from django.utils.timezone import localtime, now
 from .main import visit_location
 
@@ -34,6 +34,7 @@ def user_details(request):
         if p_form.is_valid():
             profile = p_form.save(commit=False)
             profile.user = request.user
+            # profile.block = Block.objects.get(id=p_form.cleaned_data['block'])
             profile.save()
             if has_profile:
                 messages.add_message(request, messages.SUCCESS, 'Your profile has been updated.')
@@ -42,6 +43,7 @@ def user_details(request):
             return redirect("/account/profile/")
         else:
             messages.add_message(request, messages.ERROR, "You have errors in your form, please check.")
+
     else:
         if not has_profile:
             p_form = ProfileUpdateForm()

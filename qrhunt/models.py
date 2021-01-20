@@ -3,13 +3,20 @@ from django.db import models
 from django.utils import timezone
 from django.contrib import admin
 from django.utils.html import format_html
-from django.template.defaultfilters import truncatechars
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.core.validators import MaxValueValidator, MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 from urllib.parse import urlencode
 from hallxiqr.settings import SITE_URL
+
+
+class Block(models.Model):
+    name = models.CharField(max_length=2, unique=True)
+    max_hp = models.IntegerField(validators=[MinValueValidator(0)],)
+    max_exploration_points = models.IntegerField(validators=[MinValueValidator(0)],)
+
+    def __str__(self):
+        return self.name
 
 
 class Question(models.Model):
@@ -110,10 +117,12 @@ class Profile(models.Model):
         ("55", "55"),
         ("56", "56"),
     )
-    block = models.CharField(
-        max_length=2,
-        choices=BLK_CHOICES,
-    )
+    # block = models.CharField(
+    #     max_length=2,
+    #     choices=BLK_CHOICES,
+    # )
+
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_profile_block", blank=False,)
 
     LVL_CHOICES = (
         ("01", "01"),

@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion
-from .models import Location, AssignedLocation
+from .models import Location, AssignedLocation, Block
 
 
 def linkify(field_name):
@@ -26,6 +26,11 @@ def linkify(field_name):
 
     _linkify.short_description = field_name  # Sets column name
     return _linkify
+
+
+@admin.register(Block)
+class BlockAdmin(admin.ModelAdmin):
+    list_display = ('name', 'max_hp', 'max_exploration_points',)
 
 
 @admin.register(AssignedLocation)
@@ -104,8 +109,8 @@ class ProfileInline(admin.StackedInline):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'fullname', 'block', 'level', 'mobile', 'has_checked')
-    list_filter = ('block', 'level', 'has_checked')
+    list_display = ('user', 'fullname', linkify(field_name="block"), 'level', 'mobile', 'has_checked')
+    list_filter = ('block__name', 'level', 'has_checked')
     search_fields = ('user__email',)
 
 

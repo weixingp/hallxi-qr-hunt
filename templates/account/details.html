@@ -72,10 +72,11 @@
                                                 <div class="input-group input-group-alternative {% if p_form.block.errors %}has-danger{% endif %}">
                                                     <select name="block" class="form-control {% if p_form.block.errors %}is-invalid{% endif %}">
                                                         <option disabled="" selected="" value="">Blk</option>
-                                                        <option value="53" {% if p_form.block.value == '53' %}selected{% endif %}>53</option>
-                                                        <option value="54" {% if p_form.block.value == '54' %}selected{% endif %}>54</option>
-                                                        <option value="55" {% if p_form.block.value == '55' %}selected{% endif %}>55</option>
-                                                        <option value="56" {% if p_form.block.value == '56' %}selected{% endif %}>56</option>
+                                                        {% for val,name in p_form.block.field.choices %}
+                                                            {% if name != "---------" %}
+                                                                <option value="{{ val }}" {% if p_form.block.value == val %}selected{% endif %}>{{ name }}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
                                                     </select>
                                                 </div>
                                             </div>
