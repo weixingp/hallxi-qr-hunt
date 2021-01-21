@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion
-from .models import Location, AssignedLocation, Block
+from .models import Location, AssignedLocation, Block, HpLog
 
 
 def linkify(field_name):
@@ -26,6 +26,13 @@ def linkify(field_name):
 
     _linkify.short_description = field_name  # Sets column name
     return _linkify
+
+
+@admin.register(HpLog)
+class HpLogAdmin(admin.ModelAdmin):
+    list_display = ('user', linkify(field_name="block"), 'value', 'reason', 'time')
+    list_filter = ('block__name',)
+    search_fields = ('reason',)
 
 
 @admin.register(Block)

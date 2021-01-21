@@ -307,3 +307,13 @@ class AssignedLocation(models.Model):
     def __str__(self):
         return self.user.email + "'s " + self.location.name
 
+
+class HpLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_hp_log_user")
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_hp_log_block")
+    value = models.IntegerField()
+    reason = models.CharField(null=True, blank=True, max_length=255)
+    time = models.DateTimeField(auto_now=True, blank=True)
+
+    def __str__(self):
+        return self.block.name + "'s HP Log"
