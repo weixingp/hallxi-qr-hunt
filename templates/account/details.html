@@ -128,6 +128,8 @@
     </div>
 <script>
 //Workaround for a django select render bug by selecting with js
-document.getElementById("block-select").value = "{{ p_form.block.value }}";
+{% if p_form.block.value  %}
+    document.getElementById("block-select").value = "{{ p_form.block.value }}";
+{% endif %}
 </script>
 {% endblock %}
