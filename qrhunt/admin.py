@@ -128,7 +128,7 @@ class UserAdmin(BaseUserAdmin):
         (None,
          {'fields': (
              'email',
-             # 'password',
+             'password',
              # 'name',
              'last_login'
          )}),

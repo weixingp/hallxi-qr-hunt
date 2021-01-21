@@ -122,3 +122,24 @@ def location_choose_difficulty(request):
 
 def location_denied(request):
     return None
+
+
+@login_required()
+def home(request):
+    template = loader.get_template('core/pages/home.html')
+    user = request.user
+    social = user.socialaccount_set.all()[0]
+
+    try:
+        assigned_locations = AssignedLocation.objects.filter(user=user, )
+    except ObjectDoesNotExist:
+        assigned_locations = None
+
+    context = {
+        "assigned_locations": assigned_locations,
+        "profile": user.profile,
+        "social": social,
+    }
+
+    response = HttpResponse(template.render(context, request))
+    return response

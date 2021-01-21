@@ -28,6 +28,7 @@ urlpatterns = [
 
 # Game Core URLs
 core = [
+    path('', main_view.home),
     path('location/<str:uuid>/', main_view.location_main),
     path('location/access-denied', main_view.location_denied)
 ]

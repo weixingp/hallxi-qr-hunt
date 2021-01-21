@@ -245,7 +245,7 @@ class AssignedQuestion(models.Model):
 
 
 class Location(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=38)
     AREA_CHOICES = (
         ("53", "53"),
         ("54", "54"),
@@ -272,7 +272,7 @@ class Location(models.Model):
         choices=LVL_CHOICES,
     )
 
-    image = models.ImageField(upload_to="locations/", height_field=None, width_field=None, max_length=100, null=True)
+    image = models.ImageField(upload_to="locations/", null=True, blank=True)
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 
