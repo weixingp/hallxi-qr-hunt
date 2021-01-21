@@ -272,6 +272,8 @@ class Location(models.Model):
         choices=LVL_CHOICES,
     )
 
+    image = models.ImageField(upload_to="locations/", height_field=None, width_field=None, max_length=100, null=True)
+
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 
     def qr_code(self):
@@ -310,10 +312,10 @@ class AssignedLocation(models.Model):
 
 class HpLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_hp_log_user")
-    block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_hp_log_block")
+    target_block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_hp_log_block")
     value = models.IntegerField()
     reason = models.CharField(null=True, blank=True, max_length=255)
     time = models.DateTimeField(auto_now=True, blank=True)
 
     def __str__(self):
-        return self.block.name + "'s HP Log"
+        return self.target_block.name + "'s HP Log"

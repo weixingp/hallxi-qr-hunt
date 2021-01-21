@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from qrhunt import views as main_view
+from django.conf import settings
 
 # Account and admin module
 urlpatterns = [
@@ -32,3 +33,8 @@ core = [
 ]
 
 urlpatterns += core
+
+# Development media root setting
+if settings.DEBUG:
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

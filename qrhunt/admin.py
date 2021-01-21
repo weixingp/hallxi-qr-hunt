@@ -30,8 +30,8 @@ def linkify(field_name):
 
 @admin.register(HpLog)
 class HpLogAdmin(admin.ModelAdmin):
-    list_display = ('user', linkify(field_name="block"), 'value', 'reason', 'time')
-    list_filter = ('block__name',)
+    list_display = ('user', linkify(field_name="target_block"), 'value', 'reason', 'time')
+    list_filter = ('target_block__name',)
     search_fields = ('reason',)
 
 
@@ -56,7 +56,6 @@ class LocationAdmin(admin.ModelAdmin):
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    # inlines = (AnswerInline,)
 
     # Reverse lookup full name from profile
     def get_description(self, obj):
