@@ -4,10 +4,30 @@
 {% block head_title %}{% trans "Scan QR | HALL XI BoB" %}{% endblock %}
 {% block extra_head %}
     <style>
-        video{
-            height: 0;
-            width: 0;
-            opacity: 0;
+        #loadingMessage {
+        text-align: center;
+        padding: 40px;
+        background-color: #eee;
+        }
+
+        #canvas {
+        width: 100%;
+        }
+
+        #output {
+        margin-top: 20px;
+        background: #eee;
+        padding: 10px;
+        padding-bottom: 0;
+        }
+
+        #output div {
+        padding-bottom: 10px;
+        word-wrap: break-word;
+        }
+
+        #noQRFound {
+        text-align: center;
         }
     </style>
 {% endblock %}
@@ -19,17 +39,14 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
-        <div class="pageTitle">Scan QR</div>
+        <div class="pageTitle">Scan QR Code</div>
         <div class="right">
         </div>
     </div>
     <!-- * App Header -->
 
     <!-- App Capsule -->
-    <div id="appCapsule" class="full-height">
-        <h1>jsQR Demo</h1>
-        <a id="githubLink" href="https://github.com/cozmo/jsQR">View documentation on Github</a>
-        <p>Pure JavaScript QR code decoding library.</p>
+    <div id="appCapsule" class="">
         <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
         <canvas id="canvas"></canvas>
         <div id="output" hidden>
@@ -60,11 +77,16 @@
         }
 
         // Use facingMode: environment to attemt to get the front camera on phones
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", } }).then(function(stream) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment",} })
+        .then(function(stream) {
             video.srcObject = stream;
             video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
             video.play();
             requestAnimationFrame(tick);
+        })
+        .catch(function(err) {
+            // webcam is not available
+            alert("Webcom not avail")
         });
 
         function tick() {
@@ -78,9 +100,14 @@
                 canvasElement.width = video.videoWidth;
                 canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
                 var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
-                var code = jsQR(imageData.data, imageData.width, imageData.height, {
-                    inversionAttempts: "dontInvert",
-                });
+                try{
+                    var code = jsQR(imageData.data, imageData.width, imageData.height, {
+                        inversionAttempts: "dontInvert",
+                    });
+                } catch (err) {
+                    return;
+                }
+
                 if (code) {
                     drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
                     drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
