@@ -5,14 +5,15 @@
 {% block head_title %}{% trans "Home | HALL XI BoB" %}{% endblock %}
 {% block extra_head %}
     <style>
-        .icon-container {
-            display:inline-block;
-            position:relative;
-        }
         .visited-badge {
             top:6px;
             position:absolute;
             right:6px;
+        }
+
+        .owl-carousel {
+            -ms-touch-action: pan-x;
+            touch-action: pan-x;
         }
     </style>
 {% endblock %}
@@ -45,11 +46,6 @@
     <!-- App Capsule -->
     <div id="appCapsule" class="full-height">
 
-        {#        <div class="header-large-title">#}
-        {#            <h1 class="title">Home</h1>#}
-        {#            <h4 class="subtitle">Enjoy your game.</h4>#}
-        {#        </div>#}
-
         <!-- Block Info -->
         <div class="section mt-3 mb-3">
             <div class="card">
@@ -77,8 +73,10 @@
 
         <!-- Assigned Location Cards -->
         <div class="section full mt-3 mb-3">
-            <div class="section-title"><h2>Daily Locations</h2></div>
-            <div class="content-header mb-1"><h5 class="text-muted">Scan QR code at these locations to gain points and get items for your hall. Locations will be refreshed daily.</h5></div>
+            <div class="section-title">
+                <h2 class="mb-0">Daily Locations</h2>
+            </div>
+            <div class="content-header mb-2"><h5 class="text-muted">Scan QR code at these locations to gain points and get items for your hall. Locations will be refreshed daily.</h5></div>
             <div class="carousel-multiple owl-carousel owl-theme">
                 {% for assigned_location in assigned_locations %}
                     <div class="item">
