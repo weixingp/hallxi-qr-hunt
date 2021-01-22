@@ -23,13 +23,6 @@
     </style>
 {% endblock %}
 {% block body %}
-
-    <!-- loader -->
-    <div id="loader">
-        <div class="spinner-border text-primary" role="status"></div>
-    </div>
-    <!-- * loader -->
-
     <!-- App Header -->
     <div class="appHeader bg-primary scrolled">
         <div class="left">
@@ -105,18 +98,24 @@
     <!-- * App Capsule -->
     {% include "core/sidebar.html" %}
     {% include "core/menu.html" %}
+{% endblock %}
+
+{% block extra_script %}
     <script>
-        window.blockMenuHeaderScroll = true;
+        window.blockMenuHeaderScroll = false;
         var mc = new Hammer(document);
-        var classname = document.getElementsByClassName("owl-stage");
+        var classname = document.getElementsByClassName("owl-carousel");
 
         mc.on("swipeleft swiperight panleft panright", function(ev) {
-            console.log(ev.type + " gesture detected.");
             window.blockMenuHeaderScroll = true;
         });
 
+        mc.on("panend swipeend", function (ev){
+            console.log("touch end")
+            window.blockMenuHeaderScroll = false;
+        });
+
         mc.on("swipeup swipedown panup pandown", function(ev) {
-            console.log(ev.type + " gesture detected.");
             window.blockMenuHeaderScroll = false;
         });
 

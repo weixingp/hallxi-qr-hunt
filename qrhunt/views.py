@@ -8,7 +8,7 @@ from django.contrib import messages
 from .forms import ProfileUpdateForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block
 from django.utils.timezone import localtime, now
-from .main import visit_location
+from .main import visit_location, get_user_context
 
 
 @login_required(login_url='/account/login/')
@@ -142,4 +142,19 @@ def home(request):
     }
 
     response = HttpResponse(template.render(context, request))
+    return response
+
+
+@login_required()
+def scan_qr(request):
+    template = loader.get_template('core/pages/scan.html')
+
+    # Context
+    user_context = get_user_context(request)
+    context = {
+        "test": "",
+    }
+    ctx = {**user_context, **context}  # Merge context
+
+    response = HttpResponse(template.render(ctx, request))
     return response

@@ -32,7 +32,7 @@ SECRET_KEY = config.django_secret_key
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.105", "0.0.0.0"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.105", "0.0.0.0", "192.168.1.177", "dev.hallxi.com"]
 SITE_URL = "https://127.0.0.1:8000/"
 LOGIN_URL = "/account/login/"
 # Application definition

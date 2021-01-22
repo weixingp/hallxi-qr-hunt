@@ -19,3 +19,15 @@ def visit_location(user, assigned_location):
     )
 
     return new_question.id
+
+
+def get_user_context(request):
+    user = request.user
+    social = user.socialaccount_set.all()[0]
+
+    context = {
+        "profile": user.profile,
+        "social": social,
+    }
+
+    return context
