@@ -16,6 +16,16 @@
     <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.kado.sg/themes/mobile/img/icon/192x192.png">
     <link rel="stylesheet" href="https://cdn.kado.sg/themes/mobile/css/style.css">
     <link rel="manifest" href="{% static '__manifest.json' %}">
+    <style>
+        {# Disable text selecting #}
+        body{
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
     {% block extra_head %}
     {% endblock %}
 </head>
@@ -63,7 +73,8 @@
     <script src="https://cdn.kado.sg/themes/mobile/js/plugins/jquery-circle-progress/circle-progress.min.js"></script>
     <!-- Base Js File -->
     <script src="https://cdn.kado.sg/themes/mobile/js/base.js"></script>
-
+    <!-- Hammer Js File -->
+    <script src="{% static "assets/js/plugins/hammer.min.js" %}"></script>
 
 {#    <script>#}
 {#        setTimeout(() => {#}

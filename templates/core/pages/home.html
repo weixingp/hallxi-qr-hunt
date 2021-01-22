@@ -11,10 +11,15 @@
             right:6px;
         }
 
-        .owl-carousel {
-            -ms-touch-action: pan-x;
-            touch-action: pan-x;
-        }
+        {#.owl-carousel {#}
+        {#    -ms-touch-action: pan-x;#}
+        {#    touch-action: pan-x;#}
+        {#}#}
+
+        {#.owl-carousel .owl-stage, .owl-carousel.owl-drag .owl-item{#}
+        {#    -ms-touch-action: auto;#}
+        {#    touch-action: auto;#}
+        {#}#}
     </style>
 {% endblock %}
 {% block body %}
@@ -100,4 +105,30 @@
     <!-- * App Capsule -->
     {% include "core/sidebar.html" %}
     {% include "core/menu.html" %}
+    <script>
+        window.blockMenuHeaderScroll = true;
+        var mc = new Hammer(document);
+        var classname = document.getElementsByClassName("owl-stage");
+
+        mc.on("swipeleft swiperight panleft panright", function(ev) {
+            console.log(ev.type + " gesture detected.");
+            window.blockMenuHeaderScroll = true;
+        });
+
+        mc.on("swipeup swipedown panup pandown", function(ev) {
+            console.log(ev.type + " gesture detected.");
+            window.blockMenuHeaderScroll = false;
+        });
+
+        for (var i = 0; i < classname.length; i++) {
+            classname[i].addEventListener('touchmove', function(evt) {
+                if (blockMenuHeaderScroll) {
+                    evt.preventDefault();
+                }
+
+            }, {
+                passive: false
+            });
+        }
+    </script>
 {% endblock %}
