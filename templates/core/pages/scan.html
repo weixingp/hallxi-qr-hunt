@@ -2,7 +2,15 @@
 {% load static %}
 {% load i18n %}
 {% block head_title %}{% trans "Scan QR | HALL XI BoB" %}{% endblock %}
-
+{% block extra_head %}
+    <style>
+        video{
+            height: 0;
+            width: 0;
+            opacity: 0;
+        }
+    </style>
+{% endblock %}
 {% block body %}
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -52,7 +60,7 @@
         }
 
         // Use facingMode: environment to attemt to get the front camera on phones
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } }).then(function(stream) {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", } }).then(function(stream) {
             video.srcObject = stream;
             video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
             video.play();
