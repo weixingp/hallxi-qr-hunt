@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'phonenumber_field',
+    'hallxiqr',
     'qrhunt',
     'sorl.thumbnail',
 ]
