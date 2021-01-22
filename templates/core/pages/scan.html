@@ -4,24 +4,10 @@
 {% block head_title %}{% trans "Scan QR | HALL XI BoB" %}{% endblock %}
 {% block extra_head %}
     <style>
-        canvas#buffer {
-            display: none; /* for per-frame data copying */
-        }
-
-        canvas#overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        video#video0 {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        video{
+            height: 0;
+            width: 0;
+            opacity: 0;
         }
     </style>
 {% endblock %}
@@ -42,9 +28,10 @@
     <!-- App Capsule -->
     <div id="appCapsule" class="full-height">
         <h1>jsQR Demo</h1>
-        <canvas id="buffer"></canvas>
-        <video id="video0" playsinline autoplay></video>
-        <canvas id="overlay"></canvas>
+        <a id="githubLink" href="https://github.com/cozmo/jsQR">View documentation on Github</a>
+        <p>Pure JavaScript QR code decoding library.</p>
+        <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
+        <canvas id="canvas"></canvas>
         <div id="output" hidden>
             <div id="outputMessage">No QR code detected.</div>
             <div hidden><b>Data:</b> <span id="outputData"></span></div>
@@ -55,95 +42,59 @@
 {% block extra_script %}
     <script src="{% static 'assets/js/plugins/jsQR/jsQR.js' %}"></script>
     <script>
-        window.onload = () => {
-            const video = document.querySelector('video#video0')
-            const buffer = document.querySelector('canvas#buffer')
-            const overlay = document.querySelector('canvas#overlay')
-            var outputContainer = document.getElementById("output");
-            var outputMessage = document.getElementById("outputMessage");
-            var outputData = document.getElementById("outputData");
-            const overlayCtx = overlay.getContext('2d')
-            const bufferCtx = buffer.getContext('2d')
-            let videoTick = null
-            let bounds = null
+        var video = document.createElement("video");
+        var canvasElement = document.getElementById("canvas");
+        var canvas = canvasElement.getContext("2d");
+        var loadingMessage = document.getElementById("loadingMessage");
+        var outputContainer = document.getElementById("output");
+        var outputMessage = document.getElementById("outputMessage");
+        var outputData = document.getElementById("outputData");
 
-            const tick = () => {
-                if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                    overlay.height = video.videoHeight
-                    overlay.width = video.videoWidth
-                    buffer.height = video.videoHeight
-                    buffer.width = video.videoWidth
-                    // hack the element size
-                    if (video.videoWidth / video.videoHeight < video.offsetWidth / video.offsetHeight) {
-                        overlay.style.height = video.offsetHeight + 'px'
-                        overlay.style.width = (video.videoWidth / video.videoHeight * video.offsetHeight) + 'px'
-                        overlay.style.left = (video.offsetWidth - video.videoWidth / video.videoHeight * video.offsetHeight) / 2 + 'px'
-                    } else if (video.videoWidth / video.videoHeight > video.offsetWidth / video.offsetHeight) {
-                        overlay.style.width = video.offsetWidth + 'px'
-                        overlay.style.height = (video.videoHeight / video.videoWidth * video.offsetWidth) + 'px'
-                        overlay.style.width = (video.offsetWidth - video.videoHeight / video.videoWidth * video.offsetWidth) / 2 + 'px'
-                    }
-                    bufferCtx.drawImage(video, 0, 0, buffer.width, buffer.height)
-                    const imageData = bufferCtx.getImageData(0, 0, buffer.width, buffer.height)
+        function drawLine(begin, end, color) {
+            canvas.beginPath();
+            canvas.moveTo(begin.x, begin.y);
+            canvas.lineTo(end.x, end.y);
+            canvas.lineWidth = 4;
+            canvas.strokeStyle = color;
+            canvas.stroke();
+        }
 
-                    // Call bounding box drawing here!
-                    if (bounds !== null) {
-                        overlayCtx.beginPath()
-                        overlayCtx.moveTo(bounds.topLeftCorner.x, bounds.topLeftCorner.y)
-                        overlayCtx.lineTo(bounds.topRightCorner.x, bounds.topRightCorner.y)
-                        overlayCtx.lineTo(bounds.bottomRightCorner.x, bounds.bottomRightCorner.y)
-                        overlayCtx.lineTo(bounds.bottomLeftCorner.x, bounds.bottomLeftCorner.y)
-                        overlayCtx.lineTo(bounds.topLeftCorner.x, bounds.topLeftCorner.y)
+        // Use facingMode: environment to attemt to get the front camera on phones
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", } }).then(function(stream) {
+            video.srcObject = stream;
+            video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+            video.play();
+            requestAnimationFrame(tick);
+        });
 
-                        overlayCtx.stroke()
-                    } else {
-                        overlayCtx.clearRect(0, 0, overlay.width, overlay.height)
-                    }
-                    try {
-                        var code = jsQR(imageData.data, imageData.width, imageData.height, {
-                            inversionAttempts: 'dontInvert'
-                        })
-                        if (code) {
-                            drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
-                            drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
-                            drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
-                            drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
-                            outputMessage.hidden = true;
-                            outputData.parentElement.hidden = false;
-                            outputData.innerText = code.data;
-                        } else {
-                            outputMessage.hidden = false;
-                            outputData.parentElement.hidden = true;
-                        }
+        function tick() {
+            loadingMessage.innerText = "⌛ Loading video..."
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                loadingMessage.hidden = true;
+                canvasElement.hidden = false;
+                outputContainer.hidden = false;
 
-                        // Update detected QR boundary here
-                        bounds = code === null ? null : code.location
-                    } catch (err) {
-                        console.log(err)
-                    }
-
+                canvasElement.height = video.videoHeight;
+                canvasElement.width = video.videoWidth;
+                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+                var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                var code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert",
+                });
+                if (code) {
+                    drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
+                    drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
+                    drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
+                    drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
+                    outputMessage.hidden = true;
+                    outputData.parentElement.hidden = false;
+                    outputData.innerText = code.data;
+                } else {
+                    outputMessage.hidden = false;
+                    outputData.parentElement.hidden = true;
                 }
-                // trampoline
-                window.requestAnimationFrame(videoTick)
             }
-
-            videoTick = tick
-
-            // set up video stream
-
-            if (typeof navigator.mediaDevices !== 'undefined') {
-                navigator.mediaDevices.getUserMedia({
-                    audio: false,
-                    video: {
-                        facingMode: { facingMode: 'environment' },
-                    }
-                }).then(stream => {
-                    video.srcObject = stream
-                    video.onloadedmetadata = () => {
-                        window.requestAnimationFrame(videoTick)
-                    }
-                })
-            }
-        } // end of window.onload
+            requestAnimationFrame(tick);
+        }
     </script>
 {% endblock %}
