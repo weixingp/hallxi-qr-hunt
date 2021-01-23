@@ -5,30 +5,24 @@
 {% block extra_head %}
     <style>
         #loadingMessage {
-        text-align: center;
-        padding: 40px;
-        background-color: #eee;
+            text-align: center;
+            padding: 40px;
+            background-color: #eee;
         }
 
         #canvas {
-        width: 100%;
-        }
-
-        #output {
-        margin-top: 20px;
-        background: #eee;
-        padding: 10px;
-        padding-bottom: 0;
+            width: 100%;
         }
 
         #output div {
-        padding-bottom: 10px;
-        word-wrap: break-word;
+            padding-bottom: 10px;
+            word-wrap: break-word;
         }
 
         #noQRFound {
-        text-align: center;
+            text-align: center;
         }
+
     </style>
 {% endblock %}
 {% block body %}
@@ -47,12 +41,34 @@
 
     <!-- App Capsule -->
     <div id="appCapsule" class="">
+
         <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
+        <!-- Webcam Canvas -->
         <canvas id="canvas"></canvas>
-        <div id="output" hidden>
-            <div id="outputMessage">No QR code detected.</div>
-            <div hidden><b>Data:</b> <span id="outputData"></span></div>
+
+        <!-- Error display -->
+        <div id="error-display" class="error-page" style="display: none;">
+            <div class="icon-box text-danger">
+                <ion-icon name="alert-circle"></ion-icon>
+            </div>
+            <h1 class="title">Alert Title</h1>
+            <div class="text mb-5">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </div>
+
+            <div class="fixed-footer">
+                <div class="row">
+                    <div class="col-6">
+                        <a href="javascript:window.history.back();" class="btn btn-secondary btn-lg btn-block">Go Back</a>
+                    </div>
+                    <div class="col-6">
+                        <a href="javascript:window.location.reload(true)" class="btn btn-primary btn-lg btn-block">Try Again</a>
+                    </div>
+                </div>
+            </div>
         </div>
+        <!-- * Error display -->
+
     </div>
     <!-- * App Capsule -->
 {% endblock %}
@@ -63,9 +79,24 @@
         var canvasElement = document.getElementById("canvas");
         var canvas = canvasElement.getContext("2d");
         var loadingMessage = document.getElementById("loadingMessage");
-        var outputContainer = document.getElementById("output");
-        var outputMessage = document.getElementById("outputMessage");
-        var outputData = document.getElementById("outputData");
+        var errorDisplay = document.getElementById("error-display");
+
+        // Stop the webcam
+        function stopStreamedVideo(videoElem) {
+            const stream = videoElem.srcObject;
+            const tracks = stream.getTracks();
+            tracks.forEach(function(track) {
+                track.stop();
+            });
+            videoElem.srcObject = null;
+        }
+
+        // Check if contain valid uuid with "-"
+        function getUUID ( data ) {
+            let s = "" + data;
+            s = s.match('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}');
+            return s;
+        }
 
         function drawLine(begin, end, color) {
             canvas.beginPath();
@@ -78,23 +109,22 @@
 
         // Use facingMode: environment to attemt to get the front camera on phones
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment",} })
-        .then(function(stream) {
-            video.srcObject = stream;
-            video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-            video.play();
-            requestAnimationFrame(tick);
-        })
-        .catch(function(err) {
-            // webcam is not available
-            alert("Webcom not avail")
-        });
+            .then(function(stream) {
+                video.srcObject = stream;
+                video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+                video.play();
+                requestAnimationFrame(tick);
+            })
+            .catch(function(err) {
+                // webcam is not available
+                alert("Webcom not avail")
+            });
 
         function tick() {
             loadingMessage.innerText = "⌛ Loading video..."
             if (video.readyState === video.HAVE_ENOUGH_DATA) {
                 loadingMessage.hidden = true;
                 canvasElement.hidden = false;
-                outputContainer.hidden = false;
 
                 canvasElement.height = video.videoHeight;
                 canvasElement.width = video.videoWidth;
@@ -113,12 +143,16 @@
                     drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
                     drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
                     drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
-                    outputMessage.hidden = true;
-                    outputData.parentElement.hidden = false;
-                    outputData.innerText = code.data;
-                } else {
-                    outputMessage.hidden = false;
-                    outputData.parentElement.hidden = true;
+                    stopStreamedVideo(video);
+                    const uuid = getUUID(code.data);
+                    if (uuid != null){
+                        // Success redirect to location page
+                        window.location.replace("/location/" + uuid);
+                    } else {
+                        canvasElement.hidden = true;
+                        errorDisplay.style.display = "block";
+                    }
+
                 }
             }
             requestAnimationFrame(tick);
