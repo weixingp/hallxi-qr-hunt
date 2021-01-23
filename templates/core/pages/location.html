@@ -1,0 +1,92 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load thumbnail %}
+{% load i18n %}
+{% block head_title %}{% trans "Location | HALL XI BoB" %}{% endblock %}
+
+{% block body %}
+    <!-- App Header -->
+    <div class="appHeader bg-primary text-light">
+        <div class="left">
+            <a href="#" class="headerButton" data-toggle="modal" data-target="#sidebarPanel">
+                <ion-icon name="menu-outline"></ion-icon>
+            </a>
+        </div>
+        <div class="pageTitle">
+            Location
+        </div>
+        <div class="right">
+            <a href="javascript:;" class="headerButton toggle-searchbox">
+                <ion-icon name="search-outline"></ion-icon>
+            </a>
+        </div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="full-height">
+        <div style="max-width: 500px; margin: auto; text-align: center;">
+
+            <div class="section">
+                {% thumbnail location.image "200x157" crop="center" as im %}
+                    <img src="{{ im.url }}" alt="image" class="form-image rounded">
+                {% endthumbnail %}
+            </div>
+
+            <div class="section mt-1">
+                <h2>{{ location.name }}</h2>
+                <h4 class="text-success">
+                    <ion-icon name="checkmark-circle-outline"></ion-icon>
+                    Your visit has been recorded
+                </h4>
+            </div>
+
+            <div class="section full mt-3">
+                <div class="section-title">Choose question difficulty:</div>
+                <div class="wide-block pt-2 pb-2">
+
+                    <ul class="nav nav-tabs style1" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#easy" role="tab">
+                                Easy
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#normal" role="tab">
+                                Normal
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#contact" role="tab">
+                                Hard
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-2 text-left">
+                        <div class="tab-pane fade show active" id="easy" role="tabpanel">
+                            Super easy questions related to Covid-19 rules and regulations in NTU.
+                            You will get <strong>1 loot box</strong> for answering this correctly.
+                            <a type="button" class="btn btn-primary btn-block mt-1">CHOOSE EASY QUESTION</a>
+                        </div>
+                        <div class="tab-pane fade" id="normal" role="tabpanel">
+                            Questions on commonly known facts about Hall XI and her culture, as well as tricky Covid-19 rules and regulations.
+                            You will get <strong>2 loot boxes</strong> for answering this correctly.
+                            <a type="button" class="btn btn-primary btn-block mt-1">CHOOSE NORMAL QUESTION</a>
+                        </div>
+                        <div class="tab-pane fade" id="contact" role="tabpanel">
+                            Hard trivial questions about Hall XI and her culture.
+                            You will get <strong>3 loot boxes</strong> for answering this correctly.
+                            <a type="button" class="btn btn-primary btn-block mt-1">CHOOSE HARD QUESTION</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    {% include "core/sidebar.html" %}
+    {% include "core/menu.html" %}
+{% endblock %}
+

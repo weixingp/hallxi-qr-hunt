@@ -71,7 +71,7 @@ def user_details(request):
 
 @login_required(login_url='/account/login/')
 def location_main(request, uuid):
-    template = loader.get_template('core/location.html')
+    template = loader.get_template('core/pages/location.html')
 
     # Getting location info from QR UUID
     try:
@@ -94,7 +94,7 @@ def location_main(request, uuid):
         assigned_location = AssignedLocation.objects.get(
             user=user,
             location=location,
-            time__day=localtime(now()).day,
+            # time__day=localtime(now()).day,
         )
     except ObjectDoesNotExist:
         return redirect("/location/access-denied")
@@ -104,15 +104,18 @@ def location_main(request, uuid):
         return redirect("/location/visited")
 
     # Visit the location
-    question_id = visit_location(user, assigned_location)
+    # question_id = visit_location(user, assigned_location)
+    question_id = 1
 
+    user_context = get_user_context(request)
     context = {
         "uuid": uuid,
-        "location": location.name,
+        "location": location,
         "id": question_id
     }
+    ctx = {**user_context, **context}  # Merge context
 
-    response = HttpResponse(template.render(context, request))
+    response = HttpResponse(template.render(ctx, request))
     return response
 
 
