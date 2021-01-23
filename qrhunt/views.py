@@ -72,43 +72,54 @@ def user_details(request):
 @login_required(login_url='/account/login/')
 def location_main(request, uuid):
     template = loader.get_template('core/pages/location.html')
+    user = request.user
+    success = True
+    error = None
+    question_id = None
 
     # Getting location info from QR UUID
     try:
         location = Location.objects.get(uuid=uuid)
     except ObjectDoesNotExist:
         context = {
+            "success": False,
+            "error": "Invalid HallXI BoB location. Please double check your QR code.",
             "uuid": uuid,
-            "location": "Not found!",
+            "location": None,
         }
         response = HttpResponse(template.render(context, request))
         return response
-
-    # Check user
-    user = request.user
-    if not user.profile.has_checked:
-        return redirect("/account/invalid")
 
     # Check if the location is assigned to the user
     try:
         assigned_location = AssignedLocation.objects.get(
             user=user,
             location=location,
-            # time__day=localtime(now()).day,
         )
+
+        # Check if the user has visited the location already
+        if assigned_location.has_visited:
+            success = False
+            error = "You have visited this location already."
+
+        # Check if the location has expired.
+        if localtime(assigned_location.time).date() != localtime(now()).date():
+            success = False
+            error = "This location has expired. Locations are refreshed daily. Please check Home page for updated " \
+                    "locations."
+
+        # Visit the location if success
+        if success:
+            question_id = visit_location(user, assigned_location)
+
     except ObjectDoesNotExist:
-        return redirect("/location/access-denied")
-
-    # Check if the user has visited the location already
-    if assigned_location.has_visited:
-        return redirect("/location/visited")
-
-    # Visit the location
-    # question_id = visit_location(user, assigned_location)
-    question_id = 1
+        success = False
+        error = "This location is not assigned to you. Check Home page for all your assigned locations."
 
     user_context = get_user_context(request)
     context = {
+        "success": success,
+        "error": error,
         "uuid": uuid,
         "location": location,
         "id": question_id
@@ -117,14 +128,6 @@ def location_main(request, uuid):
 
     response = HttpResponse(template.render(ctx, request))
     return response
-
-
-def location_choose_difficulty(request):
-    return None
-
-
-def location_denied(request):
-    return None
 
 
 @login_required()

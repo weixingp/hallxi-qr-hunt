@@ -20,83 +20,106 @@
 
     <!-- App Capsule -->
     <div id="appCapsule" class="">
-        <div style="max-width: 500px; margin: auto; text-align: center;">
+        {% if success %}
+            <div style="max-width: 500px; margin: auto; text-align: center;">
 
-            <div class="section mt-4">
-                {% thumbnail location.image "200x157" crop="center" as im %}
-                    <img src="{{ im.url }}" alt="image" class="form-image rounded-lg">
-                {% endthumbnail %}
-            </div>
+                <div class="section mt-4">
+                    {% thumbnail location.image "200x157" crop="center" as im %}
+                        <img src="{{ im.url }}" alt="image" class="form-image rounded-lg">
+                    {% endthumbnail %}
+                </div>
 
-            <div class="section mt-1">
-                <h2>{{ location.name }}</h2>
-                <h4 class="text-success">
-                    <ion-icon name="checkmark-circle-outline"></ion-icon>
-                    Your visit has been recorded
-                </h4>
-            </div>
+                <div class="section mt-1">
+                    <h2>{{ location.name }}</h2>
+                    <h4 class="text-success">
+                        <ion-icon name="checkmark-circle-outline"></ion-icon>
+                        Your visit has been recorded
+                    </h4>
+                </div>
 
-            <div class="section full mt-3">
-                <div class="section-title">Choose question difficulty:</div>
-                <div class="wide-block pt-2 pb-2">
+                <div class="section full mt-3">
+                    <div class="section-title">Choose question difficulty:</div>
+                    <div class="wide-block pt-2 pb-2">
 
-                    <ul class="nav nav-tabs style1" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#easy" role="tab">
-                                Easy
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#normal" role="tab">
-                                Normal
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#contact" role="tab">
-                                Hard
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="tab-content mt-2 text-left">
-                        <div class="tab-pane fade show active" id="easy" role="tabpanel">
-                            Super easy questions related to Covid-19 rules and regulations in NTU.
-                            <br /> Reward:
-                            <div class="chip chip-media chip-warning ml-05 my-2">
-                                <i class="chip-icon bg-dark">
-                                    <ion-icon name="gift-outline" role="img" class="md hydrated" aria-label="gift outline"></ion-icon>
-                                </i>
-                                <span class="chip-label">1 loot box</span>
+                        <ul class="nav nav-tabs style1" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#easy" role="tab">
+                                    Easy
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#normal" role="tab">
+                                    Normal
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#contact" role="tab">
+                                    Hard
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content mt-2 text-left">
+                            <div class="tab-pane fade show active" id="easy" role="tabpanel">
+                                Super easy questions related to Covid-19 rules and regulations in NTU.
+                                <br /> Reward:
+                                <div class="chip chip-media chip-warning ml-05 my-2">
+                                    <i class="chip-icon bg-dark">
+                                        <ion-icon name="gift-outline" role="img" class="md hydrated" aria-label="gift outline"></ion-icon>
+                                    </i>
+                                    <span class="chip-label">1 loot box</span>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE EASY QUESTION</button>
                             </div>
-                            <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE EASY QUESTION</button>
+                            <div class="tab-pane fade" id="normal" role="tabpanel">
+                                Questions on commonly known facts about Hall XI and her culture, as well as tricky Covid-19 rules and regulations.
+                                <br /> Reward:
+                                <div class="chip chip-media chip-danger ml-05 my-2">
+                                    <i class="chip-icon bg-dark">
+                                        <ion-icon name="gift-outline" role="img" class="md hydrated" aria-label="gift outline"></ion-icon>
+                                    </i>
+                                    <span class="chip-label">2 loot boxes</span>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE NORMAL QUESTION</button>
+                            </div>
+                            <div class="tab-pane fade" id="contact" role="tabpanel">
+                                Hard trivial questions about Hall XI and her culture.
+                                <br /> Reward:
+                                <div class="chip chip-media chip-info ml-05 my-2">
+                                    <i class="chip-icon bg-dark">
+                                        <ion-icon name="gift-outline" role="img" class="md hydrated" aria-label="gift outline"></ion-icon>
+                                    </i>
+                                    <span class="chip-label">3 loot boxes</span>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE HARD QUESTION</button>
+                            </div>
                         </div>
-                        <div class="tab-pane fade" id="normal" role="tabpanel">
-                            Questions on commonly known facts about Hall XI and her culture, as well as tricky Covid-19 rules and regulations.
-                            <br /> Reward:
-                            <div class="chip chip-media chip-danger ml-05 my-2">
-                                <i class="chip-icon bg-dark">
-                                    <ion-icon name="gift-outline" role="img" class="md hydrated" aria-label="gift outline"></ion-icon>
-                                </i>
-                                <span class="chip-label">2 loot boxes</span>
-                            </div>
-                            <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE NORMAL QUESTION</button>
+
+                    </div>
+                </div>
+
+            </div>
+        {% else %}
+            <!-- Error display -->
+            <div id="error-display" class="error-page">
+                <div class="icon-box text-danger">
+                    <ion-icon name="alert-circle"></ion-icon>
+                </div>
+                <h1 class="title">Error</h1>
+                <div id="error-text" class="text mb-5">{{ error }}</div>
+
+                <div class="fixed-footer">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="/" class="btn btn-secondary btn-lg btn-block">Go Back</a>
                         </div>
-                        <div class="tab-pane fade" id="contact" role="tabpanel">
-                            Hard trivial questions about Hall XI and her culture.
-                            <br /> Reward:
-                            <div class="chip chip-media chip-info ml-05 my-2">
-                                <i class="chip-icon bg-dark">
-                                    <ion-icon name="gift-outline" role="img" class="md hydrated" aria-label="gift outline"></ion-icon>
-                                </i>
-                                <span class="chip-label">3 loot boxes</span>
-                            </div>
-                            <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE HARD QUESTION</button>
+                        <div class="col-6">
+                            <a href="/scan" class="btn btn-primary btn-lg btn-block">Try Again</a>
                         </div>
                     </div>
-
                 </div>
             </div>
-
-        </div>
+            <!-- * Error display -->
+        {% endif %}
 
     </div>
     {% include "core/sidebar.html" %}

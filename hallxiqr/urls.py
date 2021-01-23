@@ -31,7 +31,6 @@ core = [
     path('', main_view.home),
     path('scan', main_view.scan_qr),
     path('location/<str:uuid>/', main_view.location_main),
-    path('location/access-denied', main_view.location_denied)
 ]
 
 urlpatterns += core
