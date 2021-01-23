@@ -81,9 +81,8 @@
     <!-- Hammer Js File -->
     <script src="{% static "assets/js/plugins/hammer.min.js" %}"></script>
     <script>
-        $(window).bind('beforeunload', function(){
+        $("#menu-home #menu-qr").click(function(){
             $("#loader").show();
-            alert("beforeunload");
         });
     </script>
 {#    <script>#}
