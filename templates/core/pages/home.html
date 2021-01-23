@@ -11,6 +11,12 @@
             right:6px;
         }
 
+        .fixed-ratio-resize {
+            max-width: 2000px;
+            height: auto;
+            object-fit: cover;
+        }
+
         {#.owl-carousel {#}
         {#    -ms-touch-action: pan-x;#}
         {#    touch-action: pan-x;#}
@@ -23,27 +29,33 @@
     </style>
 {% endblock %}
 {% block body %}
-{#    <!-- App Header -->#}
-{#    <div class="appHeader bg-primary scrolled">#}
-{#        <div class="left">#}
-{#            <a href="#" class="headerButton" data-toggle="modal" data-target="#sidebarPanel">#}
-{#                <ion-icon name="menu-outline"></ion-icon>#}
-{#            </a>#}
-{#        </div>#}
-{#        <div class="pageTitle">#}
-{#            Home#}
-{#        </div>#}
-{#    </div>#}
-{#    <!-- * App Header -->#}
-
-    <!-- Cover Image -->
-    <img src="{% static "assets/img/bird-cover.gif" %}" class="img-fluid" alt="Birds of Paradise Island">
-    <!-- * Cover Image -->
+    {#    <!-- App Header -->#}
+    {#    <div class="appHeader bg-primary scrolled">#}
+    {#        <div class="left">#}
+    {#            <a href="#" class="headerButton" data-toggle="modal" data-target="#sidebarPanel">#}
+    {#                <ion-icon name="menu-outline"></ion-icon>#}
+    {#            </a>#}
+    {#        </div>#}
+    {#        <div class="pageTitle">#}
+    {#            Home#}
+    {#        </div>#}
+    {#    </div>#}
+    {#    <!-- * App Header -->#}
 
     <!-- App Capsule -->
     <div id="appCapsule" class="full-height" style="padding:0">
+        <!-- Cover Image -->
+        <div class="container-fluid px-0">
+            <div class="row">
+                <div class="col-md-12">
+                    <img src="{% static "assets/img/bird-cover.gif" %}" class="img-fluid w-100" alt="Birds of Paradise Island">
+                </div>
+            </div>
+        </div>
+        <!-- * Cover Image -->
+
         <!-- Block Info -->
-        <div class="section mb-3" style="margin-top: -50px">
+        <div class="section mb-3" style="margin-top: -3em">
             <div class="card">
                 <div class="card-body">
                     <div>
