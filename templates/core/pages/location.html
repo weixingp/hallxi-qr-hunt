@@ -27,9 +27,9 @@
     <div id="appCapsule" class="full-height">
         <div style="max-width: 500px; margin: auto; text-align: center;">
 
-            <div class="section">
+            <div class="section mt-4">
                 {% thumbnail location.image "200x157" crop="center" as im %}
-                    <img src="{{ im.url }}" alt="image" class="form-image rounded">
+                    <img src="{{ im.url }}" alt="image" class="form-image rounded-lg">
                 {% endthumbnail %}
             </div>
 
@@ -66,17 +66,17 @@
                         <div class="tab-pane fade show active" id="easy" role="tabpanel">
                             Super easy questions related to Covid-19 rules and regulations in NTU.
                             You will get <strong>1 loot box</strong> for answering this correctly.
-                            <a type="button" class="btn btn-primary btn-block mt-1">CHOOSE EASY QUESTION</a>
+                            <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE EASY QUESTION</button>
                         </div>
                         <div class="tab-pane fade" id="normal" role="tabpanel">
                             Questions on commonly known facts about Hall XI and her culture, as well as tricky Covid-19 rules and regulations.
                             You will get <strong>2 loot boxes</strong> for answering this correctly.
-                            <a type="button" class="btn btn-primary btn-block mt-1">CHOOSE NORMAL QUESTION</a>
+                            <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE NORMAL QUESTION</button>
                         </div>
                         <div class="tab-pane fade" id="contact" role="tabpanel">
                             Hard trivial questions about Hall XI and her culture.
                             You will get <strong>3 loot boxes</strong> for answering this correctly.
-                            <a type="button" class="btn btn-primary btn-block mt-1">CHOOSE HARD QUESTION</a>
+                            <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE HARD QUESTION</button>
                         </div>
                     </div>
 
