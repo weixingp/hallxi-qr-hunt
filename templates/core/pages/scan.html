@@ -42,19 +42,23 @@
     <!-- App Capsule -->
     <div id="appCapsule" class="">
 
-        <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
-        <!-- Webcam Canvas -->
-        <canvas id="canvas"></canvas>
+        <!-- Webcam Canvas body -->
+        <div id="canvas-body">
+            <canvas id="canvas"></canvas>
+            <div class="section text-center">
+                <h2>Scan QR Code</h2>
+                <h3 class="text-muted">Hold your camera to scan a QR Code for a Hall XI BoB location</h3>
+            </div>
+        </div>
+        <!-- * Webcam Canvas body -->
 
         <!-- Error display -->
         <div id="error-display" class="error-page" style="display: none;">
             <div class="icon-box text-danger">
                 <ion-icon name="alert-circle"></ion-icon>
             </div>
-            <h1 class="title">Alert Title</h1>
-            <div class="text mb-5">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </div>
+            <h1 class="title">Error</h1>
+            <div id="error-text" class="text mb-5"></div>
 
             <div class="fixed-footer">
                 <div class="row">
@@ -78,8 +82,9 @@
         var video = document.createElement("video");
         var canvasElement = document.getElementById("canvas");
         var canvas = canvasElement.getContext("2d");
-        var loadingMessage = document.getElementById("loadingMessage");
+        var canvasBody = document.getElementById("canvas-body");
         var errorDisplay = document.getElementById("error-display");
+        var errorText = document.getElementById("error-text");
 
         // Stop the webcam
         function stopStreamedVideo(videoElem) {
@@ -107,7 +112,7 @@
             canvas.stroke();
         }
 
-        // Use facingMode: environment to attemt to get the front camera on phones
+        // Use facingMode: environment to attempt to get the front camera on phones
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment",} })
             .then(function(stream) {
                 video.srcObject = stream;
@@ -117,13 +122,16 @@
             })
             .catch(function(err) {
                 // webcam is not available
-                alert("Webcom not avail")
+                canvasElement.hidden = true;
+                canvasBody.style.display = "none";
+                errorDisplay.style.display = "block";
+                errorText.textContent = "Access to camera has been denied or your device does not support camera. " +
+                    "Please try again. Alternatively you can use your phone's built-in Camera app / QR scanner app to scan " +
+                    "this QR code directly.";
             });
 
         function tick() {
-            loadingMessage.innerText = "⌛ Loading video..."
             if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                loadingMessage.hidden = true;
                 canvasElement.hidden = false;
 
                 canvasElement.height = video.videoHeight;
@@ -145,13 +153,20 @@
                     drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
                     stopStreamedVideo(video);
                     const uuid = getUUID(code.data);
-                    if (uuid != null){
-                        // Success redirect to location page
-                        window.location.replace("/location/" + uuid);
-                    } else {
-                        canvasElement.hidden = true;
-                        errorDisplay.style.display = "block";
-                    }
+
+                    //Set a delay to let user see which qr code has been scanned
+                    setTimeout(function(){
+                        if (uuid != null){
+                            // Success redirect to location page
+                            window.location.replace("/location/" + uuid);
+                        } else {
+                            canvasElement.hidden = true;
+                            canvasBody.style.display = "none";
+                            errorDisplay.style.display = "block";
+                            errorText.textContent = "Invalid Hall XI BoB QR code. Please make sure you have scanned the correct QR code.";
+                        }
+
+                    }, 800);
 
                 }
             }

@@ -80,7 +80,12 @@
     <script src="https://cdn.kado.sg/themes/mobile/js/base.js"></script>
     <!-- Hammer Js File -->
     <script src="{% static "assets/js/plugins/hammer.min.js" %}"></script>
-
+    <script>
+        $(window).bind('beforeunload', function(){
+            $("#loader").show();
+            alert("beforeunload");
+        });
+    </script>
 {#    <script>#}
 {#        setTimeout(() => {#}
 {#            notification('notification-welcome', 5000);#}
