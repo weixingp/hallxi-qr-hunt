@@ -72,7 +72,7 @@
                 <h2 class="mb-0">Daily Locations</h2>
             </div>
             <div class="content-header mb-2"><h5 class="text-muted">Scan QR code at these locations to gain points and get items for your hall. Locations will be refreshed daily.</h5></div>
-            <div class="carousel-multiple owl-carousel owl-theme">
+            <div id="daily-locations" class="carousel-multiple owl-carousel owl-theme">
                 {% for assigned_location in assigned_locations %}
                     <div class="item">
                         <div class="card">
@@ -133,7 +133,8 @@
     <script>
         window.blockMenuHeaderScroll = false;
         var classname = document.getElementsByClassName("owl-carousel");
-        var mc = new Hammer(classname);
+        var dailyLocations = document.getElementById("daily-locations");
+        var mc = new Hammer(dailyLocations);
 
         mc.on("swipeleft swiperight panleft panright", function(ev) {
             window.blockMenuHeaderScroll = true;
