@@ -114,10 +114,20 @@
 
 {% block extra_script %}
     <script>
-        // Reload the page everytime on page show.
         window.onpageshow = function(event) {
-            window.location.reload();
+            if (event.persisted) {
+                window.location.reload();
+            }
         };
+
+        function handleVisibilityChange() {
+            if(document.hidden) {
+                // the page is hidden
+            } else {
+                window.location.reload();
+            }
+        }
+        document.addEventListener("visibilitychange", handleVisibilityChange, false);
 
     </script>
     <script>
