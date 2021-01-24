@@ -135,7 +135,7 @@
         var mc = new Hammer(document);
         var classname = document.getElementsByClassName("owl-carousel");
 
-        mc.on("swipeleft swiperight panleft panright", function(ev) {
+        mc.on("panleft panright", function(ev) {
             window.blockMenuHeaderScroll = true;
         });
 
