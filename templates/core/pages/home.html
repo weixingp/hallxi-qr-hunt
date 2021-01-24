@@ -17,6 +17,10 @@
             object-fit: cover;
         }
 
+        html, body {
+            overscroll-behavior-x: none;
+        }
+
         {#.owl-carousel {#}
         {#    -ms-touch-action: pan-x;#}
         {#    touch-action: pan-x;#}
@@ -129,6 +133,14 @@
 {% endblock %}
 
 {% block extra_script %}
+    <script>
+        if (window.safari) {
+            history.pushState(null, null, location.href);
+            window.onpopstate = function(event) {
+                history.go(1);
+            };
+        }
+    </script>
     <script>
         window.blockMenuHeaderScroll = false;
         var mc = new Hammer(document);
