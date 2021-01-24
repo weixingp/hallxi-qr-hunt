@@ -80,6 +80,12 @@
     <script src="https://cdn.kado.sg/themes/mobile/js/base.js?t=1"></script>
     <!-- Hammer Js File -->
     <script src="{% static "assets/js/plugins/hammer.min.js" %}"></script>
+    <script>
+        // Force reload the page when going back/forward a page
+        if (String(window.performance.getEntriesByType("navigation")[0].type) === "back_forward") {
+            window.location.reload()
+        }
+    </script>
 {#    <script>#}
 {#        setTimeout(() => {#}
 {#            notification('notification-welcome', 5000);#}
