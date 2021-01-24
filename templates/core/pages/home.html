@@ -10,26 +10,6 @@
             position:absolute;
             right:6px;
         }
-
-        .fixed-ratio-resize {
-            max-width: 2000px;
-            height: auto;
-            object-fit: cover;
-        }
-
-        html, body {
-            overscroll-behavior-x: none;
-        }
-
-        {#.owl-carousel {#}
-        {#    -ms-touch-action: pan-x;#}
-        {#    touch-action: pan-x;#}
-        {#}#}
-
-        {#.owl-carousel .owl-stage, .owl-carousel.owl-drag .owl-item{#}
-        {#    -ms-touch-action: auto;#}
-        {#    touch-action: auto;#}
-        {#}#}
     </style>
 {% endblock %}
 {% block body %}
@@ -134,12 +114,11 @@
 
 {% block extra_script %}
     <script>
-        if (window.safari) {
-            history.pushState(null, null, location.href);
-            window.onpopstate = function(event) {
-                history.go(1);
-            };
-        }
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload()
+            }
+        };
     </script>
     <script>
         window.blockMenuHeaderScroll = false;
