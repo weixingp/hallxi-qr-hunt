@@ -132,10 +132,10 @@
     </script>
     <script>
         window.blockMenuHeaderScroll = false;
-        var mc = new Hammer(document);
         var classname = document.getElementsByClassName("owl-carousel");
+        var mc = new Hammer(classname);
 
-        mc.on("panleft panright", function(ev) {
+        mc.on("swipeleft swiperight panleft panright", function(ev) {
             window.blockMenuHeaderScroll = true;
         });
 
