@@ -149,7 +149,7 @@
 
         for (var i = 0; i < classname.length; i++) {
             classname[i].addEventListener('touchmove', function(evt) {
-                if (blockMenuHeaderScroll) {
+                if (blockMenuHeaderScroll && evt.cancelable) {
                     evt.preventDefault();
                 }
 
