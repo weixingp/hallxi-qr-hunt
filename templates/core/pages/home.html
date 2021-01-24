@@ -114,11 +114,11 @@
 
 {% block extra_script %}
     <script>
+        // Reload the page everytime on page show.
         window.onpageshow = function(event) {
-            if (event.persisted) {
-                window.location.reload()
-            }
+            window.location.reload();
         };
+
     </script>
     <script>
         window.blockMenuHeaderScroll = false;
