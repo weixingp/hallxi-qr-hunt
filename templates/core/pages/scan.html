@@ -77,6 +77,14 @@
     <!-- * App Capsule -->
 {% endblock %}
 {% block extra_script %}
+    <script>
+        //Reload the page on loading from page cache
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload()
+            }
+        };
+    </script>
     <script src="{% static 'assets/js/plugins/jsQR/jsQR.js' %}"></script>
     <script>
         var video = document.createElement("video");
