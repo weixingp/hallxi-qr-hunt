@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile
+from .models import Profile, AssignedQuestion, Question
 
 
 class ProfileUpdateForm(forms.ModelForm):
@@ -14,3 +14,9 @@ class ProfileUpdateForm(forms.ModelForm):
         "room_number": "Room number",
         "mobile": "Mobile Number"
     }
+
+
+class UpdateAssignedQuestionForm(forms.Form):
+    question_id = forms.IntegerField()
+    DIFFICULTY_CHOICES = Question.DIFFICULTY_CHOICES
+    difficulty = forms.ChoiceField(choices=DIFFICULTY_CHOICES)

@@ -5,10 +5,10 @@ from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-from .forms import ProfileUpdateForm
+from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block
 from django.utils.timezone import localtime, now
-from .main import visit_location, get_user_context
+from .main import visit_location, get_user_context, get_random_question
 
 
 @login_required(login_url='/account/login/')
@@ -164,3 +164,18 @@ def scan_qr(request):
 
     response = HttpResponse(template.render(ctx, request))
     return response
+
+
+@login_required()
+def assign_question(request):
+    form = UpdateAssignedQuestionForm(request.POST)
+    user = request.user
+    qn_id = request.POST.get('question_id')
+    if form.is_valid():
+        question_slot = AssignedQuestion.objects.get(user=user, id=qn_id, )
+        difficulty = form.difficulty
+        question = get_random_question(user, difficulty)
+
+        if not question:
+            # Error display
+            pass

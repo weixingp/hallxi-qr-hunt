@@ -1,5 +1,6 @@
-from .models import Location, AssignedLocation, Question, AssignedQuestion
+from .models import Location, AssignedLocation, Question, AssignedQuestion, User
 from django.utils.timezone import localtime, now
+from random import randint
 
 
 def get_question(user):
@@ -31,3 +32,26 @@ def get_user_context(request):
     }
 
     return context
+
+
+# Get a random question based on the difficulty
+def get_random_question(user, difficulty):
+    # Get answered/assigned questions of user.
+    answered_question = AssignedQuestion.objects \
+        .filter(user=user, difficulty=difficulty, ) \
+        .values_list('question_id', flat=True)
+
+    # Exclude the questions that have been answered.
+    pks = Question.objects.filter(difficulty=difficulty).exclude(id__in=answered_question).values_list('pk',
+                                                                                                       flat=True, )
+
+    if len(pks) < 1:
+        pks = Question.objects.filter(difficulty=difficulty).values_list('pk', flat=True, )
+        if len(pks) < 1:
+            return None
+
+    # Get random question of the processed list of questions
+    random_idx = randint(0, len(pks) - 1)
+    random_qn = Question.objects.get(pk=pks[random_idx])
+
+    return random_qn
