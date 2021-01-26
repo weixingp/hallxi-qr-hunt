@@ -68,7 +68,7 @@
                                     </i>
                                     <span class="chip-label">1 loot box</span>
                                 </div>
-                                <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE EASY QUESTION</button>
+                                <button id="easy-question-btn" type="button" class="btn btn-primary btn-block mt-1">CHOOSE EASY QUESTION</button>
                             </div>
                             <div class="tab-pane fade" id="normal" role="tabpanel">
                                 Questions on commonly known facts about Hall XI and her culture, as well as tricky Covid-19 rules and regulations.
@@ -79,7 +79,7 @@
                                     </i>
                                     <span class="chip-label">2 loot boxes</span>
                                 </div>
-                                <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE NORMAL QUESTION</button>
+                                <button id="normal-question-btn" type="button" class="btn btn-primary btn-block mt-1">CHOOSE NORMAL QUESTION</button>
                             </div>
                             <div class="tab-pane fade" id="contact" role="tabpanel">
                                 Hard trivial questions about Hall XI and her culture.
@@ -90,10 +90,9 @@
                                     </i>
                                     <span class="chip-label">3 loot boxes</span>
                                 </div>
-                                <button type="button" class="btn btn-primary btn-block mt-1">CHOOSE HARD QUESTION</button>
+                                <button id="hard-question-btn" type="button" class="btn btn-primary btn-block mt-1">CHOOSE HARD QUESTION</button>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -122,6 +121,90 @@
         {% endif %}
 
     </div>
+
+    <!-- Error dialogue -->
+    <div class="modal fade dialogbox" id="error-dialogue" data-backdrop="static" tabindex="-1" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-icon text-danger">
+                    <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                </div>
+                <div class="modal-header">
+                    <h5 class="modal-title">Error</h5>
+                </div>
+                <div class="modal-body" id="error-dialogue-message">
+                    This is a dialog message
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-inline">
+                        <a href="#" class="btn" data-dismiss="modal">CLOSE</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- * Error dialogue -->
+
     {% include "core/sidebar.html" %}
+{% endblock %}
+{% block extra_script %}
+        <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        $("#easy-question-btn, #normal-question-btn, #hard-question-btn").click(function() {
+
+            let difficulty = "1";
+            switch (this.id){
+                case "easy-question-btn":
+                    difficulty = "1";
+                    break;
+                case "normal-question-btn":
+                    difficulty = "2";
+                    break;
+                case "hard-question-btn":
+                    difficulty = "3";
+                    break;
+            }
+
+            const payload = {
+                question_id: {{ question_id }},
+                difficulty: difficulty,
+                csrfmiddlewaretoken: csrftoken
+            }
+
+            $.ajax({
+                headers: { "X-CSRFToken": csrftoken },
+                url: '/actions/assign-question',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+
+                data: JSON.stringify(payload),
+                success: function(data) {
+                    if (data.success){
+                        window.location.replace("/question/" + data.question_id);
+                    } else {
+                        $("#error-dialogue-message").text(data.message)
+                        $("#error-dialogue").modal('show');
+                    }
+                }
+            });
+        });
+    </script>
 {% endblock %}
 

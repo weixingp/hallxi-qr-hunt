@@ -1,3 +1,5 @@
+import json
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.http import HttpResponse, JsonResponse
@@ -122,7 +124,7 @@ def location_main(request, uuid):
         "error": error,
         "uuid": uuid,
         "location": location,
-        "id": question_id
+        "question_id": question_id
     }
     ctx = {**user_context, **context}  # Merge context
 
@@ -168,14 +170,45 @@ def scan_qr(request):
 
 @login_required()
 def assign_question(request):
-    form = UpdateAssignedQuestionForm(request.POST)
+    success = False
+    message = None
+    if request.method != 'POST':
+        return JsonResponse({
+            "success": False,
+            "message": "Illegal access!"
+        })
+
+    data = json.loads(request.body.decode("utf-8"))
+    form = UpdateAssignedQuestionForm(data)
+
     user = request.user
-    qn_id = request.POST.get('question_id')
+    qn_id = data["question_id"]
     if form.is_valid():
         question_slot = AssignedQuestion.objects.get(user=user, id=qn_id, )
-        difficulty = form.difficulty
-        question = get_random_question(user, difficulty)
 
-        if not question:
-            # Error display
-            pass
+        if question_slot.question:
+            success = False
+            message = "A question for this location has been assigned to you already. Please check main page."
+        else:
+            difficulty = form.cleaned_data["difficulty"]
+            question = get_random_question(user, difficulty)
+
+            if not question:
+                success = False
+                message = "Sorry, no question with this difficulty is available, please try another difficulty."
+            else:
+                # Update the assigned question
+                question_slot.question = question
+                question_slot.save()
+                success = True
+                message = None
+    else:
+        success = False
+        message = "Something went wrong, please try again later."
+
+    res = {
+        "success": success,
+        "question_id": qn_id,
+        "message": message
+    }
+    return JsonResponse(res)

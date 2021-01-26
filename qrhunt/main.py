@@ -36,19 +36,20 @@ def get_user_context(request):
 
 # Get a random question based on the difficulty
 def get_random_question(user, difficulty):
+    # Check if such difficulty question exist
+    count = Question.objects.filter(difficulty=difficulty).count()
+    if count < 1:
+        return None
+
     # Get answered/assigned questions of user.
     answered_question = AssignedQuestion.objects \
-        .filter(user=user, difficulty=difficulty, ) \
+        .filter(user=user, question__isnull=False) \
         .values_list('question_id', flat=True)
 
     # Exclude the questions that have been answered.
-    pks = Question.objects.filter(difficulty=difficulty).exclude(id__in=answered_question).values_list('pk',
-                                                                                                       flat=True, )
-
+    pks = Question.objects.filter(difficulty=difficulty).exclude(id__in=list(answered_question)).values_list('pk', flat=True,)
     if len(pks) < 1:
         pks = Question.objects.filter(difficulty=difficulty).values_list('pk', flat=True, )
-        if len(pks) < 1:
-            return None
 
     # Get random question of the processed list of questions
     random_idx = randint(0, len(pks) - 1)

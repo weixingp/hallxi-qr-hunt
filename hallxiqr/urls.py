@@ -32,8 +32,13 @@ core = [
     path('scan', main_view.scan_qr),
     path('location/<str:uuid>/', main_view.location_main),
 ]
-
 urlpatterns += core
+
+# Game actions api
+actions = [
+    path('actions/assign-question', main_view.assign_question),
+]
+urlpatterns += actions
 
 # Development media root setting
 if settings.DEBUG:
