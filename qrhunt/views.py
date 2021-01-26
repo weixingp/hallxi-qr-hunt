@@ -77,7 +77,7 @@ def location_main(request, uuid):
     user = request.user
     success = True
     error = None
-    question_id = None
+    question_uuid = None
 
     # Getting location info from QR UUID
     try:
@@ -112,7 +112,7 @@ def location_main(request, uuid):
 
         # Visit the location if success
         if success:
-            question_id = visit_location(user, assigned_location)
+            question_uuid = visit_location(user, assigned_location)
 
     except ObjectDoesNotExist:
         success = False
@@ -124,7 +124,7 @@ def location_main(request, uuid):
         "error": error,
         "uuid": uuid,
         "location": location,
-        "question_id": question_id
+        "question_uuid": question_uuid
     }
     ctx = {**user_context, **context}  # Merge context
 
@@ -172,6 +172,8 @@ def scan_qr(request):
 def assign_question(request):
     success = False
     message = None
+    qn_uuid = None
+
     if request.method != 'POST':
         return JsonResponse({
             "success": False,
@@ -182,9 +184,9 @@ def assign_question(request):
     form = UpdateAssignedQuestionForm(data)
 
     user = request.user
-    qn_id = data["question_id"]
     if form.is_valid():
-        question_slot = AssignedQuestion.objects.get(user=user, id=qn_id, )
+        qn_uuid = data["question_uuid"]
+        question_slot = AssignedQuestion.objects.get(user=user, uuid=qn_uuid, )
 
         if question_slot.question:
             success = False
@@ -199,6 +201,7 @@ def assign_question(request):
             else:
                 # Update the assigned question
                 question_slot.question = question
+                question_slot.time = localtime(now())
                 question_slot.save()
                 success = True
                 message = None
@@ -208,7 +211,7 @@ def assign_question(request):
 
     res = {
         "success": success,
-        "question_id": qn_id,
+        "question_uuid": qn_uuid,
         "message": message
     }
     return JsonResponse(res)

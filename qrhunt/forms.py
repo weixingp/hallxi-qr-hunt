@@ -17,6 +17,6 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class UpdateAssignedQuestionForm(forms.Form):
-    question_id = forms.IntegerField()
+    question_uuid = forms.UUIDField()
     DIFFICULTY_CHOICES = Question.DIFFICULTY_CHOICES
     difficulty = forms.ChoiceField(choices=DIFFICULTY_CHOICES)

@@ -236,9 +236,7 @@ class AssignedQuestion(models.Model):
     time = models.DateTimeField(null=True)
     has_answered = models.BooleanField(default=False)
     answered_time = models.DateTimeField(blank=True, null=True)
-
-    # class Meta:
-        # unique_together = ('user', 'question',)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.user.email + "'s question"

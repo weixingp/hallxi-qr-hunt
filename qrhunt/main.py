@@ -19,7 +19,7 @@ def visit_location(user, assigned_location):
         user=user,
     )
 
-    return new_question.id
+    return new_question.uuid
 
 
 def get_user_context(request):

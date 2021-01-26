@@ -182,7 +182,7 @@
             }
 
             const payload = {
-                question_id: {{ question_id }},
+                question_uuid: "{{ question_uuid }}",
                 difficulty: difficulty,
                 csrfmiddlewaretoken: csrftoken
             }
@@ -197,7 +197,7 @@
                 data: JSON.stringify(payload),
                 success: function(data) {
                     if (data.success){
-                        window.location.replace("/question/" + data.question_id);
+                        window.location.replace("/question/" + data.question_uuid);
                     } else {
                         $("#error-dialogue-message").text(data.message)
                         $("#error-dialogue").modal('show');
