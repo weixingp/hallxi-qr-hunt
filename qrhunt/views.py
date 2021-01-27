@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm
-from .models import Location, AssignedLocation, Question, AssignedQuestion, Block
+from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question
 
@@ -215,3 +215,39 @@ def assign_question(request):
         "message": message
     }
     return JsonResponse(res)
+
+
+@login_required()
+def answer_question(request, uuid):
+    template = loader.get_template('core/pages/question.html')
+    user = request.user
+    # Getting question from url uuid
+    try:
+        assigned_question = AssignedQuestion.objects.get(uuid=uuid)
+        question = assigned_question.question
+    except ObjectDoesNotExist:
+        context = {
+            "success": False,
+            "error": "Invalid Question ID.",
+        }
+        response = HttpResponse(template.render(context, request))
+        return response
+
+    if assigned_question.user != user:
+        context = {
+            "success": False,
+            "error": "This question does not belong to you. Check that you have logged in to the right account.",
+        }
+        response = HttpResponse(template.render(context, request))
+        return response
+
+    question_options = list(Answer.objects.filter(question=question))
+
+    context = {
+        "success": True,
+        "question": question,
+        "options": question_options
+    }
+
+    response = HttpResponse(template.render(context, request))
+    return response
