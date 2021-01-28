@@ -80,11 +80,6 @@
             cursor: pointer;
             visibility: hidden;
         }
-        {#*,#}
-        {#*::before,#}
-        {#*::after {#}
-        {#    box-sizing: inherit;#}
-        {#}#}
     </style>
 {% endblock %}
 
@@ -110,7 +105,7 @@
                     <h3>Time left: 10hr 30mins</h3>
                 </div>
                 <div class="section mt-2">
-                    <div class="card text-white bg-secondary mb-2">
+                    <div class="card text-white bg-info shadow mb-2">
                         <div class="card-header">{{ question.get_type_display }} Question</div>
                         <div class="card-body">
                             {#                        <h5 class="card-title">Info card title</h5>#}
@@ -127,9 +122,11 @@
                                 <label for="{{ option.id }}">{{ option.answer }}</label>
                             </div>
                         {% endfor %}
+                    <button type="submit" class="btn btn-lg btn-primary btn-block mt-3">Submit</button>
                     </form>
                 </div>
             </div>
+
         {% else %}
             <!-- Error display -->
             <div id="error-display" class="error-page">
