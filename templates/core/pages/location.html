@@ -148,7 +148,7 @@
     {% include "core/sidebar.html" %}
 {% endblock %}
 {% block extra_script %}
-        <script>
+    <script>
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -189,7 +189,7 @@
 
             $.ajax({
                 headers: { "X-CSRFToken": csrftoken },
-                url: '/actions/assign-question',
+                url: '/action/assign-question',
                 type: 'POST',
                 dataType: 'json',
                 contentType: 'application/json; charset=utf-8',
@@ -202,6 +202,11 @@
                         $("#error-dialogue-message").text(data.message)
                         $("#error-dialogue").modal('show');
                     }
+                },
+                error: function (err){
+                    let msg = "Something went wrong, please try again later or get help in game chat.";
+                    $("#error-dialogue-message").text(msg)
+                    $("#error-dialogue").modal('show');
                 }
             });
         });

@@ -116,23 +116,25 @@
 
                 <div class="section mt-2">
                     <form>
+                        {% csrf_token %}
+                        <input type="hidden" name="question_uuid" value="{{ question_uuid }}" />
                         {% for option in options %}
                             <div class="inputGroup">
-                                <input id="{{ option.id }}" name="answer" type="radio"/>
+                                <input id="{{ option.id }}" name="answer_id" type="radio" value="{{ option.id }}"/>
                                 <label for="{{ option.id }}">{{ option.answer }}</label>
                             </div>
                         {% endfor %}
                         <div class="row">
                             <div class="col-6">
-                                <a a href="/" class="btn btn-lg btn-secondary btn-block mt-3">Answer later</a>
+                                <a href="/" class="btn btn-lg btn-secondary btn-block mt-3">Answer later</a>
                             </div>
                             <div class="col-6">
                                 <button type="submit" class="btn btn-lg btn-primary btn-block mt-3">Submit</button>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>
-
         {% else %}
             <!-- Error display -->
             <div id="error-display" class="error-page">
@@ -152,6 +154,146 @@
             </div>
             <!-- * Error display -->
         {% endif %}
+        <!-- Correct dialogue -->
+        <div class="modal fade dialogbox" id="correct-answer" data-backdrop="static" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-icon text-success">
+                        <ion-icon name="checkmark-circle" role="img" class="md hydrated" aria-label="checkmark circle"></ion-icon>
+                    </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Correct</h5>
+                    </div>
+                    <div class="modal-body" id="correct-message">
+
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-inline">
+                            <a href="/" class="btn btn-text-secondary">
+                                <ion-icon name="home-outline" role="img" class="md hydrated" aria-label="home outline"></ion-icon>
+                                Home
+                            </a>
+                            <a href="#" class="btn btn-text-info">
+                                <ion-icon name="cube-outline" role="img" class="md hydrated" aria-label="cube outline"></ion-icon>
+                                Items
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- * Correct dialogue -->
+
+        <!-- Wrong dialogue -->
+        <div class="modal fade dialogbox" id="wrong-answer" data-backdrop="static" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-icon text-danger">
+                        <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                    </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Wrong</h5>
+                    </div>
+                    <div class="modal-body" id="wrong-message">
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-inline">
+                            <a href="/" class="btn btn-text-secondary">
+                                <ion-icon name="home-outline" role="img" class="md hydrated" aria-label="home outline"></ion-icon>
+                                Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- * Wrong dialogue -->
+
+        <!-- Error dialogue -->
+        <div class="modal fade dialogbox" id="error-dialogue" data-backdrop="static" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-icon text-danger">
+                        <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                    </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Error</h5>
+                    </div>
+                    <div class="modal-body" id="error-dialogue-message">
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-inline">
+                            <a href="/" class="btn btn-text-secondary" >
+                                Home
+                            </a>
+                            <a href="#" class="btn btn-text-primary" data-dismiss="modal">
+                                Retry
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- * Error dialogue -->
 
     </div>
+{% endblock %}
+{% block extra_script %}
+    <script>
+
+        $('form').on('submit', function (e) {
+            e.preventDefault();
+            $("button[type='submit']").prop('disabled', true).text("Submitting...");
+
+            $.ajax({
+                url: '/action/answer-question',
+                type: 'POST',
+                data: $('form').serialize(),
+                success: function(data) {
+                    if (data.success){
+                        $("form").hide();
+
+                        if (data.correct){
+                            $("#correct-message").text(data.message);
+                            $("#correct-answer").modal('show');
+                        } else {
+                            $("#wrong-message").text(data.message);
+                            $("#wrong-answer").modal('show');
+                        }
+
+                    } else {
+                        $("button[type='submit']").prop('disabled', false).text("Submit");
+                        $("#error-dialogue-message").text(data.message)
+                        $("#error-dialogue").modal('show');
+                    }
+                },
+                error: function (err){
+                    $("button[type='submit']").prop('disabled', false).text("Submit");
+                    let msg = "Something went wrong, please try again later or get help in game chat.";
+                    $("#error-dialogue-message").text(msg)
+                    $("#error-dialogue").modal('show');
+                }
+            });
+
+        })
+    </script>
+    <script>
+        //Reload the page on loading from page cache
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload()
+            }
+        };
+
+        //Reload the page when it's opened again
+        function handleVisibilityChange() {
+            if(document.hidden) {
+                // the page is hidden
+            } else {
+                window.location.reload();
+            }
+        }
+        document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
+    </script>
 {% endblock %}

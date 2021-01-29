@@ -10,7 +10,7 @@ from django.contrib import messages
 from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer
 from django.utils.timezone import localtime, now
-from .main import visit_location, get_user_context, get_random_question
+from .main import visit_location, get_user_context, get_random_question, assign_loot_box
 
 
 @login_required(login_url='/account/login/')
@@ -240,11 +240,19 @@ def question_page(request, uuid):
         }
         response = HttpResponse(template.render(context, request))
         return response
+    elif assigned_question.has_answered:
+        context = {
+            "success": False,
+            "error": "You have answered this question already.",
+        }
+        response = HttpResponse(template.render(context, request))
+        return response
 
     question_options = list(Answer.objects.filter(question=question))
 
     context = {
         "success": True,
+        "question_uuid": uuid,
         "question": question,
         "options": question_options
     }
@@ -261,14 +269,89 @@ def answer_question(request):
             "message": "Illegal access!"
         })
 
-    data = json.loads(request.body.decode("utf-8"))
-    form = AnswerQuestionForm(data)
+    form = AnswerQuestionForm(request.POST)
     user = request.user
 
-    if form.is_valid():
-        qn_uuid = form.cleaned_data["question_uuid"]
-        answer_id = form.cleaned_data["answer_id"]
+    if not form.is_valid():
+        success = False
+        message = "Please select an answer."
+        return JsonResponse({
+            "success": success,
+            "message": message,
+        })
 
+    qn_uuid = form.cleaned_data["question_uuid"]
+    answer_id = form.cleaned_data["answer_id"]
+
+    try:
         question_slot = AssignedQuestion.objects.get(uuid=qn_uuid)
-        question = question_slot.question
-        answer = Answer.objects.filter(question=question).filter(id=answer_id)
+    except ObjectDoesNotExist:
+        success = False
+        message = "Invalid question ID, please seek assistance from game chat group."
+        return JsonResponse({
+            "success": success,
+            "message": message,
+        })
+
+    if question_slot.user != user:
+        context = {
+            "success": False,
+            "message": "This question does not belong to you. Check that you have logged in to the right account.",
+        }
+        return JsonResponse(context)
+    elif question_slot.has_answered:
+        context = {
+            "success": False,
+            "message": "You have answered this question already.",
+        }
+        return JsonResponse(context)
+
+    question = question_slot.question
+    answer = Answer.objects.filter(question=question).filter(id=answer_id)
+    if len(answer) > 0:
+        answer = answer[0]
+        success = True
+        # Marked as answered
+        question_slot.has_answered = True
+        question_slot.answered_time = localtime(now())
+        question_slot.save()
+
+        if answer.is_correct:
+            # Assign loot box
+            if question.difficulty == "1":
+                # Easy qn
+                loot_box_amt = 1
+            elif question.difficulty == "2":
+                # Normal qn
+                loot_box_amt = 2
+            elif question.difficulty == "3":
+                # Hard qn
+                loot_box_amt = 3
+            else:
+                loot_box_amt = 0
+
+            assign_loot_box(user, loot_box_amt)
+            correct = True
+            message = "You have received " + str(loot_box_amt) + " loot box(es)."
+        else:
+            correct = False
+            if question.type == "1":
+                # Covid-19 questions -> show correct answer
+                correct_answer = Answer.objects.filter(question=question).filter(is_correct=True)[0]
+                message = "Oops, the correct answer is " + correct_answer.answer + "."
+            else:
+                # HallXI questions -> don't show answer
+                message = "Oops, take some time to explore Hall XI more!!!"
+
+    else:
+        success = False
+        message = "Invalid answer id, please seek assistance from game chat group."
+        correct = False
+
+    context = {
+        "success": success,
+        "message": message,
+        "correct": correct,
+    }
+
+    return JsonResponse(context)

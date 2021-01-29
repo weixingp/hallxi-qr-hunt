@@ -56,3 +56,7 @@ def get_random_question(user, difficulty):
     random_qn = Question.objects.get(pk=pks[random_idx])
 
     return random_qn
+
+
+def assign_loot_box(user, amount):
+    pass

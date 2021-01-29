@@ -37,7 +37,8 @@ urlpatterns += core
 
 # Game actions api
 actions = [
-    path('actions/assign-question', main_view.assign_question),
+    path('action/assign-question', main_view.assign_question),
+    path('action/answer-question', main_view.answer_question),
 ]
 urlpatterns += actions
 
