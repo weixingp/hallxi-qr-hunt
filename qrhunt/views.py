@@ -7,7 +7,7 @@ from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm
+from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question
@@ -218,7 +218,7 @@ def assign_question(request):
 
 
 @login_required()
-def answer_question(request, uuid):
+def question_page(request, uuid):
     template = loader.get_template('core/pages/question.html')
     user = request.user
     # Getting question from url uuid
@@ -251,3 +251,24 @@ def answer_question(request, uuid):
 
     response = HttpResponse(template.render(context, request))
     return response
+
+
+@login_required()
+def answer_question(request):
+    if request.method != 'POST':
+        return JsonResponse({
+            "success": False,
+            "message": "Illegal access!"
+        })
+
+    data = json.loads(request.body.decode("utf-8"))
+    form = AnswerQuestionForm(data)
+    user = request.user
+
+    if form.is_valid():
+        qn_uuid = form.cleaned_data["question_uuid"]
+        answer_id = form.cleaned_data["answer_id"]
+
+        question_slot = AssignedQuestion.objects.get(uuid=qn_uuid)
+        question = question_slot.question
+        answer = Answer.objects.filter(question=question).filter(id=answer_id)

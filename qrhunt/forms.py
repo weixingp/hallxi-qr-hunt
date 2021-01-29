@@ -20,3 +20,8 @@ class UpdateAssignedQuestionForm(forms.Form):
     question_uuid = forms.UUIDField()
     DIFFICULTY_CHOICES = Question.DIFFICULTY_CHOICES
     difficulty = forms.ChoiceField(choices=DIFFICULTY_CHOICES)
+
+
+class AnswerQuestionForm(forms.Form):
+    question_uuid = forms.UUIDField()
+    answer_id = forms.IntegerField()
