@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm
-from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer
+from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, AssignedItem
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question, assign_loot_box
 
@@ -355,3 +355,35 @@ def answer_question(request):
     }
 
     return JsonResponse(context)
+
+
+@login_required()
+def inventory(request):
+    template = loader.get_template('core/pages/item.html')
+    user = request.user
+
+    # Get a list of unopened loot boxes
+    lootbox_list = list(AssignedLootBox.objects.filter(user=user, has_opened=False))
+
+    # Get a list of unused items
+    item_list = list(AssignedItem.objects.filter(user=user, has_used=False))
+    attack_items = []
+    heal_items = []
+    special_items = []
+    for item in item_list:
+        if item.item.type == "1":
+            attack_items.append(item)
+        elif item.item.type == "2":
+            heal_items.append(item)
+        else:
+            special_items.append(item)
+
+    context = {
+        "lootbox_list": lootbox_list,
+        "attack_items": attack_items,
+        "heal_items": heal_items,
+        "special_items": special_items
+    }
+
+    response = HttpResponse(template.render(context, request))
+    return response

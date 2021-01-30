@@ -30,6 +30,7 @@ urlpatterns = [
 core = [
     path('', main_view.home),
     path('scan', main_view.scan_qr),
+    path('inventory', main_view.inventory),
     path('location/<str:uuid>/', main_view.location_main),
     path('question/<str:uuid>', main_view.question_page),
 ]

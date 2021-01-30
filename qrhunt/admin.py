@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
-from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion
-from .models import Location, AssignedLocation, Block, HpLog
+from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion, AssignedItem
+from .models import Location, AssignedLocation, Block, HpLog, AssignedLootBox
 
 
 def linkify(field_name):
@@ -26,6 +26,20 @@ def linkify(field_name):
 
     _linkify.short_description = field_name  # Sets column name
     return _linkify
+
+
+@admin.register(AssignedLootBox)
+class AssignedLootBoxAdmin(admin.ModelAdmin):
+    list_display = ('user', linkify(field_name="assigned_item"), 'reason', 'has_opened', 'time_opened', 'time')
+    list_filter = ('has_opened',)
+    search_fields = ('reason', 'user__email')
+
+
+@admin.register(AssignedItem)
+class AssignedItemAdmin(admin.ModelAdmin):
+    list_display = ('user', linkify(field_name="item"), 'has_used', 'time_used', 'time')
+    list_filter = ('has_used',)
+    search_fields = ('user__email',)
 
 
 @admin.register(HpLog)
@@ -171,4 +185,7 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions',)
+
+
+
 

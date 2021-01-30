@@ -174,6 +174,8 @@ class Item(models.Model):
 
     description = models.TextField(blank=True)
 
+    image = models.ImageField(upload_to="items/", null=True, blank=True)
+
     # Hardcoded points gained for each of the rarity
     def get_points(self):
         if self.rarity == '1':
@@ -191,16 +193,18 @@ class Item(models.Model):
 
     def get_item_description(self):
         if self.type == "1":
-            desc = "A " + self.get_rarity_display() + " attack item that does " + str(self.value) + " damage to the " \
-                                                                                                    "selected block. Gain " + str(
-                self.get_points()) + " points."
+            # desc = "A " + self.get_rarity_display() + " attack item that does " + str(self.value) + " damage to the
+            # " \ "selected block. Gain " + str(self.get_points()) + " points."
+            desc = "An attack item that does damage to selected block. Gain " + str(self.get_points()) + " points. " \
+                   + self.description
         elif self.type == "2":
-            desc = "A " + self.get_rarity_display() + " healing item that heals " + str(self.value) + " HP for your " \
-                                                                                                      "block. Gain " + str(
-                self.get_points()) + " points."
+            # desc = "A " + self.get_rarity_display() + " healing item that heals " + str(self.value) + " HP for your
+            # " \ "block. Gain " + str(self.get_points()) + " points."
+            desc = "A healing item that recovers HP for your block. Gain " + str(self.get_points()) + " points. " \
+                   + self.description
         elif self.type == "3":
             desc = "A physical Hall XI merchandise. You can't use now, we will contact you for collection at a later " \
-                   "date. Gain " + str(self.get_points()) + " points."
+                   "date. Gain " + str(self.get_points()) + " points. " + self.description
 
         else:
             desc = "No description available."
@@ -317,3 +321,37 @@ class HpLog(models.Model):
 
     def __str__(self):
         return self.target_block.name + "'s HP Log"
+
+
+class AssignedItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_assigned_item_user")
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="fk_assigned_item_item", null=True,
+                             blank=True)
+    has_used = models.BooleanField(default=False)
+    time_used = models.DateTimeField(null=True, blank=True)
+    time = models.DateTimeField(auto_now=True, blank=True)
+
+    def __str__(self):
+        return self.user.email + "'s Item"
+
+
+class AssignedLootBox(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_assigned_loot_box_user")
+    assigned_item = models.ForeignKey(
+        AssignedItem,
+        on_delete=models.CASCADE,
+        related_name="fk_assigned_loot_box_assigned_item",
+        null=True,
+        blank=True
+    )
+    has_opened = models.BooleanField(default=False)
+    reason = models.CharField(null=True, blank=True, max_length=255)
+    time = models.DateTimeField(auto_now=True, blank=True)
+    time_opened = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Assigned loot boxes"
+
+    def __str__(self):
+        return self.user.email + "'s Loot Box"
+
