@@ -25,3 +25,8 @@ class UpdateAssignedQuestionForm(forms.Form):
 class AnswerQuestionForm(forms.Form):
     question_uuid = forms.UUIDField()
     answer_id = forms.IntegerField()
+
+
+class UseItemForm(forms.Form):
+    item_id = forms.IntegerField()
+    block_id = forms.IntegerField()

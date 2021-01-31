@@ -1,6 +1,9 @@
 from .models import Location, AssignedLocation, Question, AssignedQuestion, User
+from .models import Block, HpLog, AssignedItem, Item
+
 from django.utils.timezone import localtime, now
 from random import randint
+from django.db.models import Avg, Count, Min, Sum
 
 
 def get_question(user):
@@ -47,7 +50,8 @@ def get_random_question(user, difficulty):
         .values_list('question_id', flat=True)
 
     # Exclude the questions that have been answered.
-    pks = Question.objects.filter(difficulty=difficulty).exclude(id__in=list(answered_question)).values_list('pk', flat=True,)
+    pks = Question.objects.filter(difficulty=difficulty).exclude(id__in=list(answered_question)).values_list('pk',
+                                                                                                             flat=True, )
     if len(pks) < 1:
         pks = Question.objects.filter(difficulty=difficulty).values_list('pk', flat=True, )
 
@@ -60,3 +64,68 @@ def get_random_question(user, difficulty):
 
 def assign_loot_box(user, amount):
     pass
+
+
+def get_block_hp(block):
+    max_hp = block.max_hp
+    value = HpLog.objects.filter(target_block=block).aggregate(Sum('value'))
+    value = value["value__sum"]
+    if not value:
+        value = 0
+    curr_hp = max_hp + value
+    if curr_hp < 0:
+        curr_hp = 0
+
+    return [curr_hp, max_hp]
+
+
+def get_block_exploration(block):
+    max_exploration = block.max_exploration_points
+    curr_exploration = AssignedLocation.objects \
+        .filter(user__profile__block=block, has_visited=True)\
+        .aggregate(Sum('id'))
+    curr_exploration = curr_exploration["id__sum"]
+
+    if not curr_exploration:
+        curr_exploration = 0
+
+    return [curr_exploration, max_exploration]
+
+
+def use_item(user, item, block):
+    hp = None
+    if item.user != user:
+        success = False
+        message = "This item does not belong to you. Are you logged in to the right account?"
+    elif item.has_used:
+        success = False
+        message = "This item has been used."
+    else:
+        if item.item.type == "1":
+            # Attack item
+            value = -item.item.value
+            message = "You dealt " + str(item.item.value) + " damage to block " + block.name + "."
+        elif item.item.type == "2":
+            value = item.item.value
+            message = "You healed " + str(item.item.value) + " HP to block " + block.name + "."
+        else:
+            success = False
+            message = "This item can't be used."
+            return {
+                "success": success,
+                "message": message,
+            }
+
+        HpLog.objects.create(
+            user=user,
+            target_block=block,
+            value=value,
+            reason="Used item id " + str(item.item.id)
+        )
+        item.has_used = True
+        item.time_used = localtime(now())
+        item.save()
+        hp = get_block_hp(block)
+        success = True
+
+    return {"success": success, "message": message, "hp": hp}

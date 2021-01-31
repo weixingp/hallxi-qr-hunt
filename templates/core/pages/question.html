@@ -129,7 +129,7 @@
                                 <a href="/" class="btn btn-lg btn-secondary btn-block mt-3">Answer later</a>
                             </div>
                             <div class="col-6">
-                                <button type="submit" class="btn btn-lg btn-primary btn-block mt-3">Submit</button>
+                                <button type="submit" class="btn btn-lg btn-primary btn-block mt-3" disabled>Submit</button>
                             </div>
                         </div>
                     </form>
@@ -173,7 +173,7 @@
                                 <ion-icon name="home-outline" role="img" class="md hydrated" aria-label="home outline"></ion-icon>
                                 Home
                             </a>
-                            <a href="#" class="btn btn-text-info">
+                            <a href="/inventory" class="btn btn-text-info">
                                 <ion-icon name="diamond-outline" role="img" class="md hydrated" aria-label="diamond outline"></ion-icon>
                                 Items
                             </a>
@@ -240,6 +240,9 @@
 {% endblock %}
 {% block extra_script %}
     <script>
+        $('input[type="radio"]').click(function(){
+            $("button[type='submit']").prop('disabled', false);
+        });
 
         $('form').on('submit', function (e) {
             e.preventDefault();

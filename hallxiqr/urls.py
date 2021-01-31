@@ -40,6 +40,8 @@ urlpatterns += core
 actions = [
     path('action/assign-question', main_view.assign_question),
     path('action/answer-question', main_view.answer_question),
+    path('action/get-blocks-stats', main_view.get_blocks_stats),
+    path('action/use-item', main_view.use_item),
 ]
 urlpatterns += actions
 

@@ -10,6 +10,9 @@
             position:absolute;
             right:6px;
         }
+        .owl-carousel .owl-stage{
+            display: flex;
+        }
     </style>
 {% endblock %}
 {% block body %}
@@ -74,8 +77,8 @@
             <div class="content-header mb-2"><h5 class="text-muted">Scan QR code at these locations to gain points and get items for your hall. Locations will be refreshed daily.</h5></div>
             <div id="daily-locations" class="carousel-multiple owl-carousel owl-theme">
                 {% for assigned_location in assigned_locations %}
-                    <div class="item">
-                        <div class="card">
+                    <div class="item h-100">
+                        <div class="card h-100">
                             {% if assigned_location.has_visited %}
                                 <span class="badge visited-badge badge-success mb-1">visited</span>
                             {% endif %}

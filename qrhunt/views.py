@@ -7,10 +7,11 @@ from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm
+from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm, UseItemForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, AssignedItem
 from django.utils.timezone import localtime, now
-from .main import visit_location, get_user_context, get_random_question, assign_loot_box
+from .main import visit_location, get_user_context, get_random_question, assign_loot_box, get_block_hp, \
+    get_block_exploration, use_item as use
 
 
 @login_required(login_url='/account/login/')
@@ -366,7 +367,7 @@ def inventory(request):
     lootbox_list = list(AssignedLootBox.objects.filter(user=user, has_opened=False))
 
     # Get a list of unused items
-    item_list = list(AssignedItem.objects.filter(user=user, has_used=False))
+    item_list = list(AssignedItem.objects.filter(user=user, has_used=False).exclude(item=None))
     attack_items = []
     heal_items = []
     special_items = []
@@ -387,3 +388,82 @@ def inventory(request):
 
     response = HttpResponse(template.render(context, request))
     return response
+
+
+@login_required
+def use_item(request):
+    if request.method != "POST":
+        success = False
+        message = "Illegal access!"
+        return JsonResponse({"success": success, "message": message})
+
+    user = request.user
+    form = UseItemForm(request.POST)
+    info = None
+    if form.is_valid():
+        try:
+            item = AssignedItem.objects.get(id=form.cleaned_data["item_id"])
+            block = Block.objects.get(id=form.cleaned_data["block_id"])
+        except ObjectDoesNotExist:
+            success = False
+            message = "Invalid item/block ID."
+            return JsonResponse({"success": success, "message": message})
+
+        res = use(user, item, block)
+
+        success = res["success"]
+        message = res["message"]
+        info = {
+            "block": block.name,
+            "hp": res["hp"],
+        }
+
+    else:
+        success = False
+        message = "Incomplete selection."
+
+    return JsonResponse({"success": success, "message": message, "info": info})
+
+
+@login_required()
+def get_blocks_stats(request):
+    if request.method != 'GET':
+        success = False
+        message = "Illegal access!"
+        return JsonResponse({"success": success, "message": message})
+    elif not request.GET.get('type'):
+        success = False
+        message = "Invalid params"
+        return JsonResponse({"success": success, "message": message})
+
+    req_type = request.GET.get('type')
+    user = request.user
+    block_list = Block.objects.all().order_by('name')
+    user_blk = user.profile.block
+
+    if req_type == "exclude-user":
+        block_list = block_list.exclude(id=user_blk.id)
+    elif req_type == "only-user":
+        block_list = block_list.filter(id=user_blk.id)
+
+    blocks = {}
+    for block in block_list:
+        hp = get_block_hp(block)
+        exploration = get_block_exploration(block)
+        blocks[block.name] = {
+            "id": block.id,
+            "curr_hp": hp[0],
+            "max_hp": hp[1],
+            "curr_exploration": exploration[0],
+            "max_exploration": exploration[1],
+        }
+
+    success = True
+    context = {
+        "success": success,
+        "blocks": blocks,
+        "message": None
+    }
+
+    return JsonResponse(context)
+
