@@ -76,6 +76,9 @@ def get_block_hp(block):
     if curr_hp < 0:
         curr_hp = 0
 
+    if curr_hp > max_hp:
+        curr_hp = max_hp
+
     return [curr_hp, max_hp]
 
 
