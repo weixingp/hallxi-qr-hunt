@@ -28,13 +28,14 @@
     <!-- App Capsule -->
     <div id="appCapsule" class="full-height">
         <div class="section mt-4">
-            <div class="d-flex align-items-center">
-                <div class="icon-box text-info" style="font-size: 50px">
-                    <ion-icon name="gift-outline"></ion-icon>
+            {% if loot_box_count %}
+                <div class="d-flex align-items-center">
+                    <div class="icon-box text-info" style="font-size: 50px">
+                        <ion-icon name="gift-outline"></ion-icon>
+                    </div>
+                    <h3 class="ml-2 mb-0">You have {{ loot_box_count }} loot box(es). <br /><a href="/open-loot-box">Open now</a></h3>
                 </div>
-                <h3 class="ml-2 mb-0">You have 5 unopened loot box(es). <br /><a href="/open-loot-box">Open now</a></h3>
-            </div>
-
+            {% endif %}
         </div>
         <div class="section full mt-2">
             <div class="section-title">
@@ -211,7 +212,7 @@
         $(".use-item").click(function(){
             let owlItem = $(this).closest('.owl-item');
             activeItemIndex = owlItem.parent().children(".owl-item").index(owlItem);
-            $(this).attr("disabled", true);
+            $(".use-item").attr("disabled", true);
             let type = $(this).attr("item-type");
             let item_id = $(this).attr("item-id");
             let btnName = null;

@@ -364,7 +364,7 @@ def inventory(request):
     user = request.user
 
     # Get a list of unopened loot boxes
-    lootbox_list = list(AssignedLootBox.objects.filter(user=user, has_opened=False))
+    loot_box_count = AssignedLootBox.objects.filter(user=user, has_opened=False).count()
 
     # Get a list of unused items
     item_list = list(AssignedItem.objects.filter(user=user, has_used=False).exclude(item=None))
@@ -380,7 +380,7 @@ def inventory(request):
             special_items.append(item)
 
     context = {
-        "lootbox_list": lootbox_list,
+        "loot_box_count": loot_box_count,
         "attack_items": attack_items,
         "heal_items": heal_items,
         "special_items": special_items
