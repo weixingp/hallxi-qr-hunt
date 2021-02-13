@@ -11,7 +11,7 @@ from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestion
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, AssignedItem
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question, assign_loot_box, get_block_hp, \
-    get_block_exploration, use_item as use
+    get_block_exploration, use_item as use, open_loot_box
 
 
 @login_required(login_url='/account/login/')
@@ -467,3 +467,30 @@ def get_blocks_stats(request):
 
     return JsonResponse(context)
 
+
+@login_required()
+def open_loot_box_view(request):
+    if request.method != 'GET':
+        success = False
+        message = "Illegal access!"
+        return JsonResponse({"success": success, "message": message})
+
+    user = request.user
+    loot_box_list = AssignedLootBox.objects.filter(user=user, has_opened=False)
+
+    item_list = []
+    for box in loot_box_list:
+        new_item = open_loot_box(box)
+        item = {
+            "id": new_item.id,
+            "image": new_item.image.url,
+            "name": new_item.name,
+            "type": new_item.get_type_display(),
+            "rarity": new_item.get_rarity_display(),
+        }
+        item_list.append(item)
+
+    success = True
+    items = item_list
+
+    return JsonResponse({"success": success, "items": items})

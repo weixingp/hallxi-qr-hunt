@@ -1,9 +1,10 @@
-from .models import Location, AssignedLocation, Question, AssignedQuestion, User
+from .models import Location, AssignedLocation, Question, AssignedQuestion, User, AssignedLootBox
 from .models import Block, HpLog, AssignedItem, Item
 
 from django.utils.timezone import localtime, now
 from random import randint
 from django.db.models import Avg, Count, Min, Sum
+from random import random
 
 
 def get_question(user):
@@ -50,8 +51,10 @@ def get_random_question(user, difficulty):
         .values_list('question_id', flat=True)
 
     # Exclude the questions that have been answered.
-    pks = Question.objects.filter(difficulty=difficulty).exclude(id__in=list(answered_question)).values_list('pk',
-                                                                                                             flat=True, )
+    pks = Question.objects.filter(difficulty=difficulty)\
+        .exclude(id__in=list(answered_question))\
+        .values_list('pk', flat=True, )
+
     if len(pks) < 1:
         pks = Question.objects.filter(difficulty=difficulty).values_list('pk', flat=True, )
 
@@ -85,7 +88,7 @@ def get_block_hp(block):
 def get_block_exploration(block):
     max_exploration = block.max_exploration_points
     curr_exploration = AssignedLocation.objects \
-        .filter(user__profile__block=block, has_visited=True)\
+        .filter(user__profile__block=block, has_visited=True) \
         .aggregate(Sum('id'))
     curr_exploration = curr_exploration["id__sum"]
 
@@ -132,3 +135,39 @@ def use_item(user, item, block):
         success = True
 
     return {"success": success, "message": message, "hp": hp}
+
+
+def open_loot_box(box):
+    rand = random()
+
+    if rand < 0.6:
+        # Common
+        rarity = "1"
+    elif rand < 0.91:
+        # Rare
+        rarity = "2"
+    elif rand < 0.99:
+        # Super Rare
+        rarity = "3"
+    else:
+        # Legendary
+        rarity = "4"
+
+    pks = Item.objects.filter(rarity=rarity).values_list('pk', flat=True, )
+    if not pks:
+        pks = Item.objects.filter().values_list('pk', flat=True, )
+
+    random_idx = randint(0, len(pks) - 1)
+    random_item = Item.objects.get(pk=pks[random_idx])
+
+    new_item = AssignedItem.objects.create(
+        user=box.user,
+        item=random_item,
+    )
+
+    box.has_opened = True
+    box.assigned_item = new_item
+    box.time_opened = localtime(now())
+    box.save()
+
+    return random_item

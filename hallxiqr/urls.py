@@ -42,6 +42,7 @@ actions = [
     path('action/answer-question', main_view.answer_question),
     path('action/get-blocks-stats', main_view.get_blocks_stats),
     path('action/use-item', main_view.use_item),
+    path('action/open-lootbox', main_view.open_loot_box_view),
 ]
 urlpatterns += actions
 
