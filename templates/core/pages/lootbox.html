@@ -7,9 +7,6 @@
     <style>
         @import url(https://fonts.googleapis.com/css?family=Work+Sans:400,300,200,100);
         @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600);
-        body {
-            background: #EDF7FA;
-        }
 
         .card1 {
             position: relative;
@@ -77,8 +74,7 @@
 
         .card1-middle {
             display: none;
-            background: #efefef;
-            padding: 2em 1em 1em 1em;
+            background-color: #FFFFFF;
         }
         .card1-middle .more {
             font-weight: 400;
@@ -138,34 +134,77 @@
     <!-- * App Header -->
 
     <!-- App Capsule -->
-    <div id="appCapsule" class="full-height">
-        <div class="text-center">
-
-            <div class="container-fluid">
-                <div class="card1">
-                    <div class="card1-top" id="loot-box-img">
-                        <div  style="position: absolute; top: 9em; width: 100%; right:0em">
-                            <h1 id="total-item-text" class="text-light" style="position: relative;text-align: center; display:none;">You got 3 item(s)</h1>
-                        </div>
-                        <img class="card1-img"  src="https://cdn.kado.sg/images/lootbox.jpg" data-alt="https://cdn.kado.sg/images/lootbox.gif" /></div>
-                    <div class="triangle">
-                        <div class="circle-button" id="open-box">
-                            <div class="text-primary" style="font-size: 1.5em; position: relative; top:0.5em">
-                                <ion-icon name="key-outline"></ion-icon>
+    <div id="appCapsule" class="full-height pt-2">
+        {% if count %}
+            <div class="text-center">
+                <div class="container-fluid">
+                    <div class="card1">
+                        <div class="card1-top" id="loot-box-img">
+                            <div  style="position: absolute; top: 9em; width: 100%; right:0em">
+                                <h1 id="total-item-text" class="text-light" style="position: relative;text-align: center; display:none;"></h1>
                             </div>
+                            <img class="card1-img"  src="https://cdn.kado.sg/images/lootbox.jpg" data-alt="https://cdn.kado.sg/images/lootbox.gif" /></div>
+                        <div class="triangle">
+                            <div class="circle-button" id="open-box">
+                                <div class="text-primary" style="font-size: 1.5em; position: relative; top:0.5em">
+                                    <ion-icon name="key-outline"></ion-icon>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card1-middle py-2" id="card-list">
 
                         </div>
+                        <div class="card1-bottom text-center">
+                            <h2 class="card1-title">Open {{ count }} loot box(es)</h2>
+                        </div>
                     </div>
-                    <div class="card1-middle">
-                        <h5 class="more">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus cumque natus delectus praesentium laudantium molestias.</h5>
+                </div>
+            </div>
+        {% else %}
+            <!-- Error display -->
+            <div id="error-display" class="error-page mt-5">
+                <div class="icon-box text-danger">
+                    <ion-icon name="alert-circle"></ion-icon>
+                </div>
+                <h1 class="title">Error</h1>
+                <div id="error-text" class="text mb-5">You don't have any loot boxes.</div>
+
+                <div class="fixed-footer">
+                    <div class="row">
+                        <div class="col-12">
+                            <a href="/" class="btn btn-primary btn-lg btn-block">Home</a>
+                        </div>
                     </div>
-                    <div class="card1-bottom text-center">
-                        <h2 class="card1-title">Open 3 loot box(es)</h2>
+                </div>
+            </div>
+            <!-- * Error display -->
+        {% endif %}
+    </div>
+
+    <!-- Error dialogue -->
+    <div class="modal fade dialogbox" id="error-dialogue" data-backdrop="static" tabindex="-1" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-icon text-danger">
+                    <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                </div>
+                <div class="modal-header">
+                    <h5 class="modal-title">Error</h5>
+                </div>
+                <div class="modal-body" id="error-dialogue-message">
+                    This is a dialog message
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-inline">
+                        <a href="/" class="btn">HOME</a>
+                        <a href="/lootbox" class="btn btn-text-primary">RETRY</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- * Error dialogue -->
 {%  endblock %}
 {% block extra_script %}
     <script>
@@ -197,6 +236,7 @@
                 $("#open-box").html(`<div class="text-dark" style="font-size: 1.5em; position: relative; top:0.5em"><ion-icon name="lock-open-outline"></ion-icon></div>`);
             }, 3500);
 
+            // Check the image to gif
             var $this   = $("#loot-box-img"),
                 $index  = $this.index(),
                 $img    = $this.children('img'),
@@ -209,6 +249,61 @@
             } else {
                 $img.attr('src', $imgAlt).attr('data-alt', $img.data('alt'));
             }
+
+            // Request the server
+            $.ajax({
+                url: '/action/open-lootbox',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.success){
+                        $("#total-item-text").text("You got " + data.items.length + " item(s)")
+
+
+
+                        let list = `<ul class="listview image-listview" style="border-top: 0; border-bottom: 0">`;
+                        $.each(data.items, function( index, item ) {
+                            let chip;
+                            switch(item.rarity){
+                                case "Rare":
+                                    chip = "chip-danger";
+                                    break;
+                                case "Common":
+                                    chip = "chip-success";
+                                    break;
+                                case "Super Rare":
+                                    chip = "chip-info"
+                                    break;
+                                case "Legendary":
+                                    chip = "chip-warning"
+                                    break;
+                            }
+                            list += `
+                            <li>
+                                <div class="item">
+                                    <img src="${item.image}" alt="image" class="image">
+                                    <div class="in">
+                                        <div>${item.name}</div>
+                                        <div class="chip ${chip} ml-05 mb-05">
+                                            <span class="chip-label">${item.rarity}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            `
+                        });
+                        $("#card-list").html(list + "</ul>")
+                    } else {
+                        $("#error-dialogue-message").text(data.message)
+                        $("#error-dialogue").modal('show');
+                    }
+                },
+                error: function (err){
+                    let msg = "Something went wrong, please try again later or get help in game chat.";
+                    $("#error-dialogue-message").text(msg)
+                    $("#error-dialogue").modal('show');
+                }
+            });
         });
     </script>
 {% endblock %}

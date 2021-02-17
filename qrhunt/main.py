@@ -1,4 +1,4 @@
-from .models import Location, AssignedLocation, Question, AssignedQuestion, User, AssignedLootBox
+from .models import Location, AssignedLocation, Question, AssignedQuestion, User, AssignedLootBox, Profile
 from .models import Block, HpLog, AssignedItem, Item
 
 from django.utils.timezone import localtime, now
@@ -171,3 +171,25 @@ def open_loot_box(box):
     box.save()
 
     return random_item
+
+
+def get_total_blk_player(block):
+    player_count = Profile.objects.filter(block=block).count()
+    return player_count
+
+
+def get_unanswered_qn(user):
+    question_list = AssignedQuestion.objects.filter(
+        user=user,
+        has_answered=False,
+        time__date=localtime(now()).date(),
+    )
+    res = []
+    for question in question_list:
+        temp = {
+            "uuid": question.uuid,
+            "question": str(question.question)
+        }
+        res.append(temp)
+
+    return res

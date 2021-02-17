@@ -111,17 +111,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     fullname = models.CharField(max_length=128)
 
-    BLK_CHOICES = (
-        ("53", "53"),
-        ("54", "54"),
-        ("55", "55"),
-        ("56", "56"),
-    )
-    # block = models.CharField(
-    #     max_length=2,
-    #     choices=BLK_CHOICES,
-    # )
-
     block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_profile_block", blank=False,)
 
     LVL_CHOICES = (

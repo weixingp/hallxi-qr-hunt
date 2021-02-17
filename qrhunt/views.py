@@ -11,7 +11,7 @@ from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestion
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, AssignedItem
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question, assign_loot_box, get_block_hp, \
-    get_block_exploration, use_item as use, open_loot_box
+    get_block_exploration, use_item as use, open_loot_box, get_total_blk_player, get_unanswered_qn
 
 
 @login_required(login_url='/account/login/')
@@ -148,7 +148,13 @@ def home(request):
         "assigned_locations": assigned_locations,
         "profile": user.profile,
         "social": social,
+        "blk_hp": get_block_hp(user.profile.block),
+        "blk_exploration": get_block_exploration(user.profile.block),
+        "total_member": get_total_blk_player(user.profile.block),
+        "unanswered_questions": get_unanswered_qn(user)
     }
+
+    print(get_unanswered_qn(user))
 
     response = HttpResponse(template.render(context, request))
     return response
@@ -245,6 +251,13 @@ def question_page(request, uuid):
         context = {
             "success": False,
             "error": "You have answered this question already.",
+        }
+        response = HttpResponse(template.render(context, request))
+        return response
+    elif localtime(assigned_question.time).date() != localtime(now()).date():
+        context = {
+            "success": False,
+            "error": "This question has expired.",
         }
         response = HttpResponse(template.render(context, request))
         return response
@@ -470,12 +483,16 @@ def get_blocks_stats(request):
 
 def loot_box(request):
     template = loader.get_template('core/pages/lootbox.html')
+    user = request.user
+    loot_box_list = AssignedLootBox.objects.filter(user=user, has_opened=False)
 
     context = {
+        "count": len(loot_box_list),
     }
 
     response = HttpResponse(template.render(context, request))
     return response
+
 
 @login_required()
 def open_loot_box_view(request):
@@ -486,6 +503,11 @@ def open_loot_box_view(request):
 
     user = request.user
     loot_box_list = AssignedLootBox.objects.filter(user=user, has_opened=False)
+
+    if len(loot_box_list) < 1:
+        success = False
+        message = "You don't have any loot boxes to open."
+        return JsonResponse({"success": success, "message": message})
 
     item_list = []
     for box in loot_box_list:

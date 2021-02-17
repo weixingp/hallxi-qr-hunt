@@ -33,7 +33,7 @@
                     <div class="icon-box text-info" style="font-size: 50px">
                         <ion-icon name="gift-outline"></ion-icon>
                     </div>
-                    <h3 class="ml-2 mb-0">You have {{ loot_box_count }} loot box(es). <br /><a href="/open-loot-box">Open now</a></h3>
+                    <h3 class="ml-2 mb-0">You have {{ loot_box_count }} loot box(es). <br /><a href="/lootbox">Open now</a></h3>
                 </div>
             {% endif %}
         </div>
@@ -68,7 +68,7 @@
                 <div id="tab-content" class="tab-content mt-2">
                     <div class="tab-pane fade show active" id="attack" role="tabpanel">
                         {% if not attack_items %}
-                            <p class="px-2">You don't have any items under this category.</p>
+                            <p class="px-2">You don't have any items under this category. Open loot box to get items.</p>
                         {% endif %}
                         <div class="carousel-multiple-items owl-carousel owl-theme">
                             {% for item in attack_items %}
@@ -83,7 +83,19 @@
 
                                             <p class="text" style="line-height:125%;padding-top:4px;">{{ item.item.get_item_description }}</p>
                                             <div class="mt-auto">
-                                                <div class="chip chip-outline chip-info ml-0 mb-05">
+                                                <div class="chip chip-outline
+                                                    {% if item.item.get_rarity_display == 'Common' %}
+                                                    chip-success
+                                                    {% elif item.item.get_rarity_display == 'Rare' %}
+                                                    chip-danger
+                                                    {% elif item.item.get_rarity_display == 'Super Rare' %}
+                                                    chip-info
+                                                    {% elif item.item.get_rarity_display == 'Legendary' %}
+                                                    chip-warning
+                                                    {% else %}
+                                                    chip-success
+                                                    {% endif %}
+                                                ml-0 mb-05">
                                                     <span class="chip-label">{{ item.item.get_rarity_display }}</span>
                                                 </div>
                                                 <div class="price">{{ item.item.value }} Damage</div>
@@ -100,7 +112,7 @@
                     </div>
                     <div class="tab-pane fade" id="heal" role="tabpanel">
                         {% if not heal_items %}
-                            <p class="px-2">You don't have any items under this category.</p>
+                            <p class="px-2">You don't have any items under this category. Open loot box to get items.</p>
                         {% endif %}
                         <div class="carousel-multiple-items owl-carousel owl-theme">
                             {% for item in heal_items %}
@@ -129,7 +141,7 @@
                     </div>
                     <div class="tab-pane fade" id="special" role="tabpanel">
                         {% if not special_items %}
-                            <p class="px-2">You don't have any items under this category.</p>
+                            <p class="px-2">You don't have any items under this category. Open loot box to get items.</p>
                         {% endif %}
                     </div>
                 </div>
@@ -182,7 +194,7 @@
                         <div class="w-100 blk-display">
                             <p class="mb-0 text-left">Blk ${data.info.block} HP: ${data.info.hp[0]} / ${data.info.hp[1]}</p>
                             <div class="progress">
-                                <div class="progress-bar bg-success" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+                                <div class="progress-bar bg-success" role="progressbar" style="width: ${Math.round( (data.info.hp[0]/data.info.hp[1])*100 )}%;" aria-valuenow="${data.info.hp[0]}" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                         `
@@ -195,7 +207,7 @@
                         owlBlock.owlCarousel('remove', activeItemIndex).owlCarousel('update');;
                         let items = owlBlock.find(".owl-item");
                         if (!items.length){
-                            owlBlock.closest(".tab-pane").html(`<p class="px-2">You don't have any items under this category.</p>`)
+                            owlBlock.closest(".tab-pane").html(`<p class="px-2">You don't have any items under this category. Open loot box to get items.</p>`)
                         }
 
 
@@ -258,7 +270,7 @@
                                     <div class="w-100 blk-display">
                                         <p class="mb-0 text-left">Blk ${k} HP: ${v.curr_hp} / ${v.max_hp}</p>
                                         <div class="progress">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: ${Math.round( (v.curr_hp/v.max_hp)*100 )}%;" aria-valuenow="${v.curr_hp}" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </div>
                                 </div>
