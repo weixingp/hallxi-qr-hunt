@@ -468,6 +468,15 @@ def get_blocks_stats(request):
     return JsonResponse(context)
 
 
+def loot_box(request):
+    template = loader.get_template('core/pages/lootbox.html')
+
+    context = {
+    }
+
+    response = HttpResponse(template.render(context, request))
+    return response
+
 @login_required()
 def open_loot_box_view(request):
     if request.method != 'GET':

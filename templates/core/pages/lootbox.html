@@ -1,0 +1,214 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load thumbnail %}
+{% load i18n %}
+{% block head_title %}{% trans "Loot box | HALL XI BoB" %}{% endblock %}
+{% block extra_head %}
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Work+Sans:400,300,200,100);
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600);
+        body {
+            background: #EDF7FA;
+        }
+
+        .card1 {
+            position: relative;
+            top: 10vh;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+            border-radius: 0.75em;
+            padding: 0;
+            transition: all 0.2s ease-in-out;
+        }
+        .card1:nth-child(even) {
+            margin: 0 1em;
+        }
+
+        .card1-top {
+            background: #ff6666;
+            padding: 1em;
+            border-top-left-radius: 0.75em;
+            border-top-right-radius: 0.75em;
+        }
+        .card1-top .card1-img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            height: 20em;
+            width: auto;
+        }
+        .card1-top .overlay {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 17.75em;
+            width: 100%;
+            border-top-left-radius: 0.75em;
+            border-top-right-radius: 0.75em;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.55);
+            overflow: hidden;
+            transition: all 700ms ease;
+            opacity: 0;
+        }
+        .card1-top .overlay h1 {
+            text-align: center;
+            font-weight: 500;
+            color: #fff;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .card1-top .overlay:hover, .card1-top .overlay:focus {
+            opacity: 1;
+        }
+
+        .triangle {
+            position: relative;
+            height: 0;
+            width: 0;
+            border-left: 1.5em solid transparent;
+            border-right: 1.5em solid transparent;
+            border-top: 1.5em solid #B2DCE5;
+            margin: 0 auto -1.75em auto;
+            top: -0.25em;
+            z-index: 20;
+        }
+
+        .card1-middle {
+            display: none;
+            background: #efefef;
+            padding: 2em 1em 1em 1em;
+        }
+        .card1-middle .more {
+            font-weight: 400;
+        }
+
+        .card1-bottom {
+            background: #f7f7f7;
+            padding: 1.75em 1em 1em 1em;
+            border-bottom-left-radius: 0.75em;
+            border-bottom-right-radius: 0.75em;
+        }
+        .card1-bottom .card1-title {
+            font-weight: 100;
+        }
+
+        .circle-button {
+            position: absolute;
+            bottom: 0;
+            right: -1.5em;
+            width: 70px;
+            height: 70px;
+            font-size: 1.5em;
+            color: #fff;
+            background: #fff;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.275);
+            outline: none;
+            cursor: pointer;
+            transition: all 300ms ease;
+        }
+        .circle-button .close {
+            transition: transform 400ms ease;
+        }
+        .circle-button:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.275);
+        }
+
+        .closeRotate {
+            transform: rotate(45deg);
+        }
+
+    </style>
+{% endblock %}
+{% block body %}
+    <!-- App Header -->
+    <div class="appHeader bg-primary text-light">
+        <div class="left">
+            <a href="/" class="headerButton goBack">
+                <ion-icon name="home-outline"></ion-icon>
+            </a>
+        </div>
+        <div class="pageTitle">
+            Loot box
+        </div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="full-height">
+        <div class="text-center">
+
+            <div class="container-fluid">
+                <div class="card1">
+                    <div class="card1-top" id="loot-box-img">
+                        <div  style="position: absolute; top: 9em; width: 100%; right:0em">
+                            <h1 id="total-item-text" class="text-light" style="position: relative;text-align: center; display:none;">You got 3 item(s)</h1>
+                        </div>
+                        <img class="card1-img"  src="https://cdn.kado.sg/images/lootbox.jpg" data-alt="https://cdn.kado.sg/images/lootbox.gif" /></div>
+                    <div class="triangle">
+                        <div class="circle-button" id="open-box">
+                            <div class="text-primary" style="font-size: 1.5em; position: relative; top:0.5em">
+                                <ion-icon name="key-outline"></ion-icon>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card1-middle">
+                        <h5 class="more">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus cumque natus delectus praesentium laudantium molestias.</h5>
+                    </div>
+                    <div class="card1-bottom text-center">
+                        <h2 class="card1-title">Open 3 loot box(es)</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block extra_script %}
+    <script>
+        var getGif = function() {
+            var gif = [];
+            $('img').each(function() {
+                var data = $(this).data('alt');
+                gif.push(data);
+            });
+            return gif;
+        }
+        var gif = getGif();
+
+        // Preload all the GIF.
+        var image = [];
+
+        $.each(gif, function(index) {
+            image[index]     = new Image();
+            image[index].src = gif[index];
+        });
+
+        $('#open-box').one('click', function() {
+            $(this).html(`<div class="spinner-border text-danger" role="status" style="position: relative;top: 0.8em;"></div>`);
+
+            setTimeout(function(){
+                $('.card1-middle').slideToggle();
+                $("#total-item-text").fadeIn( "slow", function() {});
+                $('.card1-title').html(`<a href='/inventory'>View in inventory</a>`);
+                $("#open-box").html(`<div class="text-dark" style="font-size: 1.5em; position: relative; top:0.5em"><ion-icon name="lock-open-outline"></ion-icon></div>`);
+            }, 3500);
+
+            var $this   = $("#loot-box-img"),
+                $index  = $this.index(),
+                $img    = $this.children('img'),
+                $imgSrc = $img.attr('src'),
+                $imgAlt = $img.attr('data-alt'),
+                $imgExt = $imgAlt.split('.');
+
+            if($imgExt[1] === 'gif') {
+                $img.attr('src', $img.data('alt')).attr('data-alt', $imgSrc);
+            } else {
+                $img.attr('src', $imgAlt).attr('data-alt', $img.data('alt'));
+            }
+        });
+    </script>
+{% endblock %}
