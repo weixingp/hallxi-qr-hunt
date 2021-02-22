@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport"
-        content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
+          content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
@@ -32,64 +32,70 @@
 </head>
 
 <body>
-    <!-- loader -->
-    <div id="loader">
-        <div class="spinner-border text-primary" role="status"></div>
-    </div>
-    <!-- * loader -->
+<!-- loader -->
+<div id="loader">
+    <div class="spinner-border text-primary" role="status"></div>
+</div>
+<!-- * loader -->
 {% block body %}
 {% endblock %}
-    <!-- django notification  -->
-    <div id="notification-welcome" class="notification-box">
-        <div class="notification-dialog android-style">
-            <div class="notification-header">
-                <div class="in">
-                    <img src="https://cdn.kado.sg/themes/mobile/img/icon/72x72.png" alt="image" class="imaged w24">
-                    <strong>Mobilekit</strong>
-                    <span>just now</span>
-                </div>
-                <a href="#" class="close-button">
-                    <ion-icon name="close"></ion-icon>
-                </a>
+<!-- django notification  -->
+<div id="notification-welcome" class="notification-box">
+    <div class="notification-dialog android-style">
+        <div class="notification-header">
+            <div class="in">
+                <img src="https://cdn.kado.sg/themes/mobile/img/icon/72x72.png" alt="image" class="imaged w24">
+                <strong>Mobilekit</strong>
+                <span>just now</span>
             </div>
-            <div class="notification-content">
-                <div class="in">
-                    <h3 class="subtitle">Welcome to Mobilekit</h3>
-                    <div class="text">
-                        Mobilekit is a PWA ready Mobile UI Kit Template.
-                        Great way to start your mobile websites and pwa projects.
-                    </div>
+            <a href="#" class="close-button">
+                <ion-icon name="close"></ion-icon>
+            </a>
+        </div>
+        <div class="notification-content">
+            <div class="in">
+                <h3 class="subtitle">Welcome to Mobilekit</h3>
+                <div class="text">
+                    Mobilekit is a PWA ready Mobile UI Kit Template.
+                    Great way to start your mobile websites and pwa projects.
                 </div>
             </div>
         </div>
     </div>
-    <!-- * welcome notification -->
+</div>
+<!-- * welcome notification -->
 
-    <!-- ///////////// Js Files ////////////////////  -->
-    <!-- Jquery -->
-    <script src="https://cdn.kado.sg/themes/mobile/js/lib/jquery-3.4.1.min.js"></script>
-    <!-- Bootstrap-->
-    <script src="https://cdn.kado.sg/themes/mobile/js/lib/popper.min.js"></script>
-    <script src="https://cdn.kado.sg/themes/mobile/js/lib/bootstrap.min.js"></script>
-    <!-- Ionicons -->
-    <script type="module" src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js"></script>
-    <!-- Owl Carousel -->
-    <script src="https://cdn.kado.sg/themes/mobile/js/plugins/owl-carousel/owl.carousel.min.js"></script>
-    <!-- jQuery Circle Progress -->
-    <script src="https://cdn.kado.sg/themes/mobile/js/plugins/jquery-circle-progress/circle-progress.min.js"></script>
-    <!-- Base Js File -->
-    <script src="https://cdn.kado.sg/themes/mobile/js/base.js?t=4"></script>
-    <!-- Hammer Js File -->
-    <script src="{% static "assets/js/plugins/hammer.min.js" %}"></script>
-    <script>
-    </script>
+<!-- ///////////// Js Files ////////////////////  -->
+<!-- Jquery -->
+<script src="https://cdn.kado.sg/themes/mobile/js/lib/jquery-3.4.1.min.js"></script>
+<!-- Bootstrap-->
+<script src="https://cdn.kado.sg/themes/mobile/js/lib/popper.min.js"></script>
+<script src="https://cdn.kado.sg/themes/mobile/js/lib/bootstrap.min.js"></script>
+<!-- Ionicons -->
+<script type="module" src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js"></script>
+<!-- Owl Carousel -->
+<script src="https://cdn.kado.sg/themes/mobile/js/plugins/owl-carousel/owl.carousel.min.js"></script>
+<!-- jQuery Circle Progress -->
+<script src="https://cdn.kado.sg/themes/mobile/js/plugins/jquery-circle-progress/circle-progress.min.js"></script>
+<!-- Base Js File -->
+<script src="https://cdn.kado.sg/themes/mobile/js/base.js?t=4"></script>
+<!-- Hammer Js File -->
+<script src="{% static "assets/js/plugins/hammer.min.js" %}"></script>
+<script>
+    let path = window.location.href; // because the 'href' property of the DOM element is the absolute path
+    $('.appBottomMenu a').each(function() {
+        if (this.href === path) {
+            $(this).addClass('active');
+        }
+    });
+</script>
 {#    <script>#}
 {#        setTimeout(() => {#}
 {#            notification('notification-welcome', 5000);#}
 {#        }, 2000);#}
 {#    </script>#}
-    {% block extra_script %}
-    {% endblock %}
+{% block extra_script %}
+{% endblock %}
 </body>
 
 </html>

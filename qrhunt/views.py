@@ -154,8 +154,6 @@ def home(request):
         "unanswered_questions": get_unanswered_qn(user)
     }
 
-    print(get_unanswered_qn(user))
-
     response = HttpResponse(template.render(context, request))
     return response
 
@@ -525,3 +523,13 @@ def open_loot_box_view(request):
     items = item_list
 
     return JsonResponse({"success": success, "items": items})
+
+
+def landing_page(request):
+    template = loader.get_template('account/landing.html')
+
+    context = {
+    }
+
+    response = HttpResponse(template.render(context, request))
+    return response

@@ -1,0 +1,112 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Landing" %}{% endblock %}
+
+{% block content %}
+
+    <div class="wrapper">
+        <div class="section section-hero section-shaped">
+            <div class="shape shape-style-3 shape-default">
+                <span class="span-150"></span>
+                <span class="span-50"></span>
+                <span class="span-50"></span>
+                <span class="span-75"></span>
+                <span class="span-100"></span>
+                <span class="span-75"></span>
+                <span class="span-50"></span>
+                <span class="span-100"></span>
+                <span class="span-50"></span>
+                <span class="span-100"></span>
+            </div>
+            <div class="page-header">
+                <div class="container shape-container d-flex align-items-center py-lg">
+                    <div class="col px-0">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-lg-6 text-center">
+                                <h1 class="text-white display-1">Join the battle</h1>
+                                <h2 class="display-4 font-weight-normal text-white">You have registered.</h2>
+                                <div class="btn-wrapper mt-4">
+                                    <a href="https://play.hallxi.com" class="btn btn-warning btn-icon mt-3 mb-sm-0">
+                                        <span class="btn-inner--icon"><i class="ni ni-button-play"></i></span>
+                                        <span class="btn-inner--text">Access the game (mobile only)</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="separator separator-bottom separator-skew zindex-100">
+                <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <polygon class="fill-white" points="2560 0 2560 100 0 100"></polygon>
+                </svg>
+            </div>
+        </div>
+        <div class="section features-6">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="info info-horizontal info-hover-primary">
+                            <div class="description pl-4">
+                                <h4 class="title">Visiting from desktop?</h4>
+                                <p>The game can only be played on mobile devices. You can visit the game by scanning the QR code on the right with your mobile device.</p>
+                                <p>Alternatively, enter the following link in your mobile browser:</p>
+                                <h5 class="text-danger">https://play.hallxi.com</h5>
+                            </div>
+                        </div>
+                        <div class="info info-horizontal info-hover-primary mt-5">
+                            <div class="description pl-4">
+                                <h4 class="title">Fully Immersed Experience</h4>
+                                <p>The game is designed to work like a mobile app, <i>without downloading it</i>. Scroll down to find out how to enable.</p>
+                                <a href="#" class="text-info">Learn more</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-10 mx-md-auto">
+                        <img class="ml-lg-5" src="https://cdn.kado.sg/images/main-qr.png" width="100%">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section features-1">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 mx-auto text-center mb-3">
+                        <span class="badge badge-primary badge-pill" style="font-size: 1em">iOS</span>
+                        <h4 class="display-3 mb-2">Fully Immersed Experience</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="info">
+                            <div>
+                                <img src="https://cdn.kado.sg/images/landing/i1.png" width="100%" />
+                            </div>
+                            <h6 class="info-title text-uppercase text-primary">1. Tab the action button</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info">
+                            <div>
+                                <img src="https://cdn.kado.sg/images/landing/i2.png" width="100%" />
+                            </div>
+                            <h6 class="info-title text-uppercase text-success">2. Tab Add to Home Screen</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="info">
+                            <div>
+                                <img src="https://cdn.kado.sg/images/landing/i2.png" width="100%" />
+                            </div>
+                            <h6 class="info-title text-uppercase text-warning">3. Launch the game from your home screen</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br /><br />
+    </div>
+{% endblock %}

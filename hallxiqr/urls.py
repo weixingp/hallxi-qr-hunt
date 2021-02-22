@@ -23,7 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('allauth.urls')),
     path('account/check/', main_view.check_registered),
-    path('account/profile/', main_view.user_details)
+    path('account/profile/', main_view.user_details),
+    path('account/landing/', main_view.landing_page)
 ]
 
 # Game Core URLs
