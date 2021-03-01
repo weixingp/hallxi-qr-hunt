@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion, AssignedItem, PhotoSubmission, \
-    PhotoUpvote
+    PhotoUpvote, PhotoComment
 from .models import Location, AssignedLocation, Block, HpLog, AssignedLootBox
 
 
@@ -46,6 +46,12 @@ class PhotoSubmissionAdmin(admin.ModelAdmin):
 @admin.register(PhotoUpvote)
 class PhotoUpvoteAdmin(admin.ModelAdmin):
     list_display = ('user', linkify(field_name="submission"), 'time')
+    search_fields = ('user__email', )
+
+
+@admin.register(PhotoComment)
+class PhotoCommentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'comment', linkify(field_name="submission"), 'time')
     search_fields = ('user__email', )
 
 

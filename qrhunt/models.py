@@ -9,6 +9,8 @@ import uuid
 from urllib.parse import urlencode
 from hallxiqr.settings import SITE_URL
 from qrhunt.utils import ContentTypeRestrictedFileField, update_filename
+from django.db.models.signals import post_save, pre_delete
+from django.dispatch import receiver
 
 
 class Block(models.Model):
@@ -369,3 +371,38 @@ class PhotoUpvote(models.Model):
 
     def __str__(self):
         return self.user.email + "'s upvote"
+
+
+class PhotoComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_photo_comment_user")
+    submission = models.ForeignKey(PhotoSubmission, on_delete=models.CASCADE,
+                                   related_name="fk_photo_comment_photo_submission")
+    comment = models.TextField(max_length=500)
+    time = models.DateTimeField(auto_now=True, blank=True)
+
+
+# Signals
+@receiver(post_save, sender=PhotoSubmission)
+def update_blk_hp_after_save(sender, instance, **kwargs):
+    reason = "submission_" + str(instance.id)
+    hplog = HpLog.objects.filter(user=instance.user, reason=reason)
+    if instance.has_reviewed:
+        if not hplog:
+            HpLog.objects.create(
+                user=instance.user,
+                target_block=instance.user.profile.block,
+                reason=reason,
+                value=100
+            )
+    else:
+        # Delete the hp if review has been revoked
+        if hplog:
+            hplog.delete()
+
+
+@receiver(pre_delete, sender=PhotoSubmission)
+def update_blk_hp_after_delete(sender, instance, **kwargs):
+    reason = "submission_" + str(instance.id)
+    hplog = HpLog.objects.filter(user=instance.user, reason=reason)
+    if hplog:
+        hplog.delete()

@@ -33,6 +33,12 @@ core = [
 
 
 # Game Core URLs - Phase 2
+core_phase1 = [
+    path('submission/<str:submission_id>/', main_view.photo_submission_view_page),
+]
+
+
+# Game Core URLs - Phase 2
 core_phase2 = [
     path('scan', main_view.scan_qr),
     path('inventory', main_view.inventory),
@@ -42,6 +48,7 @@ core_phase2 = [
 ]
 
 urlpatterns += core
+urlpatterns += core_phase1
 urlpatterns += core_phase2
 
 # Game actions api
@@ -51,6 +58,9 @@ actions = [
     path('action/get-blocks-stats', main_view.get_blocks_stats),
     path('action/use-item', main_view.use_item),
     path('action/open-lootbox', main_view.open_loot_box_view),
+    path('action/vote', main_view.vote_view),
+    path('action/comment', main_view.comment_view),
+    path('action/delete-comment', main_view.delete_comment_view),
 ]
 urlpatterns += actions
 

@@ -9,9 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
 from hallxiqr.settings import IS_PHASE2
-from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm, UseItemForm
+from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm, UseItemForm, CastVoteForm, \
+    PhotoCommentForm, DeletePhotoCommentForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, \
-    AssignedItem, PhotoSubmission, PhotoUpvote
+    AssignedItem, PhotoSubmission, PhotoUpvote, PhotoComment
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question, assign_loot_box, get_block_hp, \
     get_block_exploration, use_item as use, open_loot_box, get_total_blk_player, get_unanswered_qn
@@ -146,7 +147,7 @@ def home(request):
     except ObjectDoesNotExist:
         assigned_locations = None
 
-    photo_submissions = PhotoSubmission.objects.all().order_by('time')
+    photo_submissions = PhotoSubmission.objects.filter(has_reviewed=True).order_by('-time')
 
     for submission in photo_submissions:
         submission.votes = PhotoUpvote.objects.filter(submission=submission).count()
@@ -541,3 +542,104 @@ def landing_page(request):
 
     response = HttpResponse(template.render(context, request))
     return response
+
+
+@login_required()
+def photo_submission_view_page(request, submission_id):
+    template = loader.get_template('core/pages/photo-view.html')
+    user = request.user
+
+    try:
+        submission = PhotoSubmission.objects.get(id=submission_id, has_reviewed=True)
+        upvote = PhotoUpvote.objects.filter(user=user, submission=submission).count()
+
+        # Comments
+        comments = PhotoComment.objects.filter(submission=submission).order_by('-time')
+
+    except ObjectDoesNotExist:
+        submission = None
+        upvote = None
+        comments = None
+
+    context = {
+        "submission": submission,
+        "upvote": upvote,
+        "user": user,
+        "comments": comments,
+    }
+
+    response = HttpResponse(template.render(context, request))
+    return response
+
+
+def vote_view(request):
+    if request.method != "POST":
+        success = False
+        message = "Illegal access!"
+        return JsonResponse({"success": success, "message": message})
+
+    user = request.user
+    form = CastVoteForm(request.POST)
+    if form.is_valid():
+        has_voted = PhotoUpvote.objects.filter(user=user, submission=form.cleaned_data['submission']).count()
+        if not has_voted:
+            upvote = form.save(commit=False)
+            upvote.user = user
+            upvote.save()
+
+            success = True
+            message = "voted"
+        else:
+            success = False
+            message = "You have voted on this submission."
+    else:
+        success = False
+        message = "Incomplete submission, please try again."
+
+    return JsonResponse({"success": success, "message": message})
+
+
+def comment_view(request):
+    if request.method != "POST":
+        success = False
+        message = "Illegal access!"
+        return JsonResponse({"success": success, "message": message})
+
+    user = request.user
+    form = PhotoCommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.user = user
+        comment.save()
+
+        success = True
+        message = comment.id
+    else:
+        success = False
+        message = "Incomplete submission, please try again."
+
+    return JsonResponse({"success": success, "message": message})
+
+
+def delete_comment_view(request):
+    if request.method != "POST":
+        success = False
+        message = "Illegal access!"
+        return JsonResponse({"success": success, "message": message})
+
+    user = request.user
+    form = DeletePhotoCommentForm(request.POST)
+    if form.is_valid():
+        try:
+            comment = PhotoComment.objects.get(user=user, id=form.cleaned_data["comment_id"])
+            comment.delete()
+            success = True
+            message = "Comment deleted."
+        except ObjectDoesNotExist:
+            success = False
+            message = "Comment does not exist or has been deleted. Reload the page."
+    else:
+        success = False
+        message = "Incomplete submission, please try again."
+
+    return JsonResponse({"success": success, "message": message})

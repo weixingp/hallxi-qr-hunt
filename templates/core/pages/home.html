@@ -125,7 +125,7 @@
         {% endif %}
 
         <!-- Groom my room display -->
-        <div class="section full mt-3 mb-3">
+        <div class="section full mt-3 mb-3" id="submissions">
             <div class="section-title">
                 <h2 class="mb-0">Groom My Castle</h2>
             </div>
@@ -133,7 +133,7 @@
                 <ul class="listview image-listview media mb-2">
                 {% for submission in photo_submissions %}
                     <li>
-                    <a href="#" class="item">
+                    <a href="submission/{{ submission.id }}" class="item">
                         <div class="imageWrapper">
                             {% thumbnail submission.photo "320x180" crop="center" as im %}
                                 <img src="{{ im.url }}" alt="image" class="imaged w64">
@@ -142,7 +142,7 @@
                         <div class="in">
                             <div>
                                 {{ submission.title }}
-                                <div class="text-muted">{{ submission.votes }} upvotes</div>
+                                <div class="text-muted">{{ submission.votes }} votes</div>
                             </div>
                             <span class="text-primary">View/Vote</span>
                         </div>
