@@ -400,26 +400,15 @@ class PhotoComment(models.Model):
 
 # Signals
 @receiver(post_save, sender=PhotoSubmission)
-def update_blk_hp_after_save(sender, instance, **kwargs):
-    reason = "submission_" + str(instance.id)
-    hplog = HpLog.objects.filter(user=instance.user, reason=reason)
-    if instance.has_reviewed:
-        if not hplog:
-            HpLog.objects.create(
-                user=instance.user,
-                target_block=instance.user.profile.block,
-                reason=reason,
-                value=100
-            )
-    else:
-        # Delete the hp if review has been revoked
-        if hplog:
-            hplog.delete()
+def update_blk_hp_after_save(sender, instance, created, **kwargs):
+    if created:
+        block = Block.objects.get(name=instance.user.profile.block.name)
+        block.max_hp += 100
+        block.save()
 
 
 @receiver(pre_delete, sender=PhotoSubmission)
 def update_blk_hp_after_delete(sender, instance, **kwargs):
-    reason = "submission_" + str(instance.id)
-    hplog = HpLog.objects.filter(user=instance.user, reason=reason)
-    if hplog:
-        hplog.delete()
+    block = Block.objects.get(name=instance.user.profile.block.name)
+    block.max_hp -= 100
+    block.save()
