@@ -27,16 +27,22 @@ urlpatterns = [
     path('account/landing/', main_view.landing_page)
 ]
 
-# Game Core URLs
 core = [
     path('', main_view.home),
+]
+
+
+# Game Core URLs - Phase 2
+core_phase2 = [
     path('scan', main_view.scan_qr),
     path('inventory', main_view.inventory),
     path('lootbox', main_view.loot_box),
     path('location/<str:uuid>/', main_view.location_main),
     path('question/<str:uuid>', main_view.question_page),
 ]
+
 urlpatterns += core
+urlpatterns += core_phase2
 
 # Game actions api
 actions = [

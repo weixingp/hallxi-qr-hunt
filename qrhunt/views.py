@@ -137,7 +137,6 @@ def location_main(request, uuid):
 def home(request):
     template = loader.get_template('core/pages/home.html')
     user = request.user
-    social = user.socialaccount_set.all()[0]
 
     try:
         assigned_locations = AssignedLocation.objects.filter(user=user, )
@@ -147,7 +146,6 @@ def home(request):
     context = {
         "assigned_locations": assigned_locations,
         "profile": user.profile,
-        "social": social,
         "blk_hp": get_block_hp(user.profile.block),
         "blk_exploration": get_block_exploration(user.profile.block),
         "total_member": get_total_blk_player(user.profile.block),

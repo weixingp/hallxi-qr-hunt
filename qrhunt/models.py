@@ -226,7 +226,7 @@ class AssignedQuestion(models.Model):
         related_name="fk_assigned_question_question",
         null=True,
     )
-    time = models.DateTimeField(null=True)
+    time = models.DateTimeField(auto_now=True, null=True)
     has_answered = models.BooleanField(default=False)
     answered_time = models.DateTimeField(blank=True, null=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -343,4 +343,3 @@ class AssignedLootBox(models.Model):
 
     def __str__(self):
         return self.user.email + "'s Loot Box"
-

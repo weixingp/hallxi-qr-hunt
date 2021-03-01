@@ -35,6 +35,11 @@ DEBUG = True
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.105", "0.0.0.0", "192.168.1.177", "dev.hallxi.com"]
 SITE_URL = "https://127.0.0.1:8000/"
 LOGIN_URL = "/account/login/"
+
+# Game controls
+IS_PHASE2 = False
+
+
 # Application definition
 
 INSTALLED_APPS = [
