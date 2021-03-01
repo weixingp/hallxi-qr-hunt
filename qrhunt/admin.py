@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
-from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion, AssignedItem
+from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion, AssignedItem, PhotoSubmission, \
+    PhotoUpvote
 from .models import Location, AssignedLocation, Block, HpLog, AssignedLootBox
 
 
@@ -33,6 +34,19 @@ class AssignedLootBoxAdmin(admin.ModelAdmin):
     list_display = ('user', linkify(field_name="assigned_item"), 'reason', 'has_opened', 'time_opened', 'time')
     list_filter = ('has_opened',)
     search_fields = ('reason', 'user__email')
+
+
+@admin.register(PhotoSubmission)
+class PhotoSubmissionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'has_reviewed', 'time')
+    list_filter = ('has_reviewed',)
+    search_fields = ('user__email', )
+
+
+@admin.register(PhotoUpvote)
+class PhotoUpvoteAdmin(admin.ModelAdmin):
+    list_display = ('user', linkify(field_name="submission"), 'time')
+    search_fields = ('user__email', )
 
 
 @admin.register(AssignedItem)

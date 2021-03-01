@@ -8,12 +8,13 @@ from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 from urllib.parse import urlencode
 from hallxiqr.settings import SITE_URL
+from qrhunt.utils import ContentTypeRestrictedFileField, update_filename
 
 
 class Block(models.Model):
     name = models.CharField(max_length=2, unique=True)
-    max_hp = models.IntegerField(validators=[MinValueValidator(0)],)
-    max_exploration_points = models.IntegerField(validators=[MinValueValidator(0)],)
+    max_hp = models.IntegerField(validators=[MinValueValidator(0)], )
+    max_exploration_points = models.IntegerField(validators=[MinValueValidator(0)], )
 
     def __str__(self):
         return self.name
@@ -111,7 +112,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     fullname = models.CharField(max_length=128)
 
-    block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_profile_block", blank=False,)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_profile_block", blank=False, )
 
     LVL_CHOICES = (
         ("01", "01"),
@@ -343,3 +344,28 @@ class AssignedLootBox(models.Model):
 
     def __str__(self):
         return self.user.email + "'s Loot Box"
+
+
+class PhotoSubmission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_photo_submission_user")
+    title = models.CharField(max_length=50)
+    photo = ContentTypeRestrictedFileField(
+        upload_to=update_filename,
+        content_types=['image/jpeg', 'image/jpg', 'image/png', 'image/heic'],
+        max_upload_size=20971520
+    )
+    has_reviewed = models.BooleanField(default=False)
+    time = models.DateTimeField(auto_now=True, blank=True)
+
+    def __str__(self):
+        return self.user.email + "'s submission"
+
+
+class PhotoUpvote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_photo_upvote_user")
+    submission = models.ForeignKey(PhotoSubmission, on_delete=models.CASCADE,
+                                   related_name="fk_photo_upvote_photo_submission")
+    time = models.DateTimeField(auto_now=True, blank=True)
+
+    def __str__(self):
+        return self.user.email + "'s upvote"

@@ -7,8 +7,11 @@ from django.template import loader
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+
+from hallxiqr.settings import IS_PHASE2
 from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm, UseItemForm
-from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, AssignedItem
+from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, \
+    AssignedItem, PhotoSubmission, PhotoUpvote
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question, assign_loot_box, get_block_hp, \
     get_block_exploration, use_item as use, open_loot_box, get_total_blk_player, get_unanswered_qn
@@ -143,13 +146,20 @@ def home(request):
     except ObjectDoesNotExist:
         assigned_locations = None
 
+    photo_submissions = PhotoSubmission.objects.all().order_by('time')
+
+    for submission in photo_submissions:
+        submission.votes = PhotoUpvote.objects.filter(submission=submission).count()
+
     context = {
+        "is_phase2": IS_PHASE2,
         "assigned_locations": assigned_locations,
         "profile": user.profile,
         "blk_hp": get_block_hp(user.profile.block),
         "blk_exploration": get_block_exploration(user.profile.block),
         "total_member": get_total_blk_player(user.profile.block),
-        "unanswered_questions": get_unanswered_qn(user)
+        "unanswered_questions": get_unanswered_qn(user),
+        "photo_submissions": photo_submissions,
     }
 
     response = HttpResponse(template.render(context, request))
