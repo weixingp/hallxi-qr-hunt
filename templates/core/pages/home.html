@@ -126,9 +126,15 @@
 
         <!-- Groom my room display -->
         <div class="section full mt-3 mb-3" id="submissions">
-            <div class="section-title">
-                <h2 class="mb-0">Groom My Castle</h2>
+            <div class="d-flex justify-content-between align-items-end section-title">
+                <div class="">
+                    <h2 class="mb-0">Groom My Castle</h2>
+                </div>
+                <div>
+                    <a href="submission/new">Submit</a>
+                </div>
             </div>
+
             <div class="content-header mb-2"><h5 class="text-muted">Browse through submissions by your hall mates and vote for your favourite.</h5></div>
                 <ul class="listview image-listview media mb-2">
                 {% for submission in photo_submissions %}

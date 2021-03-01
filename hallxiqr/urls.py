@@ -34,6 +34,7 @@ core = [
 
 # Game Core URLs - Phase 2
 core_phase1 = [
+    path('submission/new/', main_view.photo_submission_new_page),
     path('submission/<str:submission_id>/', main_view.photo_submission_view_page),
 ]
 

@@ -24,15 +24,27 @@
         {% if submission %}
             <div style="max-width: 500px; margin: auto; text-align: center;">
 
-                <div class="section mt-4">
-                    {% thumbnail submission.photo "1600x900" crop="center" as im %}
-                        <img src="{{ im.url }}" alt="image" class="form-image rounded-lg w-100">
-                    {% endthumbnail %}
+                <div class="section mt-4" id="photos">
+                    <div class="carousel-single-no-loop owl-carousel owl-theme">
+                        {% for photo in submission.get_photos %}
+                            {% if photo %}
+                                <div class="item">
+                                    {% thumbnail photo "800x450" crop="center" as im %}
+                                        <img src="{{ im.url }}" alt="image" class="imaged rounded-lg w-100">
+                                    {% endthumbnail %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
                 </div>
                 <div class="section mt-1">
                     <h2>{{ submission.title }}</h2>
                     <h2 class="text-muted">
                         Submitted by {{ submission.user.profile.fullname }}
+                        {% if user == submission.user %}
+                        (delete)
+                        {% endif %}
                     </h2>
                 </div>
                 <div class="section full mb-2 text-left">
@@ -48,7 +60,7 @@
                                     </div>
                                     <div>
                                         <p class="mb-0">Post comment</p>
-                                        <textarea name="comment" class="form-control" style="font-size: 14px;" cols="40"></textarea>
+                                        <textarea name="comment" class="form-control" style="font-size: 14px;" cols="40" maxlength="500"></textarea>
                                         <button type="submit" class="btn btn-primary btn-sm mt-1 mb-2" id="comment-submit">Submit</button>
                                     </div>
                                 </div>
@@ -120,7 +132,7 @@
                     <ion-icon name="alert-circle"></ion-icon>
                 </div>
                 <h1 class="title">Error</h1>
-                <div id="error-text" class="text mb-5">This submission does not exist or has been deleted.</div>
+                <div id="error-text" class="text mb-5">{{ message }}</div>
 
                 <div class="fixed-footer">
                     <div class="row">
@@ -213,7 +225,6 @@
         </div>
     </div>
     <!-- * Share dialogue -->
-    {% include "core/sidebar.html" %}
 {% endblock %}
 {% block extra_script %}
     <script>
@@ -344,6 +355,35 @@
                 }
             });
         })
+    </script>
+    <script>
+        window.blockMenuHeaderScroll = false;
+        var classname = document.getElementsByClassName("owl-carousel");
+        var dailyLocations = document.getElementById("photos");
+        var mc = new Hammer(dailyLocations);
+
+        mc.on("swipeleft swiperight panleft panright", function(ev) {
+            window.blockMenuHeaderScroll = true;
+        });
+
+        mc.on("panend swipeend", function (ev){
+            window.blockMenuHeaderScroll = false;
+        });
+
+        mc.on("swipeup swipedown panup pandown", function(ev) {
+            window.blockMenuHeaderScroll = false;
+        });
+
+        for (var i = 0; i < classname.length; i++) {
+            classname[i].addEventListener('touchmove', function(evt) {
+                if (blockMenuHeaderScroll && evt.cancelable) {
+                    evt.preventDefault();
+                }
+
+            }, {
+                passive: false
+            });
+        }
     </script>
 {% endblock %}
 

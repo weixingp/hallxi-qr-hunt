@@ -10,7 +10,7 @@ from django.contrib import messages
 
 from hallxiqr.settings import IS_PHASE2
 from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm, UseItemForm, CastVoteForm, \
-    PhotoCommentForm, DeletePhotoCommentForm
+    PhotoCommentForm, DeletePhotoCommentForm, NewPhotoSubmissionForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, \
     AssignedItem, PhotoSubmission, PhotoUpvote, PhotoComment
 from django.utils.timezone import localtime, now
@@ -550,28 +550,37 @@ def photo_submission_view_page(request, submission_id):
     user = request.user
 
     try:
-        submission = PhotoSubmission.objects.get(id=submission_id, has_reviewed=True)
+        submission = PhotoSubmission.objects.get(id=submission_id)
         upvote = PhotoUpvote.objects.filter(user=user, submission=submission).count()
 
         # Comments
         comments = PhotoComment.objects.filter(submission=submission).order_by('-time')
-
+        if not submission.has_reviewed and submission.user != user:
+            submission = None
+            upvote = None
+            comments = None
+            message = "This submission is under review, check back shortly."
+        else:
+            message = "Success"
     except ObjectDoesNotExist:
         submission = None
         upvote = None
         comments = None
+        message = "This submission does not exist or has been deleted."
 
     context = {
         "submission": submission,
         "upvote": upvote,
         "user": user,
         "comments": comments,
+        "message": message
     }
 
     response = HttpResponse(template.render(context, request))
     return response
 
 
+@login_required()
 def vote_view(request):
     if request.method != "POST":
         success = False
@@ -599,6 +608,7 @@ def vote_view(request):
     return JsonResponse({"success": success, "message": message})
 
 
+@login_required()
 def comment_view(request):
     if request.method != "POST":
         success = False
@@ -621,6 +631,7 @@ def comment_view(request):
     return JsonResponse({"success": success, "message": message})
 
 
+@login_required()
 def delete_comment_view(request):
     if request.method != "POST":
         success = False
@@ -643,3 +654,49 @@ def delete_comment_view(request):
         message = "Incomplete submission, please try again."
 
     return JsonResponse({"success": success, "message": message})
+
+
+@login_required()
+def photo_submission_new_page(request):
+    template = loader.get_template('core/pages/new-photo-submission.html')
+    user = request.user
+
+    if request.method == "GET":
+        has_submitted = PhotoSubmission.objects.filter(user=user)
+        if has_submitted:
+            message = "You have already submitted one entry. To submit a new entry, please delete the old entry " \
+                      "<a href='/submission/" + str(has_submitted[0].id) +"'>here</a>."
+        else:
+            message = "OK"
+        context = {
+            "has_submitted": has_submitted,
+            "message": message,
+        }
+
+        response = HttpResponse(template.render(context, request))
+        return response
+    elif request.method == "POST":
+        print(request.POST)
+        form = NewPhotoSubmissionForm(request.POST, files=request.FILES)
+        if form.is_valid():
+            has_submitted = PhotoSubmission.objects.filter(user=user)
+            if has_submitted:
+                success = False
+                submission_id = has_submitted[0].id
+                message = "You have already submitted one entry. <a href='/submission/" + str(submission_id) +"'>View here</a>"
+            else:
+                submission = form.save(commit=False)
+                submission.user = user
+                submission.save()
+                success = True
+                message = "Submitted"
+                submission_id = submission.id
+        else:
+            success = False
+            message = "Incomplete submission, please try again."
+            submission_id = None
+            print(form.errors)
+
+        return JsonResponse({"success": success, "message": message, "submission_id": submission_id})
+    else:
+        return None

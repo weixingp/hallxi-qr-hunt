@@ -7,7 +7,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 from urllib.parse import urlencode
-from hallxiqr.settings import SITE_URL
+from hallxiqr.settings import SITE_URL, DATA_UPLOAD_MAX_MEMORY_SIZE
 from qrhunt.utils import ContentTypeRestrictedFileField, update_filename
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
@@ -354,13 +354,30 @@ class PhotoSubmission(models.Model):
     photo = ContentTypeRestrictedFileField(
         upload_to=update_filename,
         content_types=['image/jpeg', 'image/jpg', 'image/png', 'image/heic'],
-        max_upload_size=20971520
+        max_upload_size=DATA_UPLOAD_MAX_MEMORY_SIZE
+    )
+    photo2 = ContentTypeRestrictedFileField(
+        upload_to=update_filename,
+        content_types=['image/jpeg', 'image/jpg', 'image/png', 'image/heic'],
+        max_upload_size=DATA_UPLOAD_MAX_MEMORY_SIZE,
+        null=True,
+        blank=True,
+    )
+    photo3 = ContentTypeRestrictedFileField(
+        upload_to=update_filename,
+        content_types=['image/jpeg', 'image/jpg', 'image/png', 'image/heic'],
+        max_upload_size=DATA_UPLOAD_MAX_MEMORY_SIZE,
+        null=True,
+        blank=True,
     )
     has_reviewed = models.BooleanField(default=False)
     time = models.DateTimeField(auto_now=True, blank=True)
 
     def __str__(self):
         return self.user.email + "'s submission"
+
+    def get_photos(self):
+        return [self.photo, self.photo2, self.photo3]
 
 
 class PhotoUpvote(models.Model):

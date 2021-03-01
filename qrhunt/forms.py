@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile, AssignedQuestion, Question, PhotoUpvote, PhotoComment
+from .models import Profile, AssignedQuestion, Question, PhotoUpvote, PhotoComment, PhotoSubmission
 
 
 class ProfileUpdateForm(forms.ModelForm):
@@ -46,3 +46,9 @@ class PhotoCommentForm(forms.ModelForm):
 
 class DeletePhotoCommentForm(forms.Form):
     comment_id = forms.IntegerField()
+
+
+class NewPhotoSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = PhotoSubmission
+        fields = ['photo', 'photo2', 'photo3', 'title']
