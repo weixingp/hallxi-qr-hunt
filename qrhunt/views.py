@@ -155,6 +155,7 @@ def home(request):
     my_submission = PhotoSubmission.objects.filter(user=user)
     if my_submission:
         my_submission = my_submission[0]
+        my_submission.votes = PhotoUpvote.objects.filter(submission=my_submission).count()
 
     context = {
         "is_phase2": IS_PHASE2,
