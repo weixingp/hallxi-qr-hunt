@@ -136,7 +136,34 @@
             </div>
 
             <div class="content-header mb-2"><h5 class="text-muted">Browse through submissions by your hall mates and vote for your favourite. Every new submission from your block adds 100 HP.</h5></div>
+            {% if my_submission %}
+                <h5 class="mx-3">My submission:</h5>
                 <ul class="listview image-listview media mb-2">
+                    <li>
+                        <a href="submission/{{ my_submission.id }}" class="item">
+                            <div class="imageWrapper">
+                                {% thumbnail my_submission.photo "320x180" crop="center" as im %}
+                                    <img src="{{ im.url }}" alt="image" class="imaged w64">
+                                {% endthumbnail %}
+                            </div>
+                            <div class="in">
+                                <div>
+                                    <div>
+                                        {{ my_submission.title }}
+                                        {% if not my_submission.has_reviewed %}
+                                            <i> (Under review)</i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-muted">{{ my_submission.votes }} votes </div>
+                                </div>
+                                <span class="text-primary">View/Delete</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            {% endif %}
+            <h5 class="mx-3">All submissions:</h5>
+            <ul class="listview image-listview media mb-2">
                 {% for submission in photo_submissions %}
                     <li>
                     <a href="submission/{{ submission.id }}" class="item">

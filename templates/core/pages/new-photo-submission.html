@@ -41,7 +41,7 @@
                                 <div class="invalid-feedback text-left">Title required.</div>
                             </div>
                         </div>
-                        <h4 class="text-left">Photos</h4>
+                        <h4 class="text-left">Photos (Up to 3)</h4>
                         <div class="custom-file-upload mb-2">
                             <input type="file" id="fileuploadInput" accept=".png, .jpg, .jpeg .heic" name="photo" required>
                             <label for="fileuploadInput">
@@ -78,7 +78,7 @@
                         </div>
 
 
-                    <div class="form-button-group">
+                    <div class="form-button-group" style="z-index:1000">
                         <button type="submit" class="btn btn-primary btn-block btn-lg">Submit</button>
                     </div>
 
@@ -96,7 +96,7 @@
                 <h1 class="title">Error</h1>
                 <div id="error-text" class="text mb-5">{{ message|safe }}</div>
 
-                <div class="fixed-footer" style="background: #f9f9f9;">
+                <div class="fixed-footer" style="background: #f9f9f9; z-index:1000">
                     <div class="row">
                         <div class="col-6">
                             <a href="/" class="btn btn-secondary btn-lg btn-block">Home</a>
