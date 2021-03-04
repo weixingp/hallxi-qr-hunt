@@ -10,7 +10,7 @@ from django.contrib import messages
 
 from hallxiqr.settings import IS_PHASE2
 from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm, UseItemForm, CastVoteForm, \
-    PhotoCommentForm, DeletePhotoCommentForm, NewPhotoSubmissionForm
+    PhotoCommentForm, DeletePhotoCommentForm, NewPhotoSubmissionForm, DeletePhotoSubmissionForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, \
     AssignedItem, PhotoSubmission, PhotoUpvote, PhotoComment
 from django.utils.timezone import localtime, now
@@ -638,7 +638,7 @@ def comment_view(request):
 
 
 @login_required()
-def delete_comment_view(request):
+def comment_delete_view(request):
     if request.method != "POST":
         success = False
         message = "Illegal access!"
@@ -706,3 +706,28 @@ def photo_submission_new_page(request):
         return JsonResponse({"success": success, "message": message, "submission_id": submission_id})
     else:
         return None
+
+
+@login_required()
+def photo_submission_delete_view(request):
+    if request.method != "POST":
+        success = False
+        message = "Illegal access!"
+        return JsonResponse({"success": success, "message": message})
+
+    user = request.user
+    form = DeletePhotoSubmissionForm(request.POST)
+    if form.is_valid():
+        try:
+            submission = PhotoSubmission.objects.get(user=user, id=form.cleaned_data["submission_id"])
+            submission.delete()
+            success = True
+            message = "Submission deleted."
+        except ObjectDoesNotExist:
+            success = False
+            message = "Submission does not exist or has been deleted. Reload the page."
+    else:
+        success = False
+        message = "Incomplete submission, please try again."
+
+    return JsonResponse({"success": success, "message": message})

@@ -61,7 +61,8 @@ actions = [
     path('action/open-lootbox', main_view.open_loot_box_view),
     path('action/vote', main_view.vote_view),
     path('action/comment', main_view.comment_view),
-    path('action/delete-comment', main_view.delete_comment_view),
+    path('action/delete-comment', main_view.comment_delete_view),
+    path('action/delete-photo-submission', main_view.photo_submission_delete_view),
 ]
 urlpatterns += actions
 

@@ -52,3 +52,7 @@ class NewPhotoSubmissionForm(forms.ModelForm):
     class Meta:
         model = PhotoSubmission
         fields = ['photo', 'photo2', 'photo3', 'title']
+
+
+class DeletePhotoSubmissionForm(forms.Form):
+    submission_id = forms.IntegerField()
