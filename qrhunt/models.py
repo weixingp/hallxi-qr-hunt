@@ -10,7 +10,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 from urllib.parse import urlencode
 from hallxiqr.settings import SITE_URL, DATA_UPLOAD_MAX_MEMORY_SIZE
-from qrhunt.utils import ContentTypeRestrictedFileField, update_filename
+from qrhunt.utils import ContentTypeRestrictedFileField, update_filename, MatriculationField
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
@@ -115,7 +115,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     fullname = models.CharField(max_length=128)
-    matriculation_number = models.CharField(max_length=10, unique=True)
+    matriculation_number = MatriculationField(max_length=9, unique=True)
     block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_profile_block", blank=False, )
 
     LVL_CHOICES = (
