@@ -158,11 +158,12 @@
     {% if messages %}
         // Notifications
         {% for message in messages %}
+
             let index = $.trim('{{ forloop.counter0 }}');
 
             setTimeout(function(){
                 notification('notification-' + index)
-            }, index*500)
+            }, 1000 + index*500)
 
         {% endfor %}
     {% endif %}
