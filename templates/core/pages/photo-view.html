@@ -269,7 +269,7 @@
 
         $('#vote').on('submit', function (e) {
             e.preventDefault();
-            if (!confirm('Do you wish to vote for this submission? You will not be able to undo this.')){
+            if (!confirm("Do you wish to vote for this submission? You can't undo this.")){
                 return;
             }
             $("#vote-submit").prop('disabled', true).text("Voting...");
