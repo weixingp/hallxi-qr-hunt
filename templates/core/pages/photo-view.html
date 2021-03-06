@@ -13,6 +13,11 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
+        <div class="right">
+            <a href="/#submissions" class="headerButton goBack">
+                <ion-icon name="home-outline"></ion-icon>
+            </a>
+        </div>
         <div class="pageTitle">
             Groom My Castle
         </div>
@@ -253,6 +258,9 @@
 
         $('#vote').on('submit', function (e) {
             e.preventDefault();
+            if (!confirm('Do you wish to vote for this submission? You will not be able to undo this.')){
+                return;
+            }
             $("#vote-submit").prop('disabled', true).text("Voting...");
 
             $.ajax({

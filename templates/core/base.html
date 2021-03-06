@@ -39,31 +39,94 @@
 <!-- * loader -->
 {% block body %}
 {% endblock %}
-<!-- django notification  -->
-<div id="notification-welcome" class="notification-box">
-    <div class="notification-dialog android-style">
-        <div class="notification-header">
-            <div class="in">
-                <img src="https://cdn.kado.sg/themes/mobile/img/icon/72x72.png" alt="image" class="imaged w24">
-                <strong>Mobilekit</strong>
-                <span>just now</span>
+<!-- notification  -->
+<div id="django-notifications">
+    {% if messages %}
+        {% for message in messages %}
+            <div id="notification-{{ forloop.counter0 }}" class="notification-box">
+                <div class="notification-dialog ios-style">
+                    <div class="notification-header">
+                        <div class="in">
+                            <strong>Hall XI BoB</strong>
+                        </div>
+                        <div class="right">
+                            <span>just now</span>
+                            <a href="#" class="close-button">
+                                <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="notification-content">
+                        <div class="in">
+                            <h3 class="subtitle">{{ message.tags }}</h3>
+                            <div class="text">
+                                {{ message }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <a href="#" class="close-button">
-                <ion-icon name="close"></ion-icon>
-            </a>
-        </div>
-        <div class="notification-content">
-            <div class="in">
-                <h3 class="subtitle">Welcome to Mobilekit</h3>
-                <div class="text">
-                    Mobilekit is a PWA ready Mobile UI Kit Template.
-                    Great way to start your mobile websites and pwa projects.
+        {% endfor %}
+    {% endif %}
+</div>
+
+<!-- * notification -->
+
+<!-- iOS add to home dialog -->
+<div class="modal inset fade action-sheet ios-add-to-home" id="ios-add-to-home-screen" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add to Home Screen</h5>
+                <a href="javascript:;" class="close-button" data-dismiss="modal">
+                    <ion-icon name="close" role="img" class="md hydrated" aria-label="close"></ion-icon>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="action-sheet-content text-center">
+                    <div class="mb-1"><img src="assets/img/icon/192x192.png" alt="image" class="imaged w48">
+                    </div>
+                    <h4>Hall XI BoB</h4>
+                    <div>
+                        To enjoy full Mobile App like experience (especially for BoB phase 2), install Hall XI BoB on your iPhone's home screen.
+                    </div>
+                    <div>
+                        Tap <ion-icon name="share-outline" role="img" class="md hydrated" aria-label="share outline"></ion-icon> and Add to homescreen.
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- * welcome notification -->
+<!-- * iOS add to home dialog -->
+
+<!-- Android add to home dialog -->
+<div class="modal inset fade action-sheet android-add-to-home" id="android-add-to-home-screen" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add to Home Screen</h5>
+                <a href="javascript:;" class="close-button" data-dismiss="modal">
+                    <ion-icon name="close" role="img" class="md hydrated" aria-label="close"></ion-icon>
+                </a>
+            </div>
+            <div class="modal-body">
+                <div class="action-sheet-content text-center">
+                    <div class="mb-1"><img src="assets/img/icon/192x192.png" alt="image" class="imaged w48">
+                    </div>
+                    <h4>Hall XI BoB</h4>
+                    <div>
+                        To enjoy full Mobile App like experience (especially for BoB phase 2), install Hall XI BoB on your phone's home screen.
+                    </div>
+                    <div class="mt-2">
+                        Tap <ion-icon name="ellipsis-vertical" role="img" class="md hydrated" aria-label="ellipsis vertical"></ion-icon> and Add to homescreen.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- * Android add to home dialog -->
 
 <!-- ///////////// Js Files ////////////////////  -->
 <!-- Jquery -->
@@ -82,12 +145,27 @@
 <!-- Hammer Js File -->
 <script src="{% static "assets/js/plugins/hammer.min.js" %}"></script>
 <script>
+    // Add to home modal
+    AddtoHome('3000');
+
     let path = window.location.href; // because the 'href' property of the DOM element is the absolute path
     $('.appBottomMenu a').each(function() {
         if (this.href === path) {
             $(this).addClass('active');
         }
     });
+
+    {% if messages %}
+        // Notifications
+        {% for message in messages %}
+            let index = $.trim('{{ forloop.counter0 }}');
+
+            setTimeout(function(){
+                notification('notification-' + index)
+            }, index*500)
+
+        {% endfor %}
+    {% endif %}
 </script>
 {#    <script>#}
 {#        setTimeout(() => {#}

@@ -215,7 +215,7 @@ class Inventory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_inventory_user")
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="fk_inventory_item")
     has_used = models.BooleanField(default=False)
-    time = models.DateTimeField(auto_now=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.user.email + "'s " + self.item.name
@@ -229,7 +229,7 @@ class AssignedQuestion(models.Model):
         related_name="fk_assigned_question_question",
         null=True,
     )
-    time = models.DateTimeField(auto_now=True, null=True)
+    time = models.DateTimeField(auto_now_add=True, null=True)
     has_answered = models.BooleanField(default=False)
     answered_time = models.DateTimeField(blank=True, null=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
@@ -293,7 +293,7 @@ class Location(models.Model):
 class AssignedLocation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_assigned_location_user")
     location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name="fk_assigned_location_location")
-    time = models.DateTimeField(auto_now=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True, blank=True)
     has_visited = models.BooleanField(default=False)
     visit_time = models.DateTimeField(blank=True, null=True)
 
@@ -309,7 +309,7 @@ class HpLog(models.Model):
     target_block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_hp_log_block")
     value = models.IntegerField()
     reason = models.CharField(null=True, blank=True, max_length=255)
-    time = models.DateTimeField(auto_now=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.target_block.name + "'s HP Log"
@@ -321,7 +321,7 @@ class AssignedItem(models.Model):
                              blank=True)
     has_used = models.BooleanField(default=False)
     time_used = models.DateTimeField(null=True, blank=True)
-    time = models.DateTimeField(auto_now=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.user.email + "'s Item"
@@ -338,7 +338,7 @@ class AssignedLootBox(models.Model):
     )
     has_opened = models.BooleanField(default=False)
     reason = models.CharField(null=True, blank=True, max_length=255)
-    time = models.DateTimeField(auto_now=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True, blank=True)
     time_opened = models.DateTimeField(null=True, blank=True)
 
     class Meta:
@@ -371,7 +371,8 @@ class PhotoSubmission(models.Model):
         blank=True,
     )
     has_reviewed = models.BooleanField(default=False)
-    time = models.DateTimeField(auto_now=True, blank=True)
+    is_council = models.BooleanField(default=False)
+    time = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.user.email + "'s submission"
@@ -384,7 +385,7 @@ class PhotoUpvote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_photo_upvote_user")
     submission = models.ForeignKey(PhotoSubmission, on_delete=models.CASCADE,
                                    related_name="fk_photo_upvote_photo_submission")
-    time = models.DateTimeField(auto_now=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.user.email + "'s upvote"
@@ -395,7 +396,7 @@ class PhotoComment(models.Model):
     submission = models.ForeignKey(PhotoSubmission, on_delete=models.CASCADE,
                                    related_name="fk_photo_comment_photo_submission")
     comment = models.TextField(max_length=500)
-    time = models.DateTimeField(auto_now=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True, blank=True)
 
 
 # Signals

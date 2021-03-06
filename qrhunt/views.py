@@ -18,6 +18,18 @@ from .main import visit_location, get_user_context, get_random_question, assign_
     get_block_exploration, use_item as use, open_loot_box, get_total_blk_player, get_unanswered_qn
 
 
+def mobile_only(function):
+    def _function(request, *args, **kwargs):
+        is_mobile = request.user_agent.is_mobile
+        is_touch = request.user_agent.is_touch_capable
+        is_tablet = request.user_agent.is_tablet
+
+        if not is_mobile or not is_touch or is_tablet:
+            return redirect('/account/landing')
+        return function(request, *args, **kwargs)
+    return _function
+
+
 @login_required(login_url='/account/login/')
 def check_registered(request):
     user = request.user
@@ -35,27 +47,30 @@ def user_details(request):
     if request.method == 'POST':
         if not has_profile:
             p_form = ProfileUpdateForm(request.POST)
-        else:
-            p_form = ProfileUpdateForm(request.POST, instance=request.user.profile)
 
-        if p_form.is_valid():
-            profile = p_form.save(commit=False)
-            profile.user = request.user
-            # profile.block = Block.objects.get(id=p_form.cleaned_data['block'])
-            profile.save()
-            if has_profile:
-                messages.add_message(request, messages.SUCCESS, 'Your profile has been updated.')
+            if p_form.is_valid():
+                profile = p_form.save(commit=False)
+                profile.user = request.user
+                # profile.block = Block.objects.get(id=p_form.cleaned_data['block'])
+                profile.save()
+                if has_profile:
+                    messages.add_message(request, messages.SUCCESS, 'Your profile has been updated.')
+                else:
+                    messages.add_message(request, messages.SUCCESS, 'You have been registered for the game, than you!')
+                return redirect("/account/profile/")
             else:
-                messages.add_message(request, messages.SUCCESS, 'You have been registered for the game, than you!')
-            return redirect("/account/profile/")
+                messages.add_message(request, messages.ERROR, "You have errors in your form, please check.")
+
         else:
-            messages.add_message(request, messages.ERROR, "You have errors in your form, please check.")
+            # Has profile, redirect
+            return redirect('/')
 
     else:
         if not has_profile:
             p_form = ProfileUpdateForm()
         else:
-            p_form = ProfileUpdateForm(instance=request.user.profile)
+            # p_form = ProfileUpdateForm(instance=request.user.profile)
+            return redirect('/')
 
     if len(request.user.socialaccount_set.all()) > 0:
         profile = request.user.socialaccount_set.all()[0]
@@ -138,6 +153,7 @@ def location_main(request, uuid):
 
 
 @login_required()
+@mobile_only
 def home(request):
     template = loader.get_template('core/pages/home.html')
     user = request.user

@@ -148,5 +148,10 @@
 {% if p_form.block.value  %}
     document.getElementById("block-select").value = "{{ p_form.block.value }}";
 {% endif %}
+ $('form').submit(function(event){
+     if(!confirm("You will not be able to change your details after submitting, continue?")){
+        event.preventDefault();
+      }
+ });
 </script>
 {% endblock %}
