@@ -18,7 +18,7 @@
                 <form>
                     {% csrf_token %}
                     <input type="hidden" name="submission_id" value="{{ submission.id }}" />
-                    <a href="/action/delete?id={{ submission.id }}" id="delete-submission">
+                    <a href="/action/delete?id={{ submission.id }}" id="delete-submission" class="headerButton">
                         <ion-icon name="trash-outline"></ion-icon>
                     </a>
                 </form>
