@@ -754,7 +754,7 @@ def photo_submission_new_page(request):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
-                    'Your submission has been received. We will review this asap and make it public.'
+                    'Your submission has been received. We will review this ASAP and make it public.'
                 )
         else:
             success = False
