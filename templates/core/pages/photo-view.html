@@ -442,5 +442,22 @@
             });
         }
     </script>
+    <script>
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        };
+
+        function handleVisibilityChange() {
+            if(document.hidden) {
+                // the page is hidden
+            } else {
+                window.location.reload();
+            }
+        }
+        document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
+    </script>
 {% endblock %}
 
