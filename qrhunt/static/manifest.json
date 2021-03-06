@@ -1,7 +1,7 @@
 {
     "name": "Battle of Birds",
-    "short_name": "BoB",
-    "start_url": "",
+    "short_name": "Hall XI BoB",
+    "start_url": "/",
     "display": "standalone",
     "scope" : "/",
     "background_color": "#000000",
