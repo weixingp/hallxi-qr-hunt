@@ -14,9 +14,20 @@
             </a>
         </div>
         <div class="right">
-            <a href="/#submissions" class="headerButton goBack">
-                <ion-icon name="home-outline"></ion-icon>
-            </a>
+            {% if user == submission.user %}
+                <form>
+                    {% csrf_token %}
+                    <input type="hidden" name="submission_id" value="{{ submission.id }}" />
+                    <a href="/action/delete?id={{ submission.id }}" id="delete-submission">
+                        <ion-icon name="trash-outline"></ion-icon>
+                    </a>
+                </form>
+            {% else %}
+                <a href="/#submissions" class="headerButton goBack">
+                    <ion-icon name="home-outline"></ion-icon>
+                </a>
+            {% endif %}
+
         </div>
         <div class="pageTitle">
             Groom My Room
@@ -47,12 +58,8 @@
                     <h2>{{ submission.title }}</h2>
                     <h2 class="text-muted">
                         Submitted by {{ submission.user.profile.fullname }}
-                        {% if user == submission.user %}
-                            <form>
-                                {% csrf_token %}
-                                <input type="hidden" name="submission_id" value="{{ submission.id }}" />
-                                (<a href="/action/delete?id={{ submission.id }}" id="delete-submission">delete</a>)
-                            </form>
+                        {% if submission.is_council %}
+                            (This submission will not participate in the contest)
                         {% endif %}
                     </h2>
                 </div>

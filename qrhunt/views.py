@@ -27,6 +27,7 @@ def mobile_only(function):
         if not is_mobile or not is_touch or is_tablet:
             return redirect('/account/landing')
         return function(request, *args, **kwargs)
+
     return _function
 
 
@@ -92,6 +93,7 @@ def user_details(request):
 
 
 @login_required(login_url='/account/login/')
+@mobile_only
 def location_main(request, uuid):
     template = loader.get_template('core/pages/location.html')
     user = request.user
@@ -190,6 +192,7 @@ def home(request):
 
 
 @login_required()
+@mobile_only
 def scan_qr(request):
     template = loader.get_template('core/pages/scan.html')
 
@@ -254,6 +257,7 @@ def assign_question(request):
 
 
 @login_required()
+@mobile_only
 def question_page(request, uuid):
     template = loader.get_template('core/pages/question.html')
     user = request.user
@@ -401,6 +405,7 @@ def answer_question(request):
 
 
 @login_required()
+@mobile_only
 def inventory(request):
     template = loader.get_template('core/pages/item.html')
     user = request.user
@@ -510,6 +515,8 @@ def get_blocks_stats(request):
     return JsonResponse(context)
 
 
+@login_required()
+@mobile_only
 def loot_box(request):
     template = loader.get_template('core/pages/lootbox.html')
     user = request.user
@@ -556,6 +563,7 @@ def open_loot_box_view(request):
     return JsonResponse({"success": success, "items": items})
 
 
+@login_required()
 def landing_page(request):
     template = loader.get_template('account/landing.html')
 
@@ -679,6 +687,7 @@ def comment_delete_view(request):
 
 
 @login_required()
+@mobile_only
 def photo_submission_new_page(request):
     template = loader.get_template('core/pages/new-photo-submission.html')
     user = request.user
@@ -687,7 +696,7 @@ def photo_submission_new_page(request):
         has_submitted = PhotoSubmission.objects.filter(user=user)
         if has_submitted:
             message = "You have already submitted one entry. To submit a new entry, please delete the old entry " \
-                      "<a href='/submission/" + str(has_submitted[0].id) +"'>here</a>."
+                      "<a href='/submission/" + str(has_submitted[0].id) + "'>here</a>."
         else:
             message = "OK"
         context = {
@@ -705,7 +714,8 @@ def photo_submission_new_page(request):
             if has_submitted:
                 success = False
                 submission_id = has_submitted[0].id
-                message = "You have already submitted one entry. <a href='/submission/" + str(submission_id) +"'>View here</a>"
+                message = "You have already submitted one entry. <a href='/submission/" + str(
+                    submission_id) + "'>View here</a>"
             else:
                 submission = form.save(commit=False)
                 submission.user = user
