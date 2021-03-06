@@ -18,6 +18,10 @@ from django.urls import path, include
 from qrhunt import views as main_view
 from django.conf import settings
 
+
+admin.site.site_header = 'Hall XI BoB Admin'
+admin.site.site_title = 'Hall XI BoB'
+
 # Account and admin module
 urlpatterns = [
     path('admin/', admin.site.urls),
