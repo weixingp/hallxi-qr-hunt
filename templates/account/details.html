@@ -48,7 +48,7 @@
                             <div class="card-body px-lg-5 pt-lg-3 pb-lg-4">
 
                                 <div class="text-muted text-center mt-1 mb-3">Game Profile</div>
-                                <form role="form" method='POST' enctype="multipart/form-data">
+                                <form role="form" method='POST' enctype="multipart/form-data" id="profile-form">
                                     {%csrf_token%}
                                     <div class="form-group">
                                         {% if p_form.fullname.errors %}
@@ -148,7 +148,8 @@
 {% if p_form.block.value  %}
     document.getElementById("block-select").value = "{{ p_form.block.value }}";
 {% endif %}
- $('form').submit(function(event){
+ $('#profile-form').on('submit', function(event){
+
      if(!confirm("You will not be able to change your details after submitting, continue?")){
         event.preventDefault();
       }
