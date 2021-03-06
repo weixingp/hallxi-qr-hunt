@@ -723,6 +723,11 @@ def photo_submission_new_page(request):
                 success = True
                 message = "Submitted"
                 submission_id = submission.id
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    'Your submission has been received. We will review this asap and make it public.'
+                )
         else:
             success = False
             message = "Incomplete submission, please try again."
