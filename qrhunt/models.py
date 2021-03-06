@@ -113,7 +113,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     fullname = models.CharField(max_length=128)
-    matriculation_number = models.CharField(max_length=10)
+    matriculation_number = models.CharField(max_length=10, unique=True)
     block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="fk_profile_block", blank=False, )
 
     LVL_CHOICES = (
