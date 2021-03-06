@@ -15,7 +15,7 @@
                         <div class="row justify-content-center">
                             <div class="col-xl-5 col-lg-6 col-md-8 px-4">
                                 <h1 class="text-white">Battle of Birds</h1>
-                                <p class="text-lead text-white">Awesomeness beginning soon, stay tuned!</p>
+                                <p class="text-lead text-white">HALL XI Final IBG!</p>
                             </div>
                         </div>
                     </div>
@@ -65,6 +65,23 @@
                                             <input class="form-control {% if p_form.fullname.errors %}is-invalid{% endif %}" name="fullname" placeholder="Full Name" type="text" value="{{ p_form.fullname.value | default_if_none:'' }}">
                                         </div>
                                     </div>
+
+                                    <div class="form-group">
+                                        {% if p_form.matriculation_number.errors %}
+                                            <label class="text-danger"><small>
+                                                {% for error in p_form.matriculation_number.errors %}
+                                                    <li>{{ error|escape }}</li>
+                                                {% endfor %}
+                                            </small></label>
+                                        {% endif %}
+                                        <div class="input-group input-group-alternative mb-3 {% if p_form.matriculation_number.errors %}has-danger{% endif %}">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="ni ni-badge"></i></span>
+                                            </div>
+                                            <input class="form-control {% if p_form.matriculation_number.errors %}is-invalid{% endif %}" name="matriculation_number" placeholder="Matriculation Number" type="text" value="{{ p_form.matriculation_number.value | default_if_none:'' }}">
+                                        </div>
+                                    </div>
+
                                     <label class="text-muted">Where do you stay?</label>
                                     <div class="form-group">
                                         <div class="row">

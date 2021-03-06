@@ -5,14 +5,15 @@ from .models import Profile, AssignedQuestion, Question, PhotoUpvote, PhotoComme
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['fullname', 'block', 'level', 'room_number', 'mobile']
+        fields = ['fullname', 'matriculation_number', 'block', 'level', 'room_number', 'mobile']
 
     display_name = {
         "fullname": "Full name",
+        "matriculation_number": "Matriculation Number",
         "block": "Block",
         "level": "Level",
         "room_number": "Room number",
-        "mobile": "Mobile Number"
+        "mobile": "Mobile Number",
     }
 
 
