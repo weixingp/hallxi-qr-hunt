@@ -56,12 +56,14 @@
                 </div>
                 <div class="section mt-1">
                     <h2>{{ submission.title }}</h2>
-                    <h2 class="text-muted">
+                    <h3>
                         Submitted by {{ submission.user.profile.fullname }}
-                        {% if submission.is_council %}
-                            <br />(This submission will not participate in the final contest)
-                        {% endif %}
-                    </h2>
+                    </h3>
+                    {% if submission.is_council %}
+                        <h2 class="text-muted">
+                            This submission will not participate in the final contest
+                        </h2>
+                    {% endif %}
                 </div>
                 <div class="section full mb-2 text-left">
                     <div class="section-title">Comments</div>
