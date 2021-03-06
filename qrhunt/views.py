@@ -68,7 +68,7 @@ def user_details(request):
                 if has_profile:
                     messages.add_message(request, messages.SUCCESS, 'Your profile has been updated.')
                 else:
-                    messages.add_message(request, messages.SUCCESS, 'You have been registered for the game, than you!')
+                    messages.add_message(request, messages.SUCCESS, 'You have been registered for the game, thank you for participating!')
                 return redirect("/account/profile/")
             else:
                 messages.add_message(request, messages.ERROR, "You have errors in your form, please check.")
