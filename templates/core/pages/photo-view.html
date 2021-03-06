@@ -55,7 +55,12 @@
 
                 </div>
                 <div class="section mt-1">
-                    <h2>{{ submission.title }}</h2>
+                    <h2>
+                        {{ submission.title }}
+                        {% if not submission.has_reviewed %}
+                            (<i>Under review</i>)
+                        {% endif %}
+                    </h2>
                     <h3>
                         Submitted by {{ submission.user.profile.fullname }}
                     </h3>
