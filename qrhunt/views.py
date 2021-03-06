@@ -31,6 +31,17 @@ def mobile_only(function):
     return _function
 
 
+def has_profile(function):
+    def _function(request, *args, **kwargs):
+
+        if not hasattr(request.user, 'profile'):
+            return redirect("/account/profile/")
+
+        return function(request, *args, **kwargs)
+
+    return _function
+
+
 @login_required(login_url='/account/login/')
 def check_registered(request):
     user = request.user
@@ -94,6 +105,7 @@ def user_details(request):
 
 @login_required(login_url='/account/login/')
 @mobile_only
+@has_profile
 def location_main(request, uuid):
     template = loader.get_template('core/pages/location.html')
     user = request.user
@@ -156,6 +168,7 @@ def location_main(request, uuid):
 
 @login_required()
 @mobile_only
+@has_profile
 def home(request):
     template = loader.get_template('core/pages/home.html')
     user = request.user
@@ -193,6 +206,7 @@ def home(request):
 
 @login_required()
 @mobile_only
+@has_profile
 def scan_qr(request):
     template = loader.get_template('core/pages/scan.html')
 
@@ -208,6 +222,7 @@ def scan_qr(request):
 
 
 @login_required()
+@has_profile
 def assign_question(request):
     success = False
     message = None
@@ -258,6 +273,7 @@ def assign_question(request):
 
 @login_required()
 @mobile_only
+@has_profile
 def question_page(request, uuid):
     template = loader.get_template('core/pages/question.html')
     user = request.user
@@ -309,6 +325,7 @@ def question_page(request, uuid):
 
 
 @login_required()
+@has_profile
 def answer_question(request):
     if request.method != 'POST':
         return JsonResponse({
@@ -406,6 +423,7 @@ def answer_question(request):
 
 @login_required()
 @mobile_only
+@has_profile
 def inventory(request):
     template = loader.get_template('core/pages/item.html')
     user = request.user
@@ -438,6 +456,7 @@ def inventory(request):
 
 
 @login_required
+@has_profile
 def use_item(request):
     if request.method != "POST":
         success = False
@@ -473,6 +492,7 @@ def use_item(request):
 
 
 @login_required()
+@has_profile
 def get_blocks_stats(request):
     if request.method != 'GET':
         success = False
@@ -517,6 +537,7 @@ def get_blocks_stats(request):
 
 @login_required()
 @mobile_only
+@has_profile
 def loot_box(request):
     template = loader.get_template('core/pages/lootbox.html')
     user = request.user
@@ -531,6 +552,7 @@ def loot_box(request):
 
 
 @login_required()
+@has_profile
 def open_loot_box_view(request):
     if request.method != 'GET':
         success = False
@@ -564,6 +586,7 @@ def open_loot_box_view(request):
 
 
 @login_required()
+@has_profile
 def landing_page(request):
     template = loader.get_template('account/landing.html')
 
@@ -575,6 +598,7 @@ def landing_page(request):
 
 
 @login_required()
+@has_profile
 def photo_submission_view_page(request, submission_id):
     template = loader.get_template('core/pages/photo-view.html')
     user = request.user
@@ -611,6 +635,7 @@ def photo_submission_view_page(request, submission_id):
 
 
 @login_required()
+@has_profile
 def vote_view(request):
     if request.method != "POST":
         success = False
@@ -639,6 +664,7 @@ def vote_view(request):
 
 
 @login_required()
+@has_profile
 def comment_view(request):
     if request.method != "POST":
         success = False
@@ -662,6 +688,7 @@ def comment_view(request):
 
 
 @login_required()
+@has_profile
 def comment_delete_view(request):
     if request.method != "POST":
         success = False
@@ -688,6 +715,7 @@ def comment_delete_view(request):
 
 @login_required()
 @mobile_only
+@has_profile
 def photo_submission_new_page(request):
     template = loader.get_template('core/pages/new-photo-submission.html')
     user = request.user
@@ -740,6 +768,7 @@ def photo_submission_new_page(request):
 
 
 @login_required()
+@has_profile
 def photo_submission_delete_view(request):
     if request.method != "POST":
         success = False

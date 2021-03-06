@@ -67,23 +67,30 @@ class MatriculationField(CharField):
     def __init__(self, *args, **kwargs):
         super(MatriculationField, self).__init__(*args, **kwargs)
 
-    def pre_save(self, model_instance, add):
-        value = getattr(model_instance, self.attname, None)
-        if value:
-            value = value.upper().strip()
+    # def pre_save(self, model_instance, add):
+    #     value = getattr(model_instance, self.attname, None)
+    #     if value:
+    #         value = value.upper().strip()
+    #
+    #         setattr(model_instance, self.attname, value)
+    #         return value
+    #     else:
+    #         return super(MatriculationField, self).pre_save(model_instance, add)
 
-            try:
-                check = check_matric(value)
-            except Exception:
-                raise forms.ValidationError(_('Wrong matric number format, please double check.'))
+    def clean(self, *args, **kwargs):
+        data = super(MatriculationField, self).clean(*args, **kwargs)
 
-            if not check:
-                raise forms.ValidationError(_('Invalid matric number, please double check.'))
+        matric = data.upper().strip()
 
-            setattr(model_instance, self.attname, value)
-            return value
-        else:
-            return super(MatriculationField, self).pre_save(model_instance, add)
+        try:
+            check = check_matric(matric)
+        except Exception:
+            raise forms.ValidationError(_('Wrong matric number format, please double check.'))
+
+        if not check:
+            raise forms.ValidationError(_('Invalid matric number, please double check.'))
+
+        return data
 
 
 class ContentTypeRestrictedFileField(FileField):
