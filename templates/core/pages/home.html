@@ -57,10 +57,10 @@
                     </div>
 
                     {% if is_phase2 %}
-                    <p class="mt-1 mb-0"><b>Block Exploration:</b> {{ blk_exploration.0 }} / {{ blk_exploration.1 }}</p>
-                    <div class="progress">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: {% widthratio blk_exploration.0 blk_exploration.1 100 %}%;" aria-valuenow="{{ blk_exploration.0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
+                        <p class="mt-1 mb-0"><b>Block Exploration:</b> {{ blk_exploration.0 }} / {{ blk_exploration.1 }}</p>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {% widthratio blk_exploration.0 blk_exploration.1 100 %}%;" aria-valuenow="{{ blk_exploration.0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -73,55 +73,55 @@
 
 
         {% if is_phase2 %}
-        <!-- Assigned Location Cards -->
-        <div class="section full mt-3 mb-3">
-            <div class="section-title">
-                <h2 class="mb-0">Daily Locations</h2>
-            </div>
-            <div class="content-header mb-2"><h5 class="text-muted">Scan QR code at these locations to gain points and get items for your hall. Locations will be refreshed daily.</h5></div>
-            <div id="daily-locations" class="carousel-multiple owl-carousel owl-theme">
-                {% for assigned_location in assigned_locations %}
-                    <div class="item h-100">
-                        <div class="card h-100">
-                            {% if assigned_location.has_visited %}
-                                <span class="badge visited-badge badge-success mb-1">visited</span>
-                            {% endif %}
-                            {% thumbnail assigned_location.location.image "870x660" crop="center" as im %}
-                                <img src="{{ im.url }}" class="card-img-top" alt="image">
-                            {% endthumbnail %}
-                            <div class="card-body pt-2">
-                                <h4 class="mb-0">{{ assigned_location.location.name }} </h4>
+            <!-- Assigned Location Cards -->
+            <div class="section full mt-3 mb-3">
+                <div class="section-title">
+                    <h2 class="mb-0">Daily Locations</h2>
+                </div>
+                <div class="content-header mb-2"><h5 class="text-muted">Scan QR code at these locations to gain points and get items for your hall. Locations will be refreshed daily.</h5></div>
+                <div id="daily-locations" class="carousel-multiple owl-carousel owl-theme">
+                    {% for assigned_location in assigned_locations %}
+                        <div class="item h-100">
+                            <div class="card h-100">
+                                {% if assigned_location.has_visited %}
+                                    <span class="badge visited-badge badge-success mb-1">visited</span>
+                                {% endif %}
+                                {% thumbnail assigned_location.location.image "870x660" crop="center" as im %}
+                                    <img src="{{ im.url }}" class="card-img-top" alt="image">
+                                {% endthumbnail %}
+                                <div class="card-body pt-2">
+                                    <h4 class="mb-0">{{ assigned_location.location.name }} </h4>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-        <!-- * Assigned Location Cards -->
+            <!-- * Assigned Location Cards -->
         {% endif %}
 
         {% if is_phase2 %}
-        <!-- Assigned Questions -->
-        <div class="section full mt-3 mb-3">
-            <div class="section-title">
-                <h2 class="mb-0">Unanswered Questions</h2>
+            <!-- Assigned Questions -->
+            <div class="section full mt-3 mb-3">
+                <div class="section-title">
+                    <h2 class="mb-0">Unanswered Questions</h2>
+                </div>
+                {% if unanswered_questions %}
+                    <ul class="listview link-listview">
+                        {% for question in unanswered_questions %}
+                            <li>
+                                <a href="/question/{{ question.uuid }}">
+                                    {{ question.question }}
+                                    <span class="text-muted">Answer</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p style="padding-left: 16px; padding-right: 16px">Hooray! You have answered all questions.</p>
+                {% endif %}
             </div>
-            {% if unanswered_questions %}
-            <ul class="listview link-listview">
-                {% for question in unanswered_questions %}
-                    <li>
-                        <a href="/question/{{ question.uuid }}">
-                            {{ question.question }}
-                            <span class="text-muted">Answer</span>
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-                <p style="padding-left: 16px; padding-right: 16px">Hooray! You have answered all questions.</p>
-            {% endif %}
-        </div>
-        <!-- * Assigned Questions -->
+            <!-- * Assigned Questions -->
         {% endif %}
 
         <!-- Groom my room display -->
@@ -135,7 +135,7 @@
                 </div>
             </div>
 
-            <div class="content-header mb-2"><h5 class="text-muted">Browse through submissions by your hall mates and vote for your favourite. Every new submission from your block adds 100 HP.</h5></div>
+            <div class="content-header mb-2"><h5 class="text-muted">Browse through submissions by your hall mates and vote for your favourites. Every new submission from your block adds 100 HP.</h5></div>
             {% if my_submission %}
                 <h5 class="mx-3">My submission:</h5>
                 <ul class="listview image-listview media mb-2">
@@ -163,31 +163,67 @@
                 </ul>
             {% endif %}
             <h5 class="mx-3">All submissions:</h5>
-            <ul class="listview image-listview media mb-2">
-                {% for submission in photo_submissions %}
-                    <li>
-                    <a href="submission/{{ submission.id }}" class="item">
-                        <div class="imageWrapper">
-                            {% thumbnail submission.photo "320x180" crop="center" as im %}
-                                <img src="{{ im.url }}" alt="image" class="imaged w64">
-                            {% endthumbnail %}
-                        </div>
-                        <div class="in">
-                            <div>
-                                {{ submission.title }}
-                                <div class="text-muted">{{ submission.votes }} votes</div>
-                            </div>
-                            <span class="text-primary">View/Vote</span>
-                        </div>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
+            <div class="wide-block pt-2 pb-2" style="padding-left:0; padding-right:0">
+                <div class="mx-3">
+                    <ul class="nav nav-tabs style1" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#latest-submissions" role="tab" aria-selected="true">
+                                Latest
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#top-submissions" role="tab" aria-selected="false">
+                                Top
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#random-submissions" role="tab" aria-selected="false">
+                                Random
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content mt-2">
+                    <div class="tab-pane fade active show" id="latest-submissions" role="tabpanel">
+                        <ul class="listview image-listview media mb-2 vote-list">
+                            {% for submission in photo_submissions %}
+                                <li data-votes="{{ submission.votes }}">
+                                    <a href="submission/{{ submission.id }}" class="item">
+                                        <div class="imageWrapper">
+                                            {% thumbnail submission.photo "320x180" crop="center" as im %}
+                                                <img src="{{ im.url }}" alt="image" class="imaged w64">
+                                            {% endthumbnail %}
+                                        </div>
+                                        <div class="in">
+                                            <div>
+                                                {{ submission.title }}
+                                                <div class="text-muted">{{ submission.votes }} votes</div>
+                                            </div>
+                                            <span class="text-primary">View/Vote</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="tab-pane fade" id="top-submissions" role="tabpanel">
+                        <ul class="listview image-listview media mb-2 vote-list">
+                        </ul>
+                    </div>
+                    <div class="tab-pane fade" id="random-submissions" role="tabpanel">
+                        <ul class="listview image-listview media mb-2 vote-list">
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
         <!-- * Groom my room display -->
     </div>
     <!-- * App Capsule -->
-{#    {% include "core/sidebar.html" %}#}
+
+    {#    {% include "core/sidebar.html" %}#}
     {% if is_phase2 %}
         {% include "core/menu.html" %}
     {% endif %}
@@ -239,5 +275,29 @@
                 passive: false
             });
         }
+    </script>
+    <script>
+        $( document ).ready(function (){
+            let toSort = $("#latest-submissions > ul li").clone();
+            let sorted = toSort.sort(function(a, b){
+                return $(b).data('votes') - $(a).data('votes');
+            });
+            $('#top-submissions > ul').html(sorted);
+
+        });
+
+        $('a[href="#random-submissions"]').click(function (){
+
+            let toSort2 = $("#latest-submissions > ul li").clone();
+            let randomlySorted = toSort2.sort(function(a, b){
+                return Math.round(Math.random()) - 0.5;
+            });
+
+            $('#random-submissions > ul').html(randomlySorted);
+
+        });
+
+
+
     </script>
 {% endblock %}
