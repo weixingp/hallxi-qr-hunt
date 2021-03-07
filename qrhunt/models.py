@@ -10,7 +10,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 from urllib.parse import urlencode
 from hallxiqr.settings import SITE_URL, DATA_UPLOAD_MAX_MEMORY_SIZE, BASE_DIR
-# from qrhunt.apis.SendGrid import SendGrid
+from qrhunt.apis.SendGrid import SendGrid
 from qrhunt.utils import ContentTypeRestrictedFileField, update_filename, MatriculationField
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
@@ -411,19 +411,19 @@ def update_blk_hp_after_save(sender, instance, created, **kwargs):
         block.save()
 
         # Send email to review team
-        # review_team = Group.objects.get(name="photo_review").user_set.all()
-        # sg = SendGrid()
-        # recipients = []
-        # for user in review_team:
-        #     recipients.append(user.email)
-        #
-        # with open(str(BASE_DIR) + 'qrhunt/apis/emails/photo_review.html', "r", encoding="utf-8") as f:
-        #     email_body = f.read()
-        #     email_body = email_body.replace("[SUBMISSION_TITLE]", instance.title)
-        #     email_body = email_body.replace("[SUBMISSION_USER]", instance.user.profile.fullname)
-        #     email_body = email_body.replace("[SUBMISSION_ID]", instance.id)
-        #
-        # sg.send(recipients, subject="New photo submission received", message=email_body)
+        review_team = Group.objects.get(name="photo_review").user_set.all()
+        sg = SendGrid()
+        recipients = []
+        for user in review_team:
+            recipients.append(user.email)
+
+        with open(str(BASE_DIR) + 'qrhunt/apis/emails/photo_review.html', "r", encoding="utf-8") as f:
+            email_body = f.read()
+            email_body = email_body.replace("[SUBMISSION_TITLE]", instance.title)
+            email_body = email_body.replace("[SUBMISSION_USER]", instance.user.profile.fullname)
+            email_body = email_body.replace("[SUBMISSION_ID]", instance.id)
+
+        sg.send(recipients, subject="New photo submission received", message=email_body)
 
 
 @receiver(pre_delete, sender=PhotoSubmission)
