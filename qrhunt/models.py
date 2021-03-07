@@ -10,7 +10,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 from urllib.parse import urlencode
 from hallxiqr.settings import SITE_URL, DATA_UPLOAD_MAX_MEMORY_SIZE, BASE_DIR
-from qrhunt.apis.SendGrid import SendGrid
+# from qrhunt.apis.SendGrid import SendGrid
 from qrhunt.utils import ContentTypeRestrictedFileField, update_filename, MatriculationField
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
