@@ -14,14 +14,15 @@ class SendGrid:
     def __init__(self):
         self.sg = SendGridAPIClient(self.api_key)
 
-    def send(self, recipient, subject, message):
+    def send(self, recipients, subject, message):
 
         message = Mail(
             from_email=self.from_email,
-            to_emails=recipient,
+            to_emails=recipients,
             subject=subject,
             html_content=message)
         try:
             self.sg.send(message)
         except Exception as e:
             print(repr(e))
+
