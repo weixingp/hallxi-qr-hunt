@@ -277,6 +277,10 @@
         }
     </script>
     <script>
+        // Add to home modal
+        AddtoHome('3000', 'once');
+
+
         $( document ).ready(function (){
             let toSort = $("#latest-submissions > ul li").clone();
             let sorted = toSort.sort(function(a, b){

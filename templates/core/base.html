@@ -145,9 +145,6 @@
 <!-- Hammer Js File -->
 <script src="{% static "assets/js/plugins/hammer.min.js" %}"></script>
 <script>
-    // Add to home modal
-    AddtoHome('3000', 'once');
-
     let path = window.location.href; // because the 'href' property of the DOM element is the absolute path
     $('.appBottomMenu a').each(function() {
         if (this.href === path) {
