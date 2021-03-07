@@ -33,6 +33,7 @@ urlpatterns = [
 
 core = [
     path('', main_view.home),
+    path('intro', main_view.event_info_page)
 ]
 
 
@@ -54,7 +55,7 @@ core_phase2 = [
 
 urlpatterns += core
 urlpatterns += core_phase1
-urlpatterns += core_phase2
+# urlpatterns += core_phase2
 
 # Game actions api
 actions = [

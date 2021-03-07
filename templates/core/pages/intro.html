@@ -1,0 +1,60 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load thumbnail %}
+{% load i18n %}
+{% block head_title %}{% trans "Groom My Room | HALL XI BoB" %}{% endblock %}
+{% load account socialaccount %}
+
+{% block body %}
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="full-height pt-3">
+
+        <div class="carousel-slider owl-carousel owl-theme">
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro1.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Hall XI Final IBG</h2>
+                <p>Final IBG is split into 2 exciting phases, Groom My Room and QR Hunt. Participate in both to earn points for your block and earn attractive prizes!</p>
+            </div>
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro2.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Phase 1 - Groom My Room</h2>
+                <p>Submit your unique room design and showcase it to your fellow hall mates. The key to winning is uniqueness and not tidiness!</p>
+            </div>
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro3.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Phase 1 - Vote</h2>
+                <p>Support your Hall mates by voting for your favourite designs. You have unlimited votes.</p>
+            </div>
+
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro4.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Phase 1 - Win attractive prizes</h2>
+                <p>Shopee voucher for designs with the top votes and Council's pick.</p>
+            </div>
+
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro5.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Phase 2 - QR Hunt</h2>
+                <p>More details on phase 2 will be released soon.</p>
+            </div>
+
+        </div>
+
+        <div class="carousel-button-footer">
+            <div class="row">
+                <div class="col-12">
+                    <a href="/" class="btn btn-primary btn-lg btn-block">Get Started</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block extra_script %}
+    <script>
+
+    </script>
+{% endblock %}
+

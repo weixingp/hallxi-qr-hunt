@@ -37,6 +37,13 @@ def has_profile(function):
         if not hasattr(request.user, 'profile'):
             return redirect("/account/profile/")
 
+        # Check if user has read the intro
+        has_read_intro = request.COOKIES.get('has_read_intro')
+        if not has_read_intro:
+            return redirect("/intro")
+        elif has_read_intro == '0':
+            return redirect("/intro")
+
         return function(request, *args, **kwargs)
 
     return _function
@@ -791,3 +798,15 @@ def photo_submission_delete_view(request):
         message = "Incomplete submission, please try again."
 
     return JsonResponse({"success": success, "message": message})
+
+
+@login_required()
+@has_profile
+@mobile_only
+def event_info_page(request):
+    template = loader.get_template('core/pages/intro.html')
+
+    context = {}
+    response = HttpResponse(template.render(context, request))
+    response.set_cookie('has_read_intro', '1')
+    return response
