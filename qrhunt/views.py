@@ -37,6 +37,14 @@ def has_profile(function):
         if not hasattr(request.user, 'profile'):
             return redirect("/account/profile/")
 
+        return function(request, *args, **kwargs)
+
+    return _function
+
+
+def has_read_intro(function):
+    def _function(request, *args, **kwargs):
+
         # Check if user has read the intro
         has_read_intro = request.COOKIES.get('has_read_intro')
         if not has_read_intro:
@@ -176,6 +184,7 @@ def location_main(request, uuid):
 @login_required()
 @mobile_only
 @has_profile
+@has_read_intro
 def home(request):
     template = loader.get_template('core/pages/home.html')
     user = request.user
@@ -802,6 +811,7 @@ def photo_submission_delete_view(request):
 
 @login_required()
 @mobile_only
+@has_profile
 def event_info_page(request):
     template = loader.get_template('core/pages/intro.html')
 
