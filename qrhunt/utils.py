@@ -1,5 +1,6 @@
 import math
 import os
+import uuid
 
 from django.db.models import FileField, CharField
 from django.forms import forms
@@ -134,5 +135,5 @@ class ContentTypeRestrictedFileField(FileField):
 
 def update_filename(instance, filename):
     path = "submissions/"
-    file_format = instance.user.email + "." + filename.split('.')[-1]
+    file_format = uuid.uuid4().hex + "." + filename.split('.')[-1]
     return os.path.join(path, file_format)

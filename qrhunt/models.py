@@ -433,18 +433,18 @@ def update_blk_hp_after_delete(sender, instance, **kwargs):
     block.save()
 
 
-# @receiver(models.signals.post_delete, sender=PhotoSubmission)
-# def auto_delete_file_on_delete(sender, instance, **kwargs):
-#     """
-#     Deletes file from filesystem
-#     when corresponding `MediaFile` object is deleted.
-#     """
-#     to_delete = [
-#         instance.photo,
-#         instance.photo2,
-#         instance.photo3
-#     ]
-#     for photo in to_delete:
-#         if photo:
-#             if os.path.isfile(photo.path):
-#                 os.remove(photo.path)
+@receiver(models.signals.post_delete, sender=PhotoSubmission)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `MediaFile` object is deleted.
+    """
+    to_delete = [
+        instance.photo,
+        instance.photo2,
+        instance.photo3
+    ]
+    for photo in to_delete:
+        if photo:
+            if os.path.isfile(photo.path):
+                os.remove(photo.path)
