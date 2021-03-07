@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -817,5 +818,6 @@ def event_info_page(request):
 
     context = {}
     response = HttpResponse(template.render(context, request))
-    response.set_cookie('has_read_intro', '1')
+    cookies_exp = datetime.datetime(2021, 3, 17)
+    response.set_cookie('has_read_intro', '1', expires=cookies_exp)
     return response
