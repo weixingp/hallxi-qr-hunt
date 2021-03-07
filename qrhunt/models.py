@@ -411,19 +411,19 @@ def update_blk_hp_after_save(sender, instance, created, **kwargs):
         block.save()
 
         # Send email to review team
-        # review_team = Group.objects.get(name="photo_review").user_set.all()
-        # sg = SendGrid()
-        # recipients = []
-        # for user in review_team:
-        #     recipients.append(user.email)
-        #
-        # with open(str(BASE_DIR) + 'qrhunt/apis/emails/photo_review.html', "r", encoding="utf-8") as f:
-        #     email_body = f.read()
-        #     email_body = email_body.replace("[SUBMISSION_TITLE]", instance.title)
-        #     email_body = email_body.replace("[SUBMISSION_USER]", instance.user.profile.fullname)
-        #     email_body = email_body.replace("[SUBMISSION_ID]", instance.id)
-        #
-        # sg.send(recipients, subject="New photo submission received", message=email_body)
+        review_team = Group.objects.get(name="photo_review").user_set.all()
+        sg = SendGrid()
+        recipients = []
+        for user in review_team:
+            recipients.append(user.email)
+
+        with open(str(BASE_DIR) + '/qrhunt/apis/emails/photo_review.html', "r", encoding="utf-8") as f:
+            email_body = f.read()
+            email_body = email_body.replace("[SUBMISSION_TITLE]", instance.title)
+            email_body = email_body.replace("[SUBMISSION_USER]", instance.user.profile.fullname)
+            email_body = email_body.replace("[SUBMISSION_ID]", str(instance.id))
+
+        sg.send(recipients, subject="New photo submission received", message=email_body)
 
 
 @receiver(pre_delete, sender=PhotoSubmission)
