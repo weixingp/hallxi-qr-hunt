@@ -801,7 +801,6 @@ def photo_submission_delete_view(request):
 
 
 @login_required()
-@has_profile
 @mobile_only
 def event_info_page(request):
     template = loader.get_template('core/pages/intro.html')
