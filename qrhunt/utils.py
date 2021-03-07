@@ -91,7 +91,7 @@ class MatriculationField(CharField):
         if not check:
             raise forms.ValidationError(_('Invalid matric number, please double check.'))
 
-        return data
+        return matric
 
 
 class ContentTypeRestrictedFileField(FileField):
