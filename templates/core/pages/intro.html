@@ -6,9 +6,9 @@
 {% load account socialaccount %}
 
 {% block body %}
-
-    <!-- App Capsule -->
-    <div id="appCapsule" class="full-height pt-3">
+    <div class="bg-white">
+        <!-- App Capsule -->
+        <div id="appCapsule" class="full-height pt-3">
 
         <div class="carousel-slider owl-carousel owl-theme">
             <div class="item p-2">
@@ -50,11 +50,39 @@
         </div>
 
     </div>
+    </div>
+
 
 {% endblock %}
 {% block extra_script %}
     <script>
+        window.blockMenuHeaderScroll = false;
+        var classname = document.getElementsByClassName("owl-carousel");
+        var dailyLocations = document.getElementById("appCapsule");
+        var mc = new Hammer(dailyLocations);
 
+        mc.on("swipeleft swiperight panleft panright", function(ev) {
+            window.blockMenuHeaderScroll = true;
+        });
+
+        mc.on("panend swipeend", function (ev){
+            window.blockMenuHeaderScroll = false;
+        });
+
+        mc.on("swipeup swipedown panup pandown", function(ev) {
+            window.blockMenuHeaderScroll = false;
+        });
+
+        for (var i = 0; i < classname.length; i++) {
+            classname[i].addEventListener('touchmove', function(evt) {
+                if (blockMenuHeaderScroll && evt.cancelable) {
+                    evt.preventDefault();
+                }
+
+            }, {
+                passive: false
+            });
+        }
     </script>
 {% endblock %}
 
