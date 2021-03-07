@@ -1,4 +1,5 @@
 import os
+import random
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.db import models
@@ -417,13 +418,16 @@ def update_blk_hp_after_save(sender, instance, created, **kwargs):
         for user in review_team:
             recipients.append(user.email)
 
+        # Randomly selects one reviewer
+        recipient = random.choice(recipients)
+
         with open(str(BASE_DIR) + '/qrhunt/apis/emails/photo_review.html', "r", encoding="utf-8") as f:
             email_body = f.read()
             email_body = email_body.replace("[SUBMISSION_TITLE]", instance.title)
             email_body = email_body.replace("[SUBMISSION_USER]", instance.user.profile.fullname)
             email_body = email_body.replace("[SUBMISSION_ID]", str(instance.id))
 
-        sg.send(recipients, subject="New photo submission received", message=email_body)
+        sg.send(recipient, subject="New photo submission received", message=email_body)
 
 
 @receiver(pre_delete, sender=PhotoSubmission)
