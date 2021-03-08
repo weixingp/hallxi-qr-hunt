@@ -430,6 +430,21 @@ def update_blk_hp_after_save(sender, instance, created, **kwargs):
         sg.send(recipient, subject="New photo submission received", message=email_body)
 
 
+@receiver(post_save, sender=PhotoSubmission)
+def photo_submission_before_save(sender, instance, created, **kwargs):
+    old = PhotoSubmission.objects.get(id=instance.id)
+    if not old.has_reviewed and instance.has_reviewed:
+        sg = SendGrid()
+        recipient = instance.user.email
+
+        with open(str(BASE_DIR) + '/qrhunt/apis/emails/photo_reviewed.html', "r", encoding="utf-8") as f:
+            email_body = f.read()
+            email_body = email_body.replace("[SUBMISSION_USER]", instance.user.profile.fullname)
+            email_body = email_body.replace("[SUBMISSION_ID]", str(instance.id))
+
+        sg.send(recipient, subject="Your submission has been reviewed", message=email_body)
+
+
 @receiver(pre_delete, sender=PhotoSubmission)
 def update_blk_hp_after_delete(sender, instance, **kwargs):
     block = Block.objects.get(name=instance.user.profile.block.name)
