@@ -190,6 +190,11 @@ def home(request):
     template = loader.get_template('core/pages/home.html')
     user = request.user
 
+    if request.COOKIES.get('next_url'):
+        response = redirect(request.COOKIES.get('next_url'))
+        response.set_cookie('next_url', '', max_age=0)
+        return response
+
     try:
         assigned_locations = AssignedLocation.objects.filter(user=user, )
     except ObjectDoesNotExist:

@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 from hallxiqr.settings import SITE_URL, DATA_UPLOAD_MAX_MEMORY_SIZE, BASE_DIR
 from qrhunt.apis.SendGrid import SendGrid
 from qrhunt.utils import ContentTypeRestrictedFileField, update_filename, MatriculationField
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 
 
@@ -430,8 +430,8 @@ def update_blk_hp_after_save(sender, instance, created, **kwargs):
         sg.send(recipient, subject="New photo submission received", message=email_body)
 
 
-@receiver(post_save, sender=PhotoSubmission)
-def photo_submission_before_save(sender, instance, created, **kwargs):
+@receiver(pre_save, sender=PhotoSubmission)
+def photo_submission_before_save(sender, instance, **kwargs):
     old = PhotoSubmission.objects.get(id=instance.id)
     if not old.has_reviewed and instance.has_reviewed:
         sg = SendGrid()
