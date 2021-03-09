@@ -45,9 +45,15 @@
                         {% for photo in submission.get_photos %}
                             {% if photo %}
                                 <div class="item">
+                                {% if photo|is_portrait %}
+                                    {% thumbnail photo "350x450" crop="center" as im %}
+                                        <img src="{{ im.url }}" alt="image" class="imaged rounded-lg w-100">
+                                    {% endthumbnail %}
+                                {% else %}
                                     {% thumbnail photo "800x450" crop="center" as im %}
                                         <img src="{{ im.url }}" alt="image" class="imaged rounded-lg w-100">
                                     {% endthumbnail %}
+                                {% endif %}
                                 </div>
                             {% endif %}
                         {% endfor %}
