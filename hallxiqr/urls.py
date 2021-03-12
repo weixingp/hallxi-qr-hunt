@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import path, include
 from qrhunt import views as main_view
 from django.conf import settings
@@ -21,6 +22,7 @@ from django.conf import settings
 
 admin.site.site_header = 'Hall XI BoB Admin'
 admin.site.site_title = 'Hall XI BoB'
+admin.site.login = login_required(admin.site.login)
 
 # Account and admin module
 urlpatterns = [
