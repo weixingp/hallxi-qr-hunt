@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.urls import path, include
+
+from hallxiqr.settings import IS_PHASE2
 from qrhunt import views as main_view
 from django.conf import settings
 
@@ -53,11 +55,14 @@ core_phase2 = [
     path('lootbox', main_view.loot_box),
     path('location/<str:uuid>/', main_view.location_main),
     path('question/<str:uuid>', main_view.question_page),
+    path('leaderboard', main_view.leaderboard),
 ]
 
 urlpatterns += core
 urlpatterns += core_phase1
-# urlpatterns += core_phase2
+
+if IS_PHASE2:
+    urlpatterns += core_phase2
 
 # Game actions api
 actions = [

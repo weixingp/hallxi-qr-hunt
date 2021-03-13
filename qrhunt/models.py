@@ -181,7 +181,7 @@ class Item(models.Model):
         elif self.rarity == '3':
             points = 50
         elif self.rarity == '4':
-            points = 60
+            points = 0
         else:
             points = 0
 
@@ -200,7 +200,7 @@ class Item(models.Model):
                    + self.description
         elif self.type == "3":
             desc = "A physical Hall XI merchandise. You can't use now, we will contact you for collection at a later " \
-                   "date. Gain " + str(self.get_points()) + " points. " + self.description
+                   "date. " + self.description
 
         else:
             desc = "No description available."
@@ -401,6 +401,13 @@ class PhotoComment(models.Model):
                                    related_name="fk_photo_comment_photo_submission")
     comment = models.TextField(max_length=500)
     time = models.DateTimeField(auto_now_add=True, blank=True)
+
+
+class PointsRecord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="fk_points_record_user")
+    points_change = models.IntegerField()
+    reason = models.CharField(max_length=255)
+    time = models.DateTimeField(auto_now_add=True)
 
 
 # Signals

@@ -16,7 +16,8 @@ from .models import Location, AssignedLocation, Question, AssignedQuestion, Bloc
     AssignedItem, PhotoSubmission, PhotoUpvote, PhotoComment
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question, assign_loot_box, get_block_hp, \
-    get_block_exploration, use_item as use, open_loot_box, get_total_blk_player, get_unanswered_qn
+    get_block_exploration, use_item as use, open_loot_box, get_total_blk_player, get_unanswered_qn, get_user_points, \
+    get_leaderboard
 
 
 def mobile_only(function):
@@ -34,7 +35,6 @@ def mobile_only(function):
 
 def has_profile(function):
     def _function(request, *args, **kwargs):
-
         if not hasattr(request.user, 'profile'):
             return redirect("/account/profile/")
 
@@ -84,7 +84,8 @@ def user_details(request):
                 if has_profile:
                     messages.add_message(request, messages.SUCCESS, 'Your profile has been updated.')
                 else:
-                    messages.add_message(request, messages.SUCCESS, 'You have been registered for the game, thank you for participating!')
+                    messages.add_message(request, messages.SUCCESS,
+                                         'You have been registered for the game, thank you for participating!')
                 return redirect("/account/profile/")
             else:
                 messages.add_message(request, messages.ERROR, "You have errors in your form, please check.")
@@ -825,4 +826,32 @@ def event_info_page(request):
     response = HttpResponse(template.render(context, request))
     cookies_exp = datetime.datetime(2021, 3, 17)
     response.set_cookie('has_read_intro', '1', expires=cookies_exp)
+    return response
+
+
+@login_required()
+@mobile_only
+@has_profile
+def leaderboard(request):
+    template = loader.get_template('core/pages/leaderboard.html')
+    user = request.user
+    user_points = get_user_points(user)
+    ranking = get_leaderboard()
+    user_rank = next((index for (index, d) in enumerate(ranking) if d["user"] == user.id), None) + 1
+    top_3 = ranking[0:3]
+
+    if len(ranking) > 3:
+        remaining_ranks = ranking[3:20]
+    else:
+        remaining_ranks = None
+
+    context = {
+        "user": user,
+        "user_points": user_points,
+        "user_rank": user_rank,
+        "top_3": top_3,
+        "ranking": ranking,
+    }
+
+    response = HttpResponse(template.render(context, request))
     return response

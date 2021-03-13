@@ -38,7 +38,7 @@ LOGIN_URL = "/account/login/"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
 
 # Game controls
-IS_PHASE2 = False
+IS_PHASE2 = True
 
 
 # Application definition

@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 from .models import User, Profile, Question, Answer, Item, Inventory, AssignedQuestion, AssignedItem, PhotoSubmission, \
-    PhotoUpvote, PhotoComment
+    PhotoUpvote, PhotoComment, PointsRecord
 from .models import Location, AssignedLocation, Block, HpLog, AssignedLootBox
 
 
@@ -33,6 +33,12 @@ def linkify(field_name):
 class AssignedLootBoxAdmin(admin.ModelAdmin):
     list_display = ('user', linkify(field_name="assigned_item"), 'reason', 'has_opened', 'time_opened', 'time')
     list_filter = ('has_opened',)
+    search_fields = ('reason', 'user__email')
+
+
+@admin.register(PointsRecord)
+class PointsRecordAdmin(admin.ModelAdmin):
+    list_display = ('user', 'points_change', 'reason', 'time')
     search_fields = ('reason', 'user__email')
 
 
