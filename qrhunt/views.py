@@ -850,7 +850,7 @@ def leaderboard(request):
         "user_points": user_points,
         "user_rank": user_rank,
         "top_3": top_3,
-        "ranking": ranking,
+        "ranking": remaining_ranks,
     }
 
     response = HttpResponse(template.render(context, request))
