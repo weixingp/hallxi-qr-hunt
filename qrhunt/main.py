@@ -122,6 +122,16 @@ def use_item(user, item, block):
                 "message": message,
             }
 
+        hp = get_block_hp(block)
+
+        # Do not let HP fall below 0
+        if (hp[0] + value) <= 0:
+            value = -hp[0]
+
+        # Do not let HP exceed max blk hp
+        if (hp[0] + value) >= hp[1]:
+            value = hp[1] - hp[0]
+
         # Save the HP Log
         HpLog.objects.create(
             user=user,
@@ -136,11 +146,11 @@ def use_item(user, item, block):
         # Add points for using the item
         PointsRecord.objects.create(
             user=user,
-            points_change=item.get_points(),
+            points_change=item.item.get_points(),
             reason=f"Using assigned item id: {item.id}",
         )
 
-        hp = get_block_hp(block)
+        hp[0] += value
         success = True
     return {"success": success, "message": message, "hp": hp}
 
