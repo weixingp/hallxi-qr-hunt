@@ -256,6 +256,7 @@ def get_rank_bonus():
 def get_block_ranking():
     blocks = Block.objects.all()
     bonus = get_rank_bonus()
+
     ranks_prop = [
         {
             "rank": 1,
@@ -291,8 +292,8 @@ def get_block_ranking():
     for block in blocks:
         hp = get_block_hp(block)
         exp = get_block_exploration(block)
-        hp_points = round((hp[0]/hp[1])*50)
-        exp_points = round((exp[0]/exp[1])*50)
+        hp_points = round((hp[0]/hp[1])*5000)
+        exp_points = round((exp[0]/exp[1])*5000)
 
         total_points = hp_points + exp_points
         temp = {

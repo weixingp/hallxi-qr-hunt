@@ -860,6 +860,17 @@ def leaderboard(request):
 def block_ranking(request):
     template = loader.get_template('core/pages/blocks.html')
     ranking = get_block_ranking()
+
+    block_colors = {
+        "53": "info",
+        "54": "warning",
+        "55": "info",
+        "56": "success"
+    }
+
+    for block in ranking:
+        block["color"] = block_colors[block["block"]]
+
     context = {
         "ranking": ranking,
     }

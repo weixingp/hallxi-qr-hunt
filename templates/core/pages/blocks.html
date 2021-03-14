@@ -25,7 +25,7 @@
     <!-- * App Header -->
 
     <!-- App Capsule -->
-    <div id="appCapsule" class="full-height">
+    <div id="appCapsule" class="full-height mb-3">
 
         <div class="section">
             {% for rank in ranking %}
@@ -35,7 +35,7 @@
                             <div style="margin-left: 6px; position: absolute; display: inline">
                                 <small class="text-white">Block</small>
                             </div>
-                            <div class="h-100 bg-primary rounded d-flex flex-column align-items-center justify-content-center">
+                            <div class="h-100 bg-{{ rank.color }} rounded d-flex flex-column align-items-center justify-content-center">
                                 <div><h1 class="text-white text-center mb-0">{{ rank.block }}</h1></div>
                             </div>
                         </div>
