@@ -862,7 +862,7 @@ def block_ranking(request):
     ranking = get_block_ranking()
 
     block_colors = {
-        "53": "info",
+        "53": "primary",
         "54": "warning",
         "55": "info",
         "56": "success"
