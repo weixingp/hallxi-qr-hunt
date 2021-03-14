@@ -17,7 +17,7 @@ from .models import Location, AssignedLocation, Question, AssignedQuestion, Bloc
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question, assign_loot_box, get_block_hp, \
     get_block_exploration, use_item as use, open_loot_box, get_total_blk_player, get_unanswered_qn, get_user_points, \
-    get_leaderboard
+    get_leaderboard, get_block_ranking
 
 
 def mobile_only(function):
@@ -853,5 +853,16 @@ def leaderboard(request):
         "ranking": remaining_ranks,
     }
 
+    response = HttpResponse(template.render(context, request))
+    return response
+
+
+def block_ranking(request):
+    template = loader.get_template('core/pages/blocks.html')
+    ranking = get_block_ranking()
+    context = {
+        "ranking": ranking,
+    }
+    print(ranking)
     response = HttpResponse(template.render(context, request))
     return response

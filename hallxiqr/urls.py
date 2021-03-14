@@ -41,7 +41,7 @@ core = [
 ]
 
 
-# Game Core URLs - Phase 2
+# Game Core URLs - Phase 1
 core_phase1 = [
     path('submission/new/', main_view.photo_submission_new_page),
     path('submission/<str:submission_id>/', main_view.photo_submission_view_page),
@@ -56,6 +56,7 @@ core_phase2 = [
     path('location/<str:uuid>/', main_view.location_main),
     path('question/<str:uuid>', main_view.question_page),
     path('leaderboard', main_view.leaderboard),
+    path('blocks', main_view.block_ranking),
 ]
 
 urlpatterns += core

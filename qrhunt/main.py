@@ -242,3 +242,72 @@ def get_leaderboard():
     print(leaderboard)
     return leaderboard
 
+
+def get_rank_bonus():
+    bonus = [
+        100,
+        50,
+        30,
+        0
+    ]
+    return bonus
+
+
+def get_block_ranking():
+    blocks = Block.objects.all()
+    bonus = get_rank_bonus()
+    ranks_prop = [
+        {
+            "rank": 1,
+            "sup": "st",
+            "bonus": bonus[0],
+            "color": "info"
+        },
+        {
+            "rank": 2,
+            "sup": "nd",
+            "bonus": bonus[1],
+            "color": "success"
+        },
+        {
+            "rank": 3,
+            "sup": "rd",
+            "bonus": bonus[2],
+            "color": "warning",
+        },
+        {
+            "rank": 4,
+            "sup": "th",
+            "bonus": bonus[3],
+            "color": "dark"
+        },
+
+    ]
+
+    if len(ranks_prop) < len(blocks):
+        raise ValueError("Rank prop size does not fit with number of blocks")
+
+    ranks = []
+    for block in blocks:
+        hp = get_block_hp(block)
+        exp = get_block_exploration(block)
+        hp_points = round((hp[0]/hp[1])*50)
+        exp_points = round((exp[0]/exp[1])*50)
+
+        total_points = hp_points + exp_points
+        temp = {
+            "block": block.name,
+            "points": total_points,
+            "hp": hp,
+            "exp": exp,
+        }
+        ranks.append(temp)
+
+    ranks = sorted(ranks, key=lambda i: i['points'], reverse=True)
+
+    index = 0
+    for block in ranks:
+        block['prop'] = ranks_prop[index]
+        index += 1
+
+    return ranks
