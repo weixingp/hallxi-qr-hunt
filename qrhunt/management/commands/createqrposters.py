@@ -25,10 +25,10 @@ class Command(BaseCommand):
 
             qr = Image.open(requests.get(google_qr_base, stream=True, params=payload).raw)
             qr = qr.resize((984, 984))
-            im = Image.open(BASE_DIR / 'qrhunt/qrcodes/base.jpg')
+            im = Image.open(BASE_DIR / '/qrhunt/qrcodes/base.jpg')
             im.paste(qr, (1369, 811))
 
             draw = ImageDraw.Draw(im)
             draw.text((1600, 1822), "Block 55 Lounge", (255, 255, 255), font=font)
-            save_dir = str(BASE_DIR) + f"qrhunt/qrcodes/generated/{location.uuid_str()}.jpg"
+            save_dir = str(BASE_DIR) + f"/qrhunt/qrcodes/generated/{location.uuid_str()}.jpg"
             im.save(save_dir)
