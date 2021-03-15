@@ -31,7 +31,7 @@ class Command(BaseCommand):
             im.paste(qr, (1369, 811))
 
             draw = ImageDraw.Draw(im)
-            draw.text((1600, 1820), "Computer Lab", (255, 255, 255), font=font)
+            draw.text((1600, 1820), location.name, (255, 255, 255), font=font)
             save_dir = str(BASE_DIR) + f"/qrhunt/qrcodes/generated/{location.uuid_str()}.jpg"
             im.save(save_dir)
             count += 1
