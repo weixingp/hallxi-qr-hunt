@@ -1,0 +1,107 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load thumbnail %}
+{% load i18n %}
+{% block head_title %}{% trans "Block Ranking | HALL XI BoB" %}{% endblock %}
+{% block extra_head %}
+{% endblock %}
+{% block body %}
+    <!-- App Header -->
+    <div class="appHeader bg-primary text-light">
+        <div class="left">
+            <a href="/" class="headerButton goBack">
+                <ion-icon name="home-outline"></ion-icon>
+            </a>
+        </div>
+        <div class="right">
+            <a href="#" id="reload-page" class="headerButton">
+                <ion-icon name="reload-outline"></ion-icon>
+            </a>
+        </div>
+        <div class="pageTitle">
+            Block Ranking
+        </div>
+    </div>
+    <!-- * App Header -->
+
+    <!-- App Capsule -->
+    <div id="appCapsule" class="full-height mb-3">
+
+        <div class="section">
+            {% for rank in ranking %}
+                <div class="card mt-3">
+                    <div class="row no-gutters ml-0">
+                        <div class="col-3">
+                            <div style="margin-left: 6px; position: absolute; display: inline">
+                                <small class="text-white">Block</small>
+                            </div>
+                            <div class="h-100 bg-{{ rank.color }} rounded d-flex flex-column align-items-center justify-content-center">
+                                <div><h1 class="text-white text-center mb-0">{{ rank.block }}</h1></div>
+                            </div>
+                        </div>
+                        <div class="col-9">
+                            <div style="position: absolute; right:1.5em; top:0.5em"><h3 class="text-info">{{ rank.prop.rank }}<sup>{{ rank.prop.sup }}</sup></h3></div>
+                            <div class="card-body" style="padding-bottom: 50px">
+                                <p class="mt-1 mb-0"><small><strong>Block HP:</strong> {{ rank.hp.0 }} / {{ rank.hp.1 }}</small></p>
+                                <div class="progress" style="height:10px">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {% widthratio rank.hp.0 rank.hp.1 100 %}%;" aria-valuenow="{{ rank.hp.0 }}" aria-valuemin="0" aria-valuemax="{{ rank.hp.1 }}"></div>
+                                </div>
+
+                                <p class="mt-1 mb-0"><small><strong>Block Exploration:</strong> {{ rank.exp.0 }} / {{ rank.exp.1 }}</small></p>
+                                <div class="progress" style="height:10px">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {% widthratio rank.exp.0 rank.exp.1 100 %}%;" aria-valuenow="{{ rank.exp.0 }}" aria-valuemin="0" aria-valuemax="{{ rank.exp.1 }}"></div>
+                                </div>
+
+                                <div>
+                                    <h3 class="mb-0 text-secondary" style="position: absolute; right: 1.5em; bottom: 0.4em">
+                                        {{ rank.points }} pts</h3>
+                                </div>
+                                <div class="chip chip-danger chip-media" style="position: absolute; left: 1.2em; bottom: 0.6em">
+                                    <i class="chip-icon bg-dark">
+                                        <ion-icon name="person-outline" role="img" class="md hydrated" aria-label="person outline"></ion-icon>
+                                    </i>
+                                    <span class="chip-label">+{{ rank.prop.bonus }} pts</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+        <!-- * App Capsule -->
+        <!-- Error dialogue -->
+        <div class="modal fade dialogbox" id="error-dialogue" data-backdrop="static" tabindex="-1" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-icon text-danger">
+                        <ion-icon name="close-circle" role="img" class="md hydrated" aria-label="close circle"></ion-icon>
+                    </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Error</h5>
+                    </div>
+                    <div class="modal-body" id="error-dialogue-message">
+                        This is a dialog message
+                    </div>
+                    <div class="modal-footer">
+                        <div class="btn-inline">
+                            <a href="/" class="btn">HOME</a>
+                            <a href="/lootbox" class="btn btn-text-primary">RETRY</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- * Error dialogue -->
+    </div>
+    {% include "core/menu.html" %}
+{% endblock %}
+{% block extra_script %}
+    <script>
+        $("#reload-page").click(function(){
+            $(this).parent().html('<div class="spinner-border text-white mr-1" role="status"></div>')
+            window.location.reload();
+        })
+    </script>
+{% endblock %}

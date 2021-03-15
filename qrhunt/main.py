@@ -1,4 +1,4 @@
-from .models import Location, AssignedLocation, Question, AssignedQuestion, User, AssignedLootBox, Profile
+from .models import Location, AssignedLocation, Question, AssignedQuestion, User, AssignedLootBox, Profile, PointsRecord
 from .models import Block, HpLog, AssignedItem, Item
 
 from django.utils.timezone import localtime, now
@@ -51,8 +51,8 @@ def get_random_question(user, difficulty):
         .values_list('question_id', flat=True)
 
     # Exclude the questions that have been answered.
-    pks = Question.objects.filter(difficulty=difficulty)\
-        .exclude(id__in=list(answered_question))\
+    pks = Question.objects.filter(difficulty=difficulty) \
+        .exclude(id__in=list(answered_question)) \
         .values_list('pk', flat=True, )
 
     if len(pks) < 1:
@@ -122,6 +122,17 @@ def use_item(user, item, block):
                 "message": message,
             }
 
+        hp = get_block_hp(block)
+
+        # Do not let HP fall below 0
+        if (hp[0] + value) <= 0:
+            value = -hp[0]
+
+        # Do not let HP exceed max blk hp
+        if (hp[0] + value) >= hp[1]:
+            value = hp[1] - hp[0]
+
+        # Save the HP Log
         HpLog.objects.create(
             user=user,
             target_block=block,
@@ -131,9 +142,16 @@ def use_item(user, item, block):
         item.has_used = True
         item.time_used = localtime(now())
         item.save()
-        hp = get_block_hp(block)
-        success = True
 
+        # Add points for using the item
+        PointsRecord.objects.create(
+            user=user,
+            points_change=item.item.get_points(),
+            reason=f"Using assigned item id: {item.id}",
+        )
+
+        hp[0] += value
+        success = True
     return {"success": success, "message": message, "hp": hp}
 
 
@@ -193,3 +211,114 @@ def get_unanswered_qn(user):
         res.append(temp)
 
     return res
+
+
+def get_user_points(user):
+    points = PointsRecord.objects.filter(user=user).aggregate(Sum('points_change'))
+    print(points)
+    user_points = points['points_change__sum']
+    if not user_points:
+        user_points = 0
+    return user_points
+
+
+def get_leaderboard():
+    leaderboard = PointsRecord.objects.all()\
+        .values('user')\
+        .annotate(total_points=Sum('points_change'))\
+        .order_by('-points_change')
+
+    profiles = Profile.objects.all()
+
+    rank = 1
+    leaderboard = list(leaderboard)
+
+    for item in leaderboard:
+        item['profile'] = profiles.get(user__id=item['user'])
+        profiles = profiles.exclude(user__id=item['user'])
+        item['rank'] = rank
+        rank += 1
+
+    for unranked in profiles:
+        temp = {
+            "user": unranked.user.id,
+            "profile": unranked,
+            "total_points": 0,
+            "rank": rank
+        }
+        leaderboard.append(temp)
+        rank += 1
+
+    print(leaderboard)
+    return leaderboard
+
+
+def get_rank_bonus():
+    bonus = [
+        100,
+        50,
+        30,
+        0
+    ]
+    return bonus
+
+
+def get_block_ranking():
+    blocks = Block.objects.all()
+    bonus = get_rank_bonus()
+
+    ranks_prop = [
+        {
+            "rank": 1,
+            "sup": "st",
+            "bonus": bonus[0],
+            "color": "info"
+        },
+        {
+            "rank": 2,
+            "sup": "nd",
+            "bonus": bonus[1],
+            "color": "success"
+        },
+        {
+            "rank": 3,
+            "sup": "rd",
+            "bonus": bonus[2],
+            "color": "warning",
+        },
+        {
+            "rank": 4,
+            "sup": "th",
+            "bonus": bonus[3],
+            "color": "dark"
+        },
+
+    ]
+
+    if len(ranks_prop) < len(blocks):
+        raise ValueError("Rank prop size does not fit with number of blocks")
+
+    ranks = []
+    for block in blocks:
+        hp = get_block_hp(block)
+        exp = get_block_exploration(block)
+        hp_points = round((hp[0]/hp[1])*5000)
+        exp_points = round((exp[0]/exp[1])*5000)
+
+        total_points = hp_points + exp_points
+        temp = {
+            "block": block.name,
+            "points": total_points,
+            "hp": hp,
+            "exp": exp,
+        }
+        ranks.append(temp)
+
+    ranks = sorted(ranks, key=lambda i: i['points'], reverse=True)
+
+    index = 0
+    for block in ranks:
+        block['prop'] = ranks_prop[index]
+        index += 1
+
+    return ranks
