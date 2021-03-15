@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
             qr = Image.open(requests.get(google_qr_base, stream=True, params=payload).raw)
             qr = qr.resize((984, 984))
-            im = Image.open(BASE_DIR / '/qrhunt/qrcodes/base.jpg')
+            im = Image.open(BASE_DIR / 'qrhunt/qrcodes/base.jpg')
             im.paste(qr, (1369, 811))
 
             draw = ImageDraw.Draw(im)
