@@ -207,9 +207,7 @@ def get_unanswered_qn(user):
     question_list = list(question_list)
     res = []
     for question in question_list:
-        if question.time.date() != localtime().date():
-            question_list.remove(question)
-        else:
+        if localtime(question.time).date() == localtime().date():
             temp = {
                 "uuid": question.uuid,
                 "question": str(question.question)
@@ -358,11 +356,9 @@ def get_assigned_location(user):
     assigned_locations = AssignedLocation.objects.filter(
         user=user,
     )
+    loc_list = []
+    for location in assigned_locations:
+        if localtime(location.time).date() == localtime().date():
+            loc_list.append(location)
 
-    location_list = list(assigned_locations)
-
-    for location in location_list:
-        if localtime(location.time).date() != localtime().date():
-            location_list.remove(location)
-
-    return location_list
+    return loc_list
