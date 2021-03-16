@@ -748,7 +748,10 @@ def photo_submission_new_page(request):
 
     if request.method == "GET":
         has_submitted = PhotoSubmission.objects.filter(user=user)
-        if has_submitted:
+        if IS_PHASE2:
+            message = "Submission is now closed."
+            has_submitted = True
+        elif has_submitted:
             message = "You have already submitted one entry. To submit a new entry, please delete the old entry " \
                       "<a href='/submission/" + str(has_submitted[0].id) + "'>here</a>."
         else:
@@ -761,7 +764,10 @@ def photo_submission_new_page(request):
         response = HttpResponse(template.render(context, request))
         return response
     elif request.method == "POST":
-        print(request.POST)
+
+        if IS_PHASE2:
+            return JsonResponse({"success": False, "message": "Submission is now closed.", "submission_id": None})
+
         form = NewPhotoSubmissionForm(request.POST, files=request.FILES)
         if form.is_valid():
             has_submitted = PhotoSubmission.objects.filter(user=user)
@@ -786,7 +792,6 @@ def photo_submission_new_page(request):
             success = False
             message = "Incomplete submission, please try again."
             submission_id = None
-            print(form.errors)
 
         return JsonResponse({"success": success, "message": message, "submission_id": submission_id})
     else:
@@ -877,6 +882,5 @@ def block_ranking(request):
     context = {
         "ranking": ranking,
     }
-    print(ranking)
     response = HttpResponse(template.render(context, request))
     return response

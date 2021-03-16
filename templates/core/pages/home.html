@@ -130,9 +130,11 @@
                 <div class="">
                     <h2 class="mb-0">Groom My Room</h2>
                 </div>
-                <div>
-                    <a href="submission/new">Submit</a>
-                </div>
+                {% if is_phase2 %}
+                    <div>
+                        <a href="submission/new">Submit</a>
+                    </div>
+                {% endif %}
             </div>
 
             <div class="content-header mb-2"><h5 class="text-muted">Showcase your unique room design here and vote for your favourite designs by your hall mates. Every new submission from your block adds 100 HP.</h5></div>
