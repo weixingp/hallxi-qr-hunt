@@ -460,12 +460,15 @@ def inventory(request):
     heal_items = []
     special_items = []
     for item in item_list:
+
         if item.item.type == "1":
             attack_items.append(item)
         elif item.item.type == "2":
             heal_items.append(item)
-        else:
+        elif item.item.type == "3":
             special_items.append(item)
+        else:
+            pass
 
     context = {
         "loot_box_count": loot_box_count,

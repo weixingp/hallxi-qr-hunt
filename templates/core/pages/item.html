@@ -83,19 +83,7 @@
 
                                             <p class="text" style="line-height:125%;padding-top:4px;">{{ item.item.get_item_description }}</p>
                                             <div class="mt-auto">
-                                                <div class="chip chip-outline
-                                                    {% if item.item.get_rarity_display == 'Common' %}
-                                                    chip-success
-                                                    {% elif item.item.get_rarity_display == 'Rare' %}
-                                                    chip-danger
-                                                    {% elif item.item.get_rarity_display == 'Super Rare' %}
-                                                    chip-info
-                                                    {% elif item.item.get_rarity_display == 'Legendary' %}
-                                                    chip-warning
-                                                    {% else %}
-                                                    chip-success
-                                                    {% endif %}
-                                                ml-0 mb-05">
+                                                <div class="chip chip-outline chip-{{ item.item.get_rarity_color }} ml-0 mb-05">
                                                     <span class="chip-label">{{ item.item.get_rarity_display }}</span>
                                                 </div>
                                                 <div class="price">{{ item.item.value }} Damage</div>
@@ -127,7 +115,7 @@
 
                                             <p class="text" style="line-height:125%;padding-top:4px;">{{ item.item.get_item_description }}</p>
                                             <div class="mt-auto">
-                                                <div class="chip chip-outline chip-info ml-0 mb-05">
+                                                <div class="chip chip-outline chip-{{ item.item.get_rarity_color }} ml-0 mb-05">
                                                     <span class="chip-label">{{ item.item.get_rarity_display }}</span>
                                                 </div>
                                                 <div class="price">{{ item.item.value }} HP</div>
@@ -143,6 +131,28 @@
                         {% if not special_items %}
                             <p class="px-2">You don't have any items under this category. Open loot box to get items.</p>
                         {% endif %}
+                        <div class="carousel-multiple-items owl-carousel owl-theme">
+                            {% for item in special_items %}
+                                <div class="item h-100">
+                                    <div class="card product-card border-info h-100">
+                                        <div class="card-body d-flex flex-column">
+                                            {% thumbnail item.item.image "128x97" crop="center" as im %}
+                                                <img src="{{ im.url }}" class="image" alt="product image">
+                                            {% endthumbnail %}
+
+                                            <h3 class="title">{{ item.item.name }}</h3>
+
+                                            <p class="text" style="line-height:125%;padding-top:4px;">{{ item.item.get_item_description }}</p>
+                                            <div class="mt-auto">
+                                                <div class="chip chip-outline chip-{{ item.item.get_rarity_color }} ml-0 mb-05">
+                                                    <span class="chip-label">{{ item.item.get_rarity_display }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
 
@@ -216,7 +226,7 @@
                     }
                 },
                 error: function (err){
-                   $("#item-dialog-body").html("<p>Something went wrong, please try again later.</p>");
+                    $("#item-dialog-body").html("<p>Something went wrong, please try again later.</p>");
                 }
             });
         });

@@ -172,6 +172,18 @@ class Item(models.Model):
 
     image = models.ImageField(upload_to="items/", null=True, blank=True)
 
+    def get_rarity_color(self):
+        if self.rarity == '1':
+            color = "success"
+        elif self.rarity == '2':
+            color = "danger"
+        elif self.rarity == '3':
+            color = "info"
+        elif self.rarity == '4':
+            color = "warning"
+        else:
+            color = "primary"
+
     # Hardcoded points gained for each of the rarity
     def get_points(self):
         if self.rarity == '1':
