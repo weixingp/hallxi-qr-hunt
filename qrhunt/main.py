@@ -362,7 +362,7 @@ def get_assigned_location(user):
     location_list = list(assigned_locations)
 
     for location in location_list:
-        if localtime(location.time.date()) != localtime().date():
+        if location.time.date() != localtime().date():
             location_list.remove(location)
 
     return location_list
