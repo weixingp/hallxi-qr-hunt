@@ -175,4 +175,23 @@
             window.location.reload();
         })
     </script>
+    <script>
+        //Reload the page on loading from page cache
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload()
+            }
+        };
+
+        //Reload the page when it's opened again
+        function handleVisibilityChange() {
+            if(document.hidden) {
+                // the page is hidden
+            } else {
+                window.location.reload();
+            }
+        }
+        document.addEventListener("visibilitychange", handleVisibilityChange, false);
+
+    </script>
 {% endblock %}
