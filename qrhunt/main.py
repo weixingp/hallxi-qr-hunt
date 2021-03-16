@@ -88,12 +88,14 @@ def get_block_hp(block):
 def get_block_exploration(block):
     max_exploration = block.max_exploration_points
     curr_exploration = AssignedLocation.objects \
-        .filter(user__profile__block=block, has_visited=True) \
-        .aggregate(Sum('id'))
-    curr_exploration = curr_exploration["id__sum"]
+        .filter(location__area__in=[block.name, "00"], has_visited=True)\
+        .count()
 
     if not curr_exploration:
         curr_exploration = 0
+
+    if curr_exploration > max_exploration:
+        curr_exploration = max_exploration
 
     return [curr_exploration, max_exploration]
 
