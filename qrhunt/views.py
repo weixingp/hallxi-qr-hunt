@@ -419,7 +419,7 @@ def answer_question(request):
             else:
                 loot_box_amt = 0
 
-            assign_loot_box(user, loot_box_amt)
+            assign_loot_box(user, loot_box_amt, f"Answered question id {question.id} correctly.")
             correct = True
             message = "You have received " + str(loot_box_amt) + " loot box(es)."
         else:

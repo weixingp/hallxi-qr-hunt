@@ -65,8 +65,12 @@ def get_random_question(user, difficulty):
     return random_qn
 
 
-def assign_loot_box(user, amount):
-    pass
+def assign_loot_box(user, amount, reason):
+    for i in range(0, amount):
+        lootboxes = AssignedLootBox.objects.create(
+            user=user,
+            reason=reason
+        )
 
 
 def get_block_hp(block):
