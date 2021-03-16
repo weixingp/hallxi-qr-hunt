@@ -180,9 +180,24 @@ def open_loot_box(box):
     pks = Item.objects.filter(rarity=rarity).values_list('pk', flat=True, )
     if not pks:
         pks = Item.objects.filter().values_list('pk', flat=True, )
+    pks = list(pks)
 
-    random_idx = randint(0, len(pks) - 1)
-    random_item = Item.objects.get(pk=pks[random_idx])
+    while True:
+        if len(pks) == 0:
+            raise ValueError("Not enough legendary items.")
+        random_idx = randint(0, len(pks) - 1)
+        random_item = Item.objects.get(pk=pks[random_idx])
+        if random_item.type == "3":
+            check = AssignedItem.objects.filter(
+                item=random_item
+            )
+            if check:
+                pks.remove(random_idx)
+                continue
+            else:
+                break
+        else:
+            break
 
     new_item = AssignedItem.objects.create(
         user=box.user,

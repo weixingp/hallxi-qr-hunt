@@ -195,7 +195,7 @@ class Item(models.Model):
         elif self.rarity == '3':
             points = 50
         elif self.rarity == '4':
-            points = 0
+            points = 100
         else:
             points = 0
 
