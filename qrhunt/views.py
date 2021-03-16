@@ -842,7 +842,14 @@ def leaderboard(request):
     user = request.user
     user_points = get_user_points(user)
     ranking = get_leaderboard()
-    user_rank = next((index for (index, d) in enumerate(ranking) if d["user"] == user.id), None) + 1
+    user_info = next((item for item in ranking if item["user"] == user.id), None)
+    if user_info:
+        user_rank = user_info['rank']
+        user_total_points = user_info['total_points']
+        user_bonus = user_total_points - user_points
+    else:
+        raise ValueError("System data mismatch at leaderboard view!")
+
     top_3 = ranking[0:3]
 
     if len(ranking) > 3:
@@ -852,8 +859,9 @@ def leaderboard(request):
 
     context = {
         "user": user,
-        "user_points": user_points,
+        "user_points": user_total_points,
         "user_rank": user_rank,
+        "user_bonus": user_bonus,
         "top_3": top_3,
         "ranking": remaining_ranks,
     }

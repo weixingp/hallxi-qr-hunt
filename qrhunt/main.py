@@ -215,7 +215,6 @@ def get_unanswered_qn(user):
 
 def get_user_points(user):
     points = PointsRecord.objects.filter(user=user).aggregate(Sum('points_change'))
-    print(points)
     user_points = points['points_change__sum']
     if not user_points:
         user_points = 0
@@ -223,6 +222,31 @@ def get_user_points(user):
 
 
 def get_leaderboard():
+    players = Profile.objects.all()
+    block_ranking = get_block_ranking()
+
+    data = []
+    for profile in players:
+        user = profile.user
+        points = get_user_points(user)
+        block = next((item for item in block_ranking if item["block"] == profile.block.name), None)
+        total_points = points + block["prop"]["bonus"]
+        temp = {
+            "user": user.id,
+            "profile": profile,
+            "total_points": total_points,
+        }
+        data.append(temp)
+
+    ranking = sorted(data, key=lambda i: i['total_points'], reverse=True)
+    rank = 1
+    for player in ranking:
+        player['rank'] = rank
+        rank += 1
+    return ranking
+
+
+def get_leaderboard1():
     leaderboard = PointsRecord.objects.all()\
         .values('user')\
         .annotate(total_points=Sum('points_change'))\
@@ -249,7 +273,6 @@ def get_leaderboard():
         leaderboard.append(temp)
         rank += 1
 
-    print(leaderboard)
     return leaderboard
 
 
@@ -299,6 +322,7 @@ def get_block_ranking():
         raise ValueError("Rank prop size does not fit with number of blocks")
 
     ranks = []
+    rank_index = 0
     for block in blocks:
         hp = get_block_hp(block)
         exp = get_block_exploration(block)
