@@ -184,6 +184,8 @@ class Item(models.Model):
         else:
             color = "primary"
 
+        return color
+
     # Hardcoded points gained for each of the rarity
     def get_points(self):
         if self.rarity == '1':
