@@ -309,7 +309,7 @@ def question_page(request, uuid):
     try:
         assigned_question = AssignedQuestion.objects.get(uuid=uuid)
         question = assigned_question.question
-    except ObjectDoesNotExist:
+    except Exception:
         context = {
             "success": False,
             "error": "Invalid Question ID.",
