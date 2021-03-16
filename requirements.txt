@@ -16,7 +16,7 @@ phonenumberslite==8.12.15
 Pillow==8.1.0
 protobuf==3.14.0
 pycparser==2.20
-PyJWT==2.0.0
+PyJWT==1.7.1
 python-http-client==3.3.2
 python3-openid==3.2.0
 pytz==2020.5
@@ -28,6 +28,7 @@ six==1.15.0
 sorl-thumbnail==12.7.0
 sqlparse==0.4.1
 starkbank-ecdsa==1.1.0
+twilio==6.54.0
 ua-parser==0.10.0
 urllib3==1.26.2
 user-agents==2.2.0
