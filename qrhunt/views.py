@@ -17,7 +17,7 @@ from .models import Location, AssignedLocation, Question, AssignedQuestion, Bloc
 from django.utils.timezone import localtime, now
 from .main import visit_location, get_user_context, get_random_question, assign_loot_box, get_block_hp, \
     get_block_exploration, use_item as use, open_loot_box, get_total_blk_player, get_unanswered_qn, get_user_points, \
-    get_leaderboard, get_block_ranking
+    get_leaderboard, get_block_ranking, get_assigned_location
 
 
 def mobile_only(function):
@@ -196,10 +196,7 @@ def home(request):
         response.set_cookie('next_url', '', max_age=0)
         return response
 
-    try:
-        assigned_locations = AssignedLocation.objects.filter(user=user, )
-    except ObjectDoesNotExist:
-        assigned_locations = None
+    assigned_locations = get_assigned_location(user)
 
     photo_submissions = PhotoSubmission.objects.filter(has_reviewed=True).order_by('-time')
 

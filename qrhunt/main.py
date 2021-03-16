@@ -202,15 +202,19 @@ def get_unanswered_qn(user):
     question_list = AssignedQuestion.objects.filter(
         user=user,
         has_answered=False,
-        time__date=localtime().date(),
-    )
+    ).exclude(question=None)
+
+    question_list = list(question_list)
     res = []
     for question in question_list:
-        temp = {
-            "uuid": question.uuid,
-            "question": str(question.question)
-        }
-        res.append(temp)
+        if question.time.date() != localtime().date():
+            question_list.remove(question)
+        else:
+            temp = {
+                "uuid": question.uuid,
+                "question": str(question.question)
+            }
+            res.append(temp)
 
     return res
 
@@ -348,3 +352,17 @@ def get_block_ranking():
         index += 1
 
     return ranks
+
+
+def get_assigned_location(user):
+    assigned_locations = AssignedLocation.objects.filter(
+        user=user,
+    )
+
+    location_list = list(assigned_locations)
+
+    for location in location_list:
+        if location.time.date != localtime().date():
+            location_list.remove(location)
+
+    return location_list

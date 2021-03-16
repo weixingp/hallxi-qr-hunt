@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+
 from django.core.management.base import BaseCommand, CommandError
 import sys
 from PIL import Image, ImageFont, ImageDraw
@@ -6,7 +6,7 @@ import requests
 from django.utils.timezone import localtime
 
 from hallxiqr.settings import BASE_DIR
-from qrhunt.models import Location, AssignedQuestion
+from qrhunt.models import Location, AssignedQuestion, User
 
 
 class Command(BaseCommand):
