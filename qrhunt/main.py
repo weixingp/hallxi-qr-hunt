@@ -192,7 +192,7 @@ def open_loot_box(box):
                 item=random_item
             )
             if check:
-                pks.remove(random_idx)
+                pks.remove(random_item)
                 continue
             else:
                 break
