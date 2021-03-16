@@ -114,7 +114,7 @@
         // Check if contain valid uuid with "-"
         function getUUID ( data ) {
             let s = "" + data;
-            s = s.match('[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}');
+            s = s.match('[0-9a-fA-F]{8}[0-9a-fA-F]{4}[0-9a-fA-F]{4}[0-9a-fA-F]{4}[0-9a-fA-F]{12}');
             return s;
         }
 
