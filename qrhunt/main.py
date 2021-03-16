@@ -202,7 +202,7 @@ def get_unanswered_qn(user):
     question_list = AssignedQuestion.objects.filter(
         user=user,
         has_answered=False,
-        time__date=now().date(),
+        time__date=localtime().date(),
     )
     res = []
     for question in question_list:
