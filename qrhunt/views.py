@@ -211,8 +211,13 @@ def home(request):
         my_submission = my_submission[0]
         my_submission.votes = PhotoUpvote.objects.filter(submission=my_submission).count()
 
+    if user.is_superuser:
+        is_phase2 = True
+    else:
+        is_phase2 = IS_PHASE2
+
     context = {
-        "is_phase2": IS_PHASE2,
+        "is_phase2": is_phase2,
         "assigned_locations": assigned_locations,
         "profile": user.profile,
         "blk_hp": get_block_hp(user.profile.block),
