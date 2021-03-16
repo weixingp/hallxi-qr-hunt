@@ -748,10 +748,7 @@ def photo_submission_new_page(request):
 
     if request.method == "GET":
         has_submitted = PhotoSubmission.objects.filter(user=user)
-        if IS_PHASE2:
-            message = "Submission is now closed."
-            has_submitted = True
-        elif has_submitted:
+        if has_submitted:
             message = "You have already submitted one entry. To submit a new entry, please delete the old entry " \
                       "<a href='/submission/" + str(has_submitted[0].id) + "'>here</a>."
         else:
