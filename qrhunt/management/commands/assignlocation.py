@@ -12,7 +12,6 @@ class Command(BaseCommand):
 
             visited_location = AssignedLocation.objects.filter(
                 user=user,
-                has_visited=False
             ).values_list('location_id', flat=True)
 
             pks = Location.objects.filter(
