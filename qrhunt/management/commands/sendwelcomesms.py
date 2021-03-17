@@ -23,3 +23,4 @@ class Command(BaseCommand):
 
             tw = Twilio()
             tw.send(hp, body)
+            count += 1
