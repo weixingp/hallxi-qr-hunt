@@ -21,7 +21,7 @@ class Command(BaseCommand):
             if not profile.mobile:
                 continue
 
-            hp = profile.mobile
+            hp = profile.mobile.as_e164
 
             tw = Twilio()
             tw.send(hp, body)
