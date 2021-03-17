@@ -7,10 +7,6 @@ from django.db.models import Avg, Count, Min, Sum
 from random import random
 
 
-def get_question(user):
-    return None
-
-
 def visit_location(user, assigned_location):
     # Mark the location as visited
     assigned_location.has_visited = True
@@ -221,7 +217,7 @@ def get_unanswered_qn(user):
     question_list = AssignedQuestion.objects.filter(
         user=user,
         has_answered=False,
-    ).exclude(question=None)
+    ).exclude(question__isnull=False)
 
     question_list = list(question_list)
     res = []

@@ -1,0 +1,100 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load thumbnail %}
+{% load i18n %}
+{% block head_title %}{% trans "BoB Intro | HALL XI BoB" %}{% endblock %}
+{% load account socialaccount %}
+
+{% block body %}
+    <div class="bg-white">
+        <!-- App Capsule -->
+        <div id="appCapsule" class="full-height pt-3">
+
+        <div class="carousel-slider owl-carousel owl-theme">
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro1.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Hall XI Final IBG Phase 2</h2>
+                <p>Phase 2 has begun!</p>
+            </div>
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro2-1.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Check Locations</h2>
+                <p>Check your assigned location on the main page. Everyone will have different locations.</p>
+            </div>
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro2-2.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Scan</h2>
+                <p>Scan the QR code poster at the location.</p>
+            </div>
+
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro2-3.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Answer</h2>
+                <p>Choose your question difficulty and answer it.</p>
+            </div>
+
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro2-4.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Unbox</h2>
+                <p>Unbox your loot box. Get a chance to win Prism Monitor, JBL Flip 5 and more!</p>
+            </div>
+
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro2-5.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Battle</h2>
+                <p>Use your items gained from loot box to attach other blocks / heal. Bonus personal points for blk with higher ranking.</p>
+            </div>
+
+            <div class="item p-2">
+                <img src="https://cdn.kado.sg/images/game/intro5.jpg" alt="alt" class="imaged w-75 square mb-4" style="display: inline">
+                <h2>Compete and win</h2>
+                <p>Be on the top of the leaderboard and win Shopee vouchers!</p>
+            </div>
+
+        </div>
+
+        <div class="carousel-button-footer">
+            <div class="row">
+                <div class="col-12">
+                    <a href="/" class="btn btn-primary btn-lg btn-block">Get Started</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+
+{% endblock %}
+{% block extra_script %}
+    <script>
+        window.blockMenuHeaderScroll = false;
+        var classname = document.getElementsByClassName("owl-carousel");
+        var dailyLocations = document.getElementById("appCapsule");
+        var mc = new Hammer(dailyLocations);
+
+        mc.on("swipeleft swiperight panleft panright", function(ev) {
+            window.blockMenuHeaderScroll = true;
+        });
+
+        mc.on("panend swipeend", function (ev){
+            window.blockMenuHeaderScroll = false;
+        });
+
+        mc.on("swipeup swipedown panup pandown", function(ev) {
+            window.blockMenuHeaderScroll = false;
+        });
+
+        for (var i = 0; i < classname.length; i++) {
+            classname[i].addEventListener('touchmove', function(evt) {
+                if (blockMenuHeaderScroll && evt.cancelable) {
+                    evt.preventDefault();
+                }
+
+            }, {
+                passive: false
+            });
+        }
+    </script>
+{% endblock %}
+

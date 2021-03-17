@@ -46,12 +46,12 @@ def has_profile(function):
 def has_read_intro(function):
     def _function(request, *args, **kwargs):
 
-        # # Check if user has read the intro
-        # has_read_intro = request.COOKIES.get('has_read_intro')
-        # if not has_read_intro:
-        #     return redirect("/intro")
-        # elif has_read_intro == '0':
-        #     return redirect("/intro")
+        # Check if user has read the intro
+        has_read_intro = request.COOKIES.get('has_read_intro2')
+        if not has_read_intro:
+            return redirect("/intro2")
+        elif has_read_intro == '0':
+            return redirect("/intro2")
 
         return function(request, *args, **kwargs)
 
@@ -833,6 +833,19 @@ def event_info_page(request):
     response = HttpResponse(template.render(context, request))
     cookies_exp = datetime.datetime(2021, 3, 17)
     response.set_cookie('has_read_intro', '1', expires=cookies_exp)
+    return response
+
+
+@login_required()
+@mobile_only
+@has_profile
+def event_info_page2(request):
+    template = loader.get_template('core/pages/intro2.html')
+
+    context = {}
+    response = HttpResponse(template.render(context, request))
+    cookies_exp = datetime.datetime(2021, 3, 24)
+    response.set_cookie('has_read_intro2', '1', expires=cookies_exp)
     return response
 
 

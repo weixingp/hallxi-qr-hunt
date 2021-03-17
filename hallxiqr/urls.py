@@ -37,7 +37,8 @@ urlpatterns = [
 
 core = [
     path('', main_view.home),
-    path('intro', main_view.event_info_page)
+    path('intro', main_view.event_info_page),
+    path('intro2', main_view.event_info_page2)
 ]
 
 

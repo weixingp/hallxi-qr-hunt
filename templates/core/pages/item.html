@@ -19,6 +19,11 @@
                 <ion-icon name="home-outline"></ion-icon>
             </a>
         </div>
+        <div class="right">
+            <a href="#" id="reload-page" class="headerButton">
+                <ion-icon name="reload-outline"></ion-icon>
+            </a>
+        </div>
         <div class="pageTitle">
             Inventory
         </div>
@@ -303,6 +308,12 @@
                 }
             });
         });
+    </script>
+    <script>
+        $("#reload-page").click(function(){
+            $(this).parent().html('<div class="spinner-border text-white mr-1" role="status"></div>')
+            window.location.reload();
+        })
     </script>
     <script>
         window.blockMenuHeaderScroll = false;
