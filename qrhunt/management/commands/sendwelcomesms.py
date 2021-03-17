@@ -8,7 +8,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         profiles = Profile.objects.all()
-        profiles = [Profile.objects.get(pk=3)]
         count = 1
         total = len(profiles)
         body = "Hi Hall XI, phase 2 of IBG has begun. Launch the app https://play.hallxi.com to play now. $500 " \
@@ -16,7 +15,6 @@ class Command(BaseCommand):
 
         for profile in profiles:
             print(f"Processing SMS: {count} / {total}")
-            user = profile.user
 
             if not profile.mobile:
                 continue
