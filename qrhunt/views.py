@@ -46,12 +46,12 @@ def has_profile(function):
 def has_read_intro(function):
     def _function(request, *args, **kwargs):
 
-        # Check if user has read the intro
-        has_read_intro = request.COOKIES.get('has_read_intro')
-        if not has_read_intro:
-            return redirect("/intro")
-        elif has_read_intro == '0':
-            return redirect("/intro")
+        # # Check if user has read the intro
+        # has_read_intro = request.COOKIES.get('has_read_intro')
+        # if not has_read_intro:
+        #     return redirect("/intro")
+        # elif has_read_intro == '0':
+        #     return redirect("/intro")
 
         return function(request, *args, **kwargs)
 
