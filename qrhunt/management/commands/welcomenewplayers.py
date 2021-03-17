@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from qrhunt.models import Location, Profile, AssignedLocation
+from qrhunt.models import Location, Profile, AssignedLocation, AssignedLootBox
 from random import sample
 
 
@@ -13,6 +13,17 @@ class Command(BaseCommand):
             has_location = AssignedLocation.objects.filter(
                 user=user
             )
+            has_lootbox = AssignedLootBox.objects.filter(
+                user=user
+            )
+
+            if not has_lootbox:
+                print(f"Assigning loot box for new player: {profile.fullname}")
+                for i in range(0, 2):
+                    AssignedLootBox.objects.create(
+                        user=user,
+                        reason="welcome_gift_late"
+                    )
 
             if has_location:
                 continue
