@@ -217,12 +217,13 @@ def get_unanswered_qn(user):
     question_list = AssignedQuestion.objects.filter(
         user=user,
         has_answered=False,
-    ).exclude(question__isnull=False)
+    ).exclude(question__isnull=True)
 
     question_list = list(question_list)
     res = []
     for question in question_list:
         if localtime(question.time).date() == localtime().date():
+        # if True:
             temp = {
                 "uuid": question.uuid,
                 "question": str(question.question)
