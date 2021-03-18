@@ -65,7 +65,7 @@ class PhotoCommentAdmin(admin.ModelAdmin):
 class AssignedItemAdmin(admin.ModelAdmin):
     list_display = ('user', linkify(field_name="item"), 'has_used', 'time_used', 'time')
     list_filter = ('has_used',)
-    search_fields = ('user__email',)
+    search_fields = ('user__email', 'item__name')
 
 
 @admin.register(HpLog)
