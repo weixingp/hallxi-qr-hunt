@@ -39,7 +39,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520
 
 # Game controls
 IS_PHASE2 = True
-
+IS_END_OF_EVENT = False
 
 # Application definition
 

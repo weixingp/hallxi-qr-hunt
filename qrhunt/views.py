@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
-from hallxiqr.settings import IS_PHASE2
+from hallxiqr.settings import IS_PHASE2, IS_END_OF_EVENT
 from .forms import ProfileUpdateForm, UpdateAssignedQuestionForm, AnswerQuestionForm, UseItemForm, CastVoteForm, \
     PhotoCommentForm, DeletePhotoCommentForm, NewPhotoSubmissionForm, DeletePhotoSubmissionForm
 from .models import Location, AssignedLocation, Question, AssignedQuestion, Block, Answer, AssignedLootBox, \
@@ -259,6 +259,11 @@ def assign_question(request):
             "message": "Illegal access!"
         })
 
+    if IS_END_OF_EVENT:
+        success = False
+        message = "Event has ended! Thanks for participating."
+        return JsonResponse({"success": success, "message": message})
+
     data = json.loads(request.body.decode("utf-8"))
     form = UpdateAssignedQuestionForm(data)
 
@@ -357,6 +362,11 @@ def answer_question(request):
             "success": False,
             "message": "Illegal access!"
         })
+
+    if IS_END_OF_EVENT:
+        success = False
+        message = "Event has ended! Thanks for participating."
+        return JsonResponse({"success": success, "message": message})
 
     form = AnswerQuestionForm(request.POST)
     user = request.user
@@ -491,6 +501,11 @@ def use_item(request):
         message = "Illegal access!"
         return JsonResponse({"success": success, "message": message})
 
+    if IS_END_OF_EVENT:
+        success = False
+        message = "Event has ended! Thanks for participating."
+        return JsonResponse({"success": success, "message": message})
+
     user = request.user
     form = UseItemForm(request.POST)
     info = None
@@ -585,6 +600,11 @@ def open_loot_box_view(request):
     if request.method != 'GET':
         success = False
         message = "Illegal access!"
+        return JsonResponse({"success": success, "message": message})
+
+    if IS_END_OF_EVENT:
+        success = False
+        message = "Event has ended! Thanks for participating."
         return JsonResponse({"success": success, "message": message})
 
     user = request.user
