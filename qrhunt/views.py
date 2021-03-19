@@ -690,6 +690,11 @@ def vote_view(request):
         message = "Illegal access!"
         return JsonResponse({"success": success, "message": message})
 
+    if IS_END_OF_EVENT:
+        success = False
+        message = "Event has ended! Thanks for participating."
+        return JsonResponse({"success": success, "message": message})
+
     user = request.user
     form = CastVoteForm(request.POST)
     if form.is_valid():
